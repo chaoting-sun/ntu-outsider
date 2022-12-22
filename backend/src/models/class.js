@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 const Schema = mongoose.Schema;
 
 const ClassSchema = new Schema({
-  class_no: {
+  number: {
     type: String,
     required: [true, 'class_no field is required.']
   }

@@ -3,8 +3,8 @@ import mongoose from 'mongoose'
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
-  user_id: { type: mongoose.Types.ObjectId, ref: 'User' },
-  class_id: { type: mongoose.Types.ObjectId, ref: 'Class' },
+  user_id: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
+  class_id: { type: mongoose.Types.ObjectId, ref: 'Class', required: true },
   content: { type: String },
   condition: { type: String },
   deadline: { type: Date },
