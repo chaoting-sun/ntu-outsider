@@ -1,0 +1,61 @@
+type Query {
+  post: Post!
+#   chatBox(name1: String!, name2: String!): ChatBox!
+}
+
+type Mutation {
+#   createUser(name: String!, email: String!, password: String!): User!
+#   updateUser(name: String!, email: /String!, password: String!): User!
+#   deleteUser(name: String!): User!
+
+  createPost(id: ID!, content: String!, condition: String!, deadline: DateTime!): Post!
+  updatePost(id: ID!, content: String!, condition: String!, deadline: DateTime!): Post!
+  deletePost(id: ID!, content: String!, condition: String!, deadline: DateTime!): Post!
+
+#   createComment: Comment!
+#   updateComment: Comment!
+#   deleteComment: Comment!
+
+#   createMessage: Comment!
+#   updateMessage: Comment!
+#   deleteMessage: Comment!
+}
+
+type Subscription {
+
+}
+
+type Comment {
+  post_id: ID!
+  user_id: ID!
+  content: String!
+}
+
+type User {
+  name: String!
+  email: String!
+  preference: [String!]
+}
+
+type Post {
+  user_id: ID!
+  class_id: ID!
+  content: String!
+  condition: String!
+  deadline: DateTime!
+  preference: [String]!
+}
+
+type Class {
+  number: String!
+}
+
+type ChatBox {
+  name: String!
+  messages: [Message!]
+}
+
+type Message {
+  sender: String!
+  body: String!
+}
