@@ -20,7 +20,7 @@ yarn/npm install
 yarn start
 ```
 
-4. Start the frontend service
+4. Start the backend service
 ```bash
 yarn server
 ```
