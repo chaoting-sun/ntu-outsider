@@ -1,16 +1,18 @@
 type Query {
-  post: Post!
-#   chatBox(name1: String!, name2: String!): ChatBox!
+  post_title(title: String!): Post!
+  post_tag(tag: String!): Post!
+  # 搜尋貼文的時候應該用 title 或 tag 搜嗎？
+  chatBox(name1: String!, name2: String!): ChatBox!
 }
 
-type Mutation {
+# type Mutation {
 #   createUser(name: String!, email: String!, password: String!): User!
 #   updateUser(name: String!, email: /String!, password: String!): User!
 #   deleteUser(name: String!): User!
 
-  createPost(id: ID!, content: String!, condition: String!, deadline: DateTime!): Post!
-  updatePost(id: ID!, content: String!, condition: String!, deadline: DateTime!): Post!
-  deletePost(id: ID!, content: String!, condition: String!, deadline: DateTime!): Post!
+  # createPost(id: ID!, content: String!, condition: String!, deadline: DateTime!): Post!
+  # updatePost(id: ID!, content: String!, condition: String!, deadline: DateTime!): Post!
+  # deletePost(id: ID!, content: String!, condition: String!, deadline: DateTime!): Post!
 
 #   createComment: Comment!
 #   updateComment: Comment!
@@ -19,11 +21,11 @@ type Mutation {
 #   createMessage: Comment!
 #   updateMessage: Comment!
 #   deleteMessage: Comment!
-}
+# }
 
-type Subscription {
+# type Subscription {
 
-}
+# }
 
 type Comment {
   post_id: ID!
