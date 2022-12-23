@@ -4,9 +4,13 @@ const Schema = mongoose.Schema
 
 // validation function for the email
 // ref: https://stackoverflow.com/questions/18022365/mongoose-validate-email-syntax
-var validateEmail = function(email) {
-  const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  return re.test(email)
+// new ref: https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript/46181#46181
+const validateEmail = (email) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
 };
 
 // "trim" in mongoose
@@ -19,11 +23,13 @@ const UserSchema = Schema({
     trim: true,
     required: true,
     unique: true,
-    lowercase: true
+    lowercase: true,
+    validate: [validateEmail, 'Please fill a valid email address'],
   },
   preference: [{ type: mongoose.Types.ObjectId, ref: "Class" }],
-  collection: [{ type: mongoose.Types.ObjectId, ref: "Post" }],
-  validate: [validateEmail, 'Please fill a valid email address'],
+  // collection 是保留字
+  collectionName: [{ type: mongoose.Types.ObjectId, ref: "Post" }],
+  
 }, {
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 })
