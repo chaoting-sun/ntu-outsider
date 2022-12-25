@@ -1,6 +1,3 @@
-import { findDangerousChanges } from "graphql";
-import { UserModel } from "../models";
-
 const Mutation = {
   createUser: async (
     parent,
@@ -20,7 +17,7 @@ const Mutation = {
   },
   createPost: async (
     parent,
-    { user_id, classNumber, className, title, content, condition, deadline },
+    { userId, classNumber, className, title, content, condition, deadline },
     { PostModel, ClassModel },
     info
   ) => {
@@ -32,7 +29,7 @@ const Mutation = {
       }).save();
     }
     let newPost = await new PostModel({
-        user_id: user_id,
+        user_id: userId,
         class_id: classExisting._id,
         title: title,
         content: content,
@@ -43,24 +40,40 @@ const Mutation = {
   },
   createComment: async (
     parent,
-    { post_id, user_id, content },
+    { postId, userId, content },
     { CommentModel },
     info
   ) => {
     return await new CommentModel({
-      post_id: post_id,
-      user_id: user_id,
+      post_id: postId,
+      user_id: userId,
       content: content,
     }).save();
   },
   createMessage: async (parent, { name, to, body }, { ChatBoxModel }, info) => {
     const chatBoxName = makeName(name, to);
     const chatBox = await ChatBoxModel.findOne({ name: chatBoxName });
+    if(!chatBox){ await new ChatBoxModel({name: chatBoxName}).save();}
     const newMsg = { sender: name, body };
     chatBox.messages.push(newMsg);
     await chatBox.save();
     return newMsg;
   },
+  deleteUser: async (parent, {userId}, {UserModel}, info) => {
+    let deletedUser = await UserModel.findOne({_id: userId});
+    await UserModel.deleteOne({_id: userId});
+    return deletedUser;
+  },
+  deletePost: async(parent, {postId}, {PostModel}, info) => {
+    let deletedPost = await PostModel.findOne({_id: postId});
+    await PostModel.deleteOne({_id: postId});
+    return deletedPost; 
+  },
+  deleteComment: async(parent, {commentId}, {CommentModel}, info) => {
+    let deletedComment = await CommentModel.findOne({_id: commentId});
+    await CommentModel.deleteOne({_id: commentId});
+    return deletedComment;
+  }
 };
 
 export default Mutation;
