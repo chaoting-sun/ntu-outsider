@@ -2,13 +2,13 @@ type Query {
   chatBox(name1: String!, name2: String!): ChatBox!
   # 搜尋貼文的時候應該用 title 或 tag 搜？
   # 搜出來應該要是 array ?
-  post_by_title(title: String!): Post!
-  post_by_tag(tag: String!): Post!
+  postByTitle(title: String!): Post!
+  postByTag(tag: String!): Post!
 }
 
 type Comment {
-  post_id: ID!
-  user_id: ID!
+  postId: ID!
+  userId: ID!
   content: String!
 }
 
@@ -22,7 +22,7 @@ type User {
 scalar DateTime # ref: https://v1.prisma.io/forum/t/couldnt-find-type-datetime-in-any-of-the-schemas/4310/3
 # 新增 author
 type Post {
-  user_id: ID!
+  userId: ID!
   # author: User!
   title: String!
   classNumber: String!
@@ -51,10 +51,10 @@ type Message {
 type Mutation {
   createUser(name: String!, email: String!, password: String!): User!
   # updateUser(name: String!, email: String!, password: String!): User!
-  # deleteUser(name: String!): User!
+  deleteUser(userId: ID!): User!
 
   createPost(
-    user_id: ID!
+    userId: ID!
     classNumber: String!
     className: String!
     title: String!
@@ -68,16 +68,13 @@ type Mutation {
   #   condition: String!,
   #   deadline: DateTime!,
   # ): Post!
-  # deletePost(
-  #   id: ID!,
-  #   content: String!,
-  #   condition: String!,
-  #   deadline: DateTime!,
-  # ): Post!
+  deletePost(
+    postId: ID!
+  ): Post!
 
-  createComment(post_id: ID!, user_id: ID!, content: String!): Comment!
+  createComment(postId: ID!, userId: ID!, content: String!): Comment!
   # updateComment: Comment!
-  # deleteComment: Comment!
+  deleteComment(commentId: ID!): Comment!
 
   createMessage(name:ID!, to:ID!, body: String!): Message!
   # updateMessage: Comment!
