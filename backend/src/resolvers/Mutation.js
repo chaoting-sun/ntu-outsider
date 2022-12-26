@@ -29,8 +29,8 @@ const Mutation = {
       }).save();
     }
     let newPost = await new PostModel({
-        user_id: userId,
-        class_id: classExisting._id,
+        userId: userId,
+        classId: classExisting._id,
         title: title,
         content: content,
         condition: condition,
@@ -45,8 +45,8 @@ const Mutation = {
     info
   ) => {
     return await new CommentModel({
-      post_id: postId,
-      user_id: userId,
+      postId: postId,
+      userId: userId,
       content: content,
     }).save();
   },
@@ -73,6 +73,18 @@ const Mutation = {
     let deletedComment = await CommentModel.findOne({_id: commentId});
     await CommentModel.deleteOne({_id: commentId});
     return deletedComment;
+  },
+  updateUser: async(parent, {userId, name, password}, {UserModel}, info) => {
+    let updatedUser = await UserModel.findOneAndUpdate({_id: userId}, {name: name, password: password});
+    return updatedUser;
+  },
+  updatePost: async(parent, {postId, content, condition, deadline}, {PostModel}, info) => {
+    let updatedPost = await PostModel.findOneAndUpdate({_id: postId}, {content:content, condition:condition, deadline:deadline});
+    return updatedPost;
+  },
+  updateComment: async(parent, {commentId, content}, {CommentModel}, info) => {
+    let updatedComment = await CommentModel.findOneAndUpdate({_id: commentId}, {content: content});
+    return updatedComment;
   }
 };
 
