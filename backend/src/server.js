@@ -1,47 +1,47 @@
-import * as fs from 'fs'
-import { createServer } from 'node:http'
-import { WebSocketServer } from 'ws'
-import {
-  createPubSub, createSchema,
-  createYoga
-} from 'graphql-yoga'
-import { useServer } from 'graphql-ws/lib/use/ws'
-import Query from './resolvers/Query';
-import Mutation from './resolvers/Mutation';
-import Subscription from './resolvers/Subscription';
-
-
-// publish-subscribe:
-// a messaging pattern where the senders of the message
-// called the publishers publish a message on a queue. 
+import * as fs from "fs";
+import { createServer } from "node:http";
+import { WebSocketServer } from "ws";
+import { createPubSub, createSchema, createYoga } from "graphql-yoga";
+import { useServer } from "graphql-ws/lib/use/ws";
+import { ChatBoxModel } from "./models/chatbox";
+import { ClassModel } from "./models/class";
+import { CommentModel } from "./models/comment";
+import { PostModel } from "./models/post";
+import { UserModel } from "./models/user";
+import Query from "./resolvers/Query";
+import Mutation from "./resolvers/Mutation";
+// import Subscription from "./resolvers/Subscription";
+import ChatBox from "./resolvers/ChatBox";
 const pubsub = createPubSub();
 
-const yoga = createYoga({
+const yoga = new createYoga({
   schema: createSchema({
-    typeDefs: fs.readFileSync(
-      './src/schema.graphql',
-      'utf-8'
-    ),
+    typeDefs: fs.readFileSync("./src/schema.graphql", "utf-8"),
     resolvers: {
       Query,
       Mutation,
-      Subscription,
+      // Subscription,
+      ChatBox,
     },
   }),
   context: {
     ChatBoxModel,
+    ClassModel,
+    CommentModel,
+    PostModel,
+    UserModel,
     pubsub,
   },
-  graphiql: {
-    subscriptionsProtocol: 'WS',
-  }
+  graphql: {
+    subscriptionsProtocol: "WS",
+  },
 });
 
-const httpServer = createServer(yoga)
+const httpServer = createServer(yoga);
 const wsServer = new WebSocketServer({
   server: httpServer,
   path: yoga.graphqlEndpoint,
-})
+});
 
 useServer(
   {
@@ -53,8 +53,13 @@ useServer(
           ...ctx,
           req: ctx.extra.request,
           socket: ctx.extra.socket,
+<<<<<<< HEAD
           params: msg.payload
         })
+=======
+          params: msg.payload,
+        });
+>>>>>>> 29a2710d6c025cba18235ce3bd5e45ae0fab8af2
       const args = {
         schema,
         operationName: msg.payload.operationName,
@@ -63,6 +68,7 @@ useServer(
         contextValue: await contextFactory(),
         rootValue: {
           execute,
+<<<<<<< HEAD
           subscribe
         }
       }
@@ -73,5 +79,17 @@ useServer(
   },
   wsServer,
 )
+=======
+          subscribe,
+        },
+      };
+      const errors = validate(args.schema, args.document);
+      if (errors.length) return errors;
+      return args;
+    },
+  },
+  wsServer
+);
+>>>>>>> 29a2710d6c025cba18235ce3bd5e45ae0fab8af2
 
 export default httpServer;

@@ -17,7 +17,7 @@ const validateEmail = (email) => {
 // ref: https://stackoverflow.com/questions/20766360/whats-the-meaning-of-trim-when-use-in-mongoose
 const UserSchema = Schema({
   name: { type: String, required: true },
-  // password: { type: String, required: true },
+  password: { type: String, required: true },
   email: { 
     type: String,
     trim: true,

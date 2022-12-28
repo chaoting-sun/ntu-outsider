@@ -1,7 +1,5 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv-defaults';
-
-
+import mongoose from "mongoose";
+import dotenv from "dotenv-defaults";
 export default {
   connect: () => {
     dotenv.config();
@@ -9,17 +7,18 @@ export default {
       console.error("Missing MONGO_URL!!!");
       process.exit(1);
     }
-
-    // https://stackoverflow.com/questions/70456923/mongoose-findone-and-find-return-invalid-values-when-they-should-return-nul
-    mongoose.set('strictQuery', true);
-
+    mongoose.set("strictQuery", false);
     mongoose
-    .connect(process.env.MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then((res) => console.log("mongo db connection created"));
-    mongoose.connection.on('error',
-      console.error.bind(console, 'connection error:'));
-  }
+      .connect(process.env.MONGO_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
+      .then((res) => console.log("mongo db connection created"));
+
+    mongoose.connection.on(
+      "error",
+      console.error.bind(console, "connection error:")
+    );
+    
+  },
 };

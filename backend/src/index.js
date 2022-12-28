@@ -1,15 +1,12 @@
-import dotenv from "dotenv-defaults"
-import mongoose from 'mongoose'
+// import GraphQL server
+import server from './server'
+// import MongoDB connection
 import mongo from './mongo'
-import httpServer from './server'
 
-
-const db = mongoose.connection
-
-db.once('open', () => {
-  console.log("MongoDB connected!");
+mongo.connect();
+const port = process.env.PORT || 4000;
+server.listen({port}, () => {
+  console.log(`Listening on http://localhost:${port}`);
 });
+ 
 
-httpServer.listen({ port: process.env.PORT | 5001 }, () => {
-  console.log(`Server listening on: http://localhost:${process.env.PORT | 5001}!`);
-});
