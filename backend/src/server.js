@@ -1,57 +1,77 @@
-// * ////////////////////////////////////////////////////////////////////////
-// *
-// * FileName     [ server.js ]
-// * PackageName  [ server ]
-// * Synopsis     [ Connect to Database and Infrastructure of Backend ]
-// * Author       [ Chin-Yi Cheng ]
-// * Copyright    [ 2022 11 ]
-// *
-// * ////////////////////////////////////////////////////////////////////////
+import * as fs from 'fs'
+import { createServer } from 'node:http'
+import { WebSocketServer } from 'ws'
+import {
+  createPubSub, createSchema,
+  createYoga
+} from 'graphql-yoga'
+import { useServer } from 'graphql-ws/lib/use/ws'
+import Query from './resolvers/Query';
+import Mutation from './resolvers/Mutation';
+import Subscription from './resolvers/Subscription';
 
-import express from 'express'
-import cors from 'cors'
-import routes from './routes'
-import mongoose from 'mongoose'
-import { dataInit } from './upload'
-require('dotenv').config()
-const app = express()
 
-// init middleware
-app.use(cors())
-app.use(express.json())
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-  res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
-  res.header('Access-Control-Allow-Credentials', 'true')
-  next()
-})
+// publish-subscribe:
+// a messaging pattern where the senders of the message
+// called the publishers publish a message on a queue. 
+const pubsub = createPubSub();
 
-const port = process.env.PORT || 4000
-
-const dboptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}
-
-// TODO Part I-3: check .env exists -> yes
-
-mongoose.connect(
-  // TODO Part I-3: connect the backend to mongoDB -> yes
-  process.env.MONGO_URL, dboptions).then(async res => {
-  if (process.env.MODE === 'Reset') {
-    console.log('Reset Mode: reset the data')
-    dataInit()
+const yoga = createYoga({
+  schema: createSchema({
+    typeDefs: fs.readFileSync(
+      './src/schema.graphql',
+      'utf-8'
+    ),
+    resolvers: {
+      Query,
+      Mutation,
+      Subscription,
+    },
+  }),
+  context: {
+    ChatBoxModel,
+    pubsub,
+  },
+  graphiql: {
+    subscriptionsProtocol: 'WS',
   }
+});
+
+const httpServer = createServer(yoga)
+const wsServer = new WebSocketServer({
+  server: httpServer,
+  path: yoga.graphqlEndpoint,
 })
 
-// TODO Part I-3: check DB connection -> yes
-const db = mongoose.connection
-db.once('open', () => {
-  console.log("MongoDB connected!");
-})
+useServer(
+  {
+    execute: (args) => args.rootValue.execute(args),
+    subscribe: (args) => args.rootValue.subscribe(args),
+    onSubscribe: async (ctx, msg) => {
+      const { schema, execute, subscribe, contextFactory, parse, validate } =
+        yoga.getEnveloped({
+          ...ctx,
+          req: ctx.extra.request,
+          socket: ctx.extra.socket,
+          params: msg.payload
+        })
+      const args = {
+        schema,
+        operationName: msg.payload.operationName,
+        document: parse(msg.payload.query),
+        variableValues: msg.payload.variables,
+        contextValue: await contextFactory(),
+        rootValue: {
+          execute,
+          subscribe
+        }
+      }
+      const errors = validate(args.schema, args.document)
+      if (errors.length) return errors
+      return args
+    },
+  },
+  wsServer,
+)
 
-routes(app)
-app.listen(port, () => {
-  console.log(`Server is up on port ${port}.`)
-})
+export default httpServer;
