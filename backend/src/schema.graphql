@@ -50,7 +50,7 @@ type Message {
 
 type Mutation {
   createUser(name: String!, email: String!, password: String!): User!
-  # updateUser(name: String!, email: String!, password: String!): User!
+  updateUser(userId:ID!, name: String!, email: String!, password: String!): User!
   deleteUser(userId: ID!): User!
 
   createPost(
@@ -62,18 +62,19 @@ type Mutation {
     condition: String!
     deadline: DateTime!
   ): Post!
-  # updatePost(
-  #   id: ID!,
-  #   content: String!,
-  #   condition: String!,
-  #   deadline: DateTime!,
-  # ): Post!
+  # update 的內容需要包含
+  updatePost(
+    postId: ID!,
+    content: String!,
+    condition: String!,
+    deadline: DateTime!,
+  ): Post!
   deletePost(
     postId: ID!
   ): Post!
 
   createComment(postId: ID!, userId: ID!, content: String!): Comment!
-  # updateComment: Comment!
+  updateComment(commentId: ID!, content: String!): Comment!
   deleteComment(commentId: ID!): Comment!
 
   createMessage(name:ID!, to:ID!, body: String!): Message!
