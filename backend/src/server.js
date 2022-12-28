@@ -1,12 +1,17 @@
-import * as fs from 'fs'
-import { createServer } from 'node:http'
-import { WebSocketServer } from 'ws'
-import { createPubSub, createSchema,createYoga } from 'graphql-yoga'
-import { useServer } from 'graphql-ws/lib/use/ws'
-import ChatBoxModel from './models/chatbox'
+import * as fs from 'fs';
+import { createServer } from 'node:http';
+import { WebSocketServer } from 'ws';
+import { createPubSub, createSchema,createYoga } from 'graphql-yoga';
+import { useServer } from 'graphql-ws/lib/use/ws';
+import {ChatBoxModel} from './models/chatbox';
+import { ClassModel } from './models/class';
+import { CommentModel } from './models/comment';
+import { PostModel } from './models/post';
+import { UserModel } from './models/user';
 import Query from './resolvers/Query';
 import Mutation from './resolvers/Mutation';
 import Subscription from './resolvers/Subscription';
+import ChatBox from './resolvers/ChatBox';
 const pubsub = createPubSub();
 
 
@@ -14,13 +19,18 @@ const yoga = new createYoga({
   schema: createSchema({
     typeDefs: fs.readFileSync('./src/schema.graphql', 'utf-8' ),
     resolvers: {
-      //Query,
-      //Mutation,
-      //Subscription,
+      Query,
+      Mutation,
+      Subscription,
+      ChatBox
     },
   }),
   context: {
     ChatBoxModel,
+    ClassModel,
+    CommentModel,
+    PostModel,
+    UserModel,
     pubsub,
   },
   graphql: {
