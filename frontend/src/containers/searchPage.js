@@ -20,13 +20,8 @@ const SearchPage = () => {
   const [restaurants, setRestaurant] = useState([])
   const getRestaurant = async () => {
     // TODO Part I-3-b: get information of restaurants from DB
-    console.log("getRestaurant...");
-    console.log('state:', state)
     const {data: { message, contents }} = await instance.get('/getSearch', { params: state });
     setRestaurant(contents);
-    
-    console.log("message:", message);
-    console.log('contents:', contents);
   }
   
   useEffect(() => {
@@ -38,7 +33,6 @@ const SearchPage = () => {
   const navigate = useNavigate();
   const ToRestaurant = (id) => {
     // TODO Part III-1: navigate the user to restaurant page with the corresponding id
-    console.log("ToRestaurant: id =", id);
     navigate(`../restaurant/${id}`);
   }
   const getPrice = (price) => {
