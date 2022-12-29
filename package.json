@@ -7,7 +7,7 @@
     "cypress": "^11.2.0"
   },
   "scripts": {
-    "frontend": "cd ./frontend && yarn start",
-    "backend": "cd ./backend && yarn server"
+    "start": "cd ./frontend && yarn start",
+    "server": "cd ./backend && yarn server"
   }
 }
