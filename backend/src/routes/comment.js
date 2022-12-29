@@ -8,7 +8,7 @@
 // *
 // * ////////////////////////////////////////////////////////////////////////
 
-import Comment from '../models/comment'
+import Comment from '../models/comments'
 
 exports.GetCommentsByRestaurantId = async (req, res) => {
   /*******    NOTE: DO NOT MODIFY   *******/

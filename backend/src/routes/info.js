@@ -79,9 +79,6 @@ exports.GetInfo = async (req, res) => {
 
   // TODO Part III-2: find the information to the restaurant with the id that the user requests
 
-  console.log("<GetInfo>");
-  console.log("id:", id);
-
   Info.findOne({ id: id })
     .exec((err, data) => {
       if (err) {

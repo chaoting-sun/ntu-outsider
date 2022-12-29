@@ -1,11 +1,3 @@
-/****************************************************************************
-  FileName      [ navigationBar.js ]
-  PackageName   [ src ]
-  Author        [ Chin-Yi Cheng ]
-  Synopsis      [ Implement the navigation bar ]
-  Copyright     [ 2022 11 ]
-****************************************************************************/
-
 import React from 'react'
 import { useState } from "react";
 import '../css/navigationBar.css'
@@ -14,6 +6,7 @@ import { MdTune, MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "re
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const NavBar = () => {
+  const { SignedIn } = useOusider();
 
   const [priceFilter, setPriceFilter] = useState([])
   const [mealFilter, setMealFilter] = useState([])
@@ -27,13 +20,6 @@ const NavBar = () => {
 
   const navigate = useNavigate();
 
-  const changeDollarSignToInt = () => {
-    var clone = JSON.parse(JSON.stringify(priceFilter))
-    clone = clone.map((ele) => {
-      return ele.length
-    })
-    return clone;
-  }
   const navigateToSearch = () => {
     console.log("navigateToSearch...");
 
@@ -51,18 +37,18 @@ const NavBar = () => {
   };
   return (
     <div className='navBarContainer'>
-      <a href="/">
-        <div className='titleContainer'>
-          <h1>Hugo Eat</h1>
-        </div>
-      </a>
+      <div className='titleContainer'>
+        <a href="/" className='titleName'>NTU OUTSIDER</a>
+      </div>
       <div className='functionRow'>
+
         <div className='filterContainer' onClick={e => setFilterExpanded(!filterExpanded)}>
           <MdTune size={28} />
           <div className='filter'>{display}</div>
           {filterExpanded ? <MdOutlineKeyboardArrowUp size={28} /> :
             <MdOutlineKeyboardArrowDown size={28} />}
         </div>
+
         <div className='sortContainer'>
           <select value={sortMethod} onChange={e => setSortMethod(e.target.value)}>
             {options.map((value) => (
@@ -72,10 +58,12 @@ const NavBar = () => {
             ))}
           </select>
         </div>
+
         <div className='searchContainer'>
           <button onClick={navigateToSearch}>Search</button>
         </div>
       </div>
+
       {filterExpanded ?
         <Filter priceFilter={priceFilter} setPriceFilter={setPriceFilter}
           mealFilter={mealFilter} setMealFilter={setMealFilter}
