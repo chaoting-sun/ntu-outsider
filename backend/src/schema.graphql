@@ -1,39 +1,46 @@
 type Query {
   chatBox(name1: String!, name2: String!): ChatBox!
-  # 搜尋貼文的時候應該用 title 或 tag 搜？
-  # 搜出來應該要是 array ?
-  postByTitle(title: String!): Post!
-  postByTag(tag: String!): Post!
-}
-
-type Comment {
-  postId: ID!
-  userId: ID!
-  content: String!
-}
-
-type User {
-  name: String!
-  email: String!
-  password: String!
-  # preference: [String!]
+  # Title of the post contains the word.
+  postByTitle(title: String!): [Post!]!
+  # The post contains the tag.
+  postByTag(tag: String!): [Post!]!
 }
 
 scalar DateTime # ref: https://v1.prisma.io/forum/t/couldnt-find-type-datetime-in-any-of-the-schemas/4310/3
 # 新增 author
 type Post {
+  postId: ID!
   userId: ID!
-  # author: User!
+  author: User!
   title: String!
-  classNumber: String!
-  className: String!
+  classId: ID!
+  class: Class!
   content: String!
-  condition: String!
+  condition: String
   deadline: DateTime! # 先暫時用 scalar 做某種轉換，還找不到其他更好的 DateTime 表示法
-  preference: [String]!
+  tag: [String]
+  comments: [Comment]
+}
+
+type User {
+  userId: ID!
+  name: String!
+  password: String!
+  email: String!
+  preference: [String!]
+  collectionName: [String!]
+}
+
+type Comment {
+  commentId: ID!
+  postId: ID!
+  userId: ID!
+  commenter: User!
+  content: String!
 }
 
 type Class {
+  classId: ID!
   classNumber: String!
   className: String!
 }
@@ -72,6 +79,8 @@ type Mutation {
   deletePost(
     postId: ID!
   ): Post!
+  updatePreference(userId: ID!, preference: [String!]): User!
+  updateCollection(userId: ID!, collectionName: [String!]): User!
 
   createComment(postId: ID!, userId: ID!, content: String!): Comment!
   updateComment(commentId: ID!, content: String!): Comment!
