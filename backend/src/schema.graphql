@@ -1,9 +1,11 @@
 type Query {
-  chatBox(name1: String!, name2: String!): ChatBox!
+  chatBox(name1: ID!, name2: ID!): ChatBox!
+  user(name: String!): [User!]
   # Title of the post contains the word.
   postByTitle(title: String!): [Post!]!
   # The post contains the tag.
   postByTag(tag: String!): [Post!]!
+  
 }
 
 scalar DateTime # ref: https://v1.prisma.io/forum/t/couldnt-find-type-datetime-in-any-of-the-schemas/4310/3
@@ -57,7 +59,12 @@ type Message {
 
 type Mutation {
   createUser(name: String!, email: String!, password: String!): User!
-  updateUser(userId:ID!, name: String!, email: String!, password: String!): User!
+  updateUser(
+    userId: ID!
+    name: String!
+    email: String!
+    password: String!
+  ): User!
   deleteUser(userId: ID!): User!
 
   createPost(
@@ -69,16 +76,14 @@ type Mutation {
     condition: String!
     deadline: DateTime!
   ): Post!
-  # update 的內容需要包含
+  # update 的內容需要包含 ID、內文、文章徵人狀態、徵人截止期限
   updatePost(
-    postId: ID!,
-    content: String!,
-    condition: String!,
-    deadline: DateTime!,
-  ): Post!
-  deletePost(
     postId: ID!
+    content: String!
+    condition: String!
+    deadline: DateTime!
   ): Post!
+  deletePost(postId: ID!): Post!
   updatePreference(userId: ID!, preference: [String!]): User!
   updateCollection(userId: ID!, collectionName: [String!]): User!
 
@@ -86,7 +91,7 @@ type Mutation {
   updateComment(commentId: ID!, content: String!): Comment!
   deleteComment(commentId: ID!): Comment!
 
-  createMessage(name:ID!, to:ID!, body: String!): Message!
+  createMessage(name: ID!, to: ID!, body: String!): Message!
   # updateMessage: Comment!
   # deleteMessage: Comment!
 }
