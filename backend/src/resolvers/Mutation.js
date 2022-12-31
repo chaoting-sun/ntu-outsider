@@ -1,3 +1,5 @@
+import { UserModel } from "../models/user";
+
 const Mutation = {
   createUser: async (
     parent,
@@ -17,7 +19,7 @@ const Mutation = {
   },
   createPost: async (
     parent,
-    { userId, classNumber, className, title, content, condition, deadline },
+    { userId, classNumber, className, title, content, tag, condition, deadline },
     { PostModel, ClassModel },
     info
   ) => {
@@ -32,6 +34,7 @@ const Mutation = {
         userId: userId,
         classId: classExisting._id,
         title: title,
+        tag: tag,
         content: content,
         condition: condition,
         deadline: deadline,
@@ -78,13 +81,23 @@ const Mutation = {
     let updatedUser = await UserModel.findOneAndUpdate({_id: userId}, {name: name, password: password});
     return updatedUser;
   },
-  updatePost: async(parent, {postId, content, condition, deadline}, {PostModel}, info) => {
-    let updatedPost = await PostModel.findOneAndUpdate({_id: postId}, {content:content, condition:condition, deadline:deadline});
+  updatePost: async(parent, {postId, content, condition, tag, deadline}, {PostModel}, info) => {
+    let updatedPost = await PostModel.findOneAndUpdate({_id: postId}, {content:content, condition:condition, deadline:deadline, tag:tag});
     return updatedPost;
   },
   updateComment: async(parent, {commentId, content}, {CommentModel}, info) => {
     let updatedComment = await CommentModel.findOneAndUpdate({_id: commentId}, {content: content});
     return updatedComment;
+  },
+  updatePreference: async(parent, {userId, preference}, {UserModel}, info) => {
+    let userExisting = await UserModel.findOne({_id: userId});
+    await userExisting.preference.push(preference);
+    return userExisting;
+  },
+  updateCollection: async(parent, {userId, collectionName}, {UserModel}, info) => {
+    let userExisting = await UserModel.findOne({_id: userId});
+    await userExisting.collectionName.push(collectionName);
+    return userExisting;
   }
 };
 

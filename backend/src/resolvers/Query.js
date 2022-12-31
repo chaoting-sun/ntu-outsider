@@ -5,17 +5,14 @@ const Query = {
     if (!box) box = await new ChatBoxModel({ name: boxName }).save();
     return box;
   },
+  user: async(parent, {name}, {UserModel}, info) => {
+    return await UserModel.find({name: {$regex: new RegExp(name, "i")}});
+  },
   postByTitle: async (parent, { title }, { PostModel }, info) => {
-    return await PostModel.filter((post) => {
-      const isTitleMatch = post.title.includes(title);
-      return isTitleMatch;
-    });
+    return await PostModel.find({title: {$regex: new RegExp(title, "i")}});
   },
   postByTag: async (parent, { tag }, { PostModel }, info) => {
-    return await PostModel.filter((post) => {
-        const isTagMatch = post.tag.includes(tag);
-        return isTagMatch;
-      });
+    return await PostModel.find({tag: {$regex: new RegExp(tag, "i")}});
   }
 };
 
