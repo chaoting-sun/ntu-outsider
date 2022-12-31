@@ -56,14 +56,17 @@ const Mutation = {
   createComment: async (
     parent,
     { postId, userId, content },
-    { CommentModel },
+    { CommentModel, PostModel },
     info
   ) => {
-    return await new CommentModel({
+    let newComment = await new CommentModel({
       postId: postId,
       userId: userId,
       content: content,
     }).save();
+    // console.log(newComment);
+    await PostModel.findOneAndUpdate({ _id: postId}, {$push: {comments: newComment._id}}, {new: true});
+    return newComment
   },
   createMessage: async (parent, { name, to, body }, { ChatBoxModel }, info) => {
     const chatBoxName = makeName(name, to);

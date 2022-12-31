@@ -1,5 +1,5 @@
 import React from 'react'
-import '../css/homePage.css'
+import '../css/mainPage.css'
 import { posts } from '../db'
 import { useOusider } from './hooks/useOusider'
 import { useNavigate } from 'react-router-dom'
@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom'
 import MenuBar from '../components/menuBar'
 import HeaderBar from '../components/headerBar'
 import PrimaryLayout from '../components/primaryLayout'
+import MainLayout from '../components/mainLayout'
+
 import styled from 'styled-components'
 
 import '../css/primaryLayout.css'
@@ -17,36 +19,42 @@ const OverallLayout = styled.div`
   flex-direction: row;
 `
 
-
-const HomePage = () => {
+const MainPage = () => {
   const { authenticated }=  useOusider();
   const navigate = useNavigate()
 
 
   console.log('authenticated? :', authenticated);
 
+
   const handleLogIn = () => {
     console.log("Navigate to page /logIn...");
     navigate("/logIn")
   }
 
-
   return (
     authenticated ? (
-      <OverallLayout>
-        <MenuBar />
-        <PrimaryLayout 
-          HeaderBar={HeaderBar}
-          PrimaryLayout={PrimaryLayout}
-        />
-      </OverallLayout>
-    ) : ( 
       <>
-        <div>Please log in to the page</div>
-        <button onClick={handleLogIn}>Click me</button>
+        <div className="mainPageContainer">
+          here is MainPage
+          {/* <div className="upSpace"></div>
+          <div className="downSpace">
+            <div className="leftSpace"></div>
+            <div className="rightSpace">
+
+            </div>
+          </div> */}
+        </div>      
+      </>
+    ) : (
+      <>
+        <div>
+          <div>Please log in to the page</div>
+          <button onClick={handleLogIn}>Click me</button>
+        </div>
       </>
     )
   )
 }
 
-export default HomePage
+export default MainPage

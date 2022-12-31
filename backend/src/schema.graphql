@@ -1,6 +1,9 @@
 type Query {
+  # 傳入的值是使用者的 _id
   chatBox(name1: ID!, name2: ID!): ChatBox!
-  user(name: String!): [User!]
+  user(name: String!): [User!]!
+  post(postId: String!): Post!
+  comment(commentId: ID!): Comment!
   # Title of the post contains the word.
   postByTitle(title: String!): [Post!]!
   # The post contains the tag.
@@ -9,17 +12,17 @@ type Query {
 }
 
 scalar DateTime # ref: https://v1.prisma.io/forum/t/couldnt-find-type-datetime-in-any-of-the-schemas/4310/3
-# 新增 author
 type Post {
   _id: ID!
   userId: ID!
+  author: User!
   title: String!
   classId: ID!
   content: String!
   condition: String!
   deadline: DateTime! # 先暫時用 scalar 做某種轉換，還找不到其他更好的 DateTime 表示法
   tag: [String]
-  comments: [Comment]
+  comments: [Comment!]!
 }
 
 type User {
@@ -96,6 +99,6 @@ type Mutation {
   # deleteMessage: Comment!
 }
 
-# type Subscription {
-
-# }
+type Subscription {
+  comment(commenter: ID!, content: String!): Comment!
+}
