@@ -26,9 +26,10 @@ const SignInPage = () => {
         msg: "log in successfully",
       })
 
+      // if confirmed, log in to the HomePage
       navigate('/', {
         state: {
-          test: 'test' 
+          test: 'test'
         }
       })
 

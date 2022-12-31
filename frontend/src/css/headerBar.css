@@ -1,12 +1,44 @@
 /* calc 的運算符號旁邊要空格 */
 
 .headerBarContainer {
-  background-color: rgb(218, 211, 211);
+  background-color: #efefef;
   position: fixed;
   top: 0;
   right: 0;
   height: 72px;
-  width: calc(100vw - 256px);
-  /* display: flex;
-  align-items: center; */
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 9px -3px rgb(0 0 0 / 20%);
+}
+
+.brandContainer {
+  /* z-index: 1; */
+  height: 68px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* box-shadow: 0 1px 9px -3px rgb(0 0 0 / 20%); */
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoContainer > div {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.logoContainer > img {
+    width: 50px;
+    margin-left: 12px;
+    margin-right: 12px;
+    border-radius:50%;
+}
+
+#brandNameContainer {
+    margin-right: 13px;
 }
