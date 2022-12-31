@@ -3,6 +3,7 @@ type Query {
   chatBox(name1: ID!, name2: ID!): ChatBox!
   user(name: String!): [User!]!
   post(postId: String!): Post!
+  comment(commentId: ID!): Comment!
   # Title of the post contains the word.
   postByTitle(title: String!): [Post!]!
   # The post contains the tag.

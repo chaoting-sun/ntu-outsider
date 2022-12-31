@@ -11,6 +11,9 @@ const Query = {
   post: async(parent, {postId}, {PostModel}, ingo) =>{
     return await PostModel.findOne({_id: postId});
   },
+  comment: async(parent, {commentId}, {CommentModel}, info) => {
+    return await CommentModel.findOne({_id: commentId});
+  },
   postByTitle: async (parent, { title }, { PostModel }, info) => {
     return await PostModel.find({title: {$regex: new RegExp(title, "i")}});
   },
