@@ -16,7 +16,7 @@ const OusiderContext = createContext({
 const OutsiderProvider = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(localStorage.getItem(localStorage.getItem("authenticated")|| false));
+  const [authenticated, setAuthenticated] = useState(false);
 
 
   const displayStatus = (s) => {

@@ -55,8 +55,13 @@ useServer(
           ...ctx,
           req: ctx.extra.request,
           socket: ctx.extra.socket,
+<<<<<<< HEAD
+          params: msg.payload
+        })
+=======
           params: msg.payload,
         });
+>>>>>>> b811496e2a4adea3d289f210383bed12bd5291c7
       const args = {
         schema,
         operationName: msg.payload.operationName,
@@ -65,6 +70,18 @@ useServer(
         contextValue: await contextFactory(),
         rootValue: {
           execute,
+<<<<<<< HEAD
+          subscribe
+        }
+      }
+      const errors = validate(args.schema, args.document)
+      if (errors.length) return errors
+      return args
+    },
+  },
+  wsServer,
+)
+=======
           subscribe,
         },
       };
@@ -75,5 +92,6 @@ useServer(
   },
   wsServer
 );
+>>>>>>> b811496e2a4adea3d289f210383bed12bd5291c7
 
 export default httpServer;

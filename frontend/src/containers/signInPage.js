@@ -26,7 +26,7 @@ const SignInPage = () => {
         msg: "log in successfully",
       })
 
-      navigate('/Home', {
+      navigate('/', {
         state: {
           test: 'test' 
         }

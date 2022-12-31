@@ -1,17 +1,30 @@
-.navBarContainer {
+.leftNavBarContainer {
+  position: relative;
+  width: 23vw;
+  height: 100vh;
+  border: solid #250492 2px;
+}
+
+.topNavBarContainer {
+  /* display: flex; */
+  /* align-self: flex-end; */
+
   justify-content: center;
   position: fixed;
-  /* Set the navbar to fixed position */
-  top: 0;
-  /* Position the navbar at the top of the page */
+
+  
+  top: 0; /* Set the navbar to fixed position */
+  height: 72px;
   width: 100%;
   /* Full width */
-  display: block;
+  /* display: block; */
   flex-direction: row;
-  padding-bottom: 1em;
-  min-height: 12em;
+  padding-bottom: 2em;
+  min-height: 4em;
   align-items: center;
-  background: #1b3b86 /* rgb(7, 74, 141)*/;
+  background: #ffffff /* rgb(7, 74, 141)*/;
+  /* border-color: ; */
+  border: solid #231818 2px;
   z-index: 1;
 }
 

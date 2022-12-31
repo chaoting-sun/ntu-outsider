@@ -1,0 +1,12 @@
+/* calc 的運算符號旁邊要空格 */
+
+.headerBarContainer {
+  background-color: rgb(218, 211, 211);
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 72px;
+  width: calc(100vw - 256px);
+  /* display: flex;
+  align-items: center; */
+}
