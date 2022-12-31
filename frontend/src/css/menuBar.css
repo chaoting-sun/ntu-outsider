@@ -1,0 +1,49 @@
+.sideLayoutSider {
+  background: #f0f1f5;
+  flex: 0 0 256px;
+  max-width: 256px;
+  min-width: 256px;
+  width: 256px;
+  height: 100vh;
+  /* z-index: 10; */
+}
+
+.sideLayoutSiderChildren {
+  background: #f4f1f1; /* just for check */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brandContainer {
+  /* z-index: 1; */
+  height: 68px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 1px 9px -3px rgb(0 0 0 / 20%);
+}
+
+.menuContainer {
+  height: calc(100vh - 120px);
+  overflow-x: hidden;
+  flex: 1 1;
+  padding: 24px 0;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoContainer > div {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.logoContainer > img {
+    width: 36px;
+    margin-right: 8px;
+    border-radius:50%;
+}
