@@ -1,0 +1,24 @@
+.mainPageContainer {
+    position: absolute;
+    top: 72px;
+    left: 256px;
+    background-color: rgb(233, 233, 233);
+    height: 100%;
+    width: 100%;
+    flex: fixed;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.upSpace {
+    flex: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 72px;
+}
+
+.downSpace {
+
+}
