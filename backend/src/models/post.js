@@ -12,6 +12,7 @@ const PostSchema = new Schema(
     condition: { type: String },
     deadline: { type: Date },
     tag: [{ type: String }],
+    comments: [{type: mongoose.Types.ObjectId, ref: "Comment" }]
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
