@@ -53,13 +53,8 @@ useServer(
           ...ctx,
           req: ctx.extra.request,
           socket: ctx.extra.socket,
-<<<<<<< HEAD
           params: msg.payload
         })
-=======
-          params: msg.payload,
-        });
->>>>>>> 29a2710d6c025cba18235ce3bd5e45ae0fab8af2
       const args = {
         schema,
         operationName: msg.payload.operationName,
@@ -68,7 +63,6 @@ useServer(
         contextValue: await contextFactory(),
         rootValue: {
           execute,
-<<<<<<< HEAD
           subscribe
         }
       }
@@ -79,17 +73,5 @@ useServer(
   },
   wsServer,
 )
-=======
-          subscribe,
-        },
-      };
-      const errors = validate(args.schema, args.document);
-      if (errors.length) return errors;
-      return args;
-    },
-  },
-  wsServer
-);
->>>>>>> 29a2710d6c025cba18235ce3bd5e45ae0fab8af2
 
 export default httpServer;
