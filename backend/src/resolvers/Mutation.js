@@ -159,9 +159,23 @@ const Mutation = {
     { UserModel },
     info
   ) => {
-    let userExisting = await UserModel.findOne({ _id: userId });
-    await userExisting.collectionName.push(collectionName);
-    return userExisting;
+    let userExisting = await UserModel.findOne({
+      _id: userId,
+      collectionName: collectionName, 
+    });
+    console.log(userExisting);
+    if (userExisting) {
+      await UserModel.updateOne(
+        { _id: userId },
+        { $pull: { collectionName: collectionName } }
+      );
+    } else {
+      userExisting = await UserModel.findOneAndUpdate(
+        { _id: userId },
+        { $push: { collectionName: collectionName } }, {new: true}
+      );
+    }
+    return await UserModel.findOne({ _id: userId });
   },
 };
 
