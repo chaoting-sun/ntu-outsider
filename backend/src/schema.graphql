@@ -11,21 +11,19 @@ type Query {
 scalar DateTime # ref: https://v1.prisma.io/forum/t/couldnt-find-type-datetime-in-any-of-the-schemas/4310/3
 # 新增 author
 type Post {
-  postId: ID!
+  _id: ID!
   userId: ID!
-  author: User!
   title: String!
   classId: ID!
-  class: Class!
   content: String!
-  condition: String
+  condition: String!
   deadline: DateTime! # 先暫時用 scalar 做某種轉換，還找不到其他更好的 DateTime 表示法
   tag: [String]
   comments: [Comment]
 }
 
 type User {
-  userId: ID!
+  _id: ID!
   name: String!
   password: String!
   email: String!
@@ -34,7 +32,7 @@ type User {
 }
 
 type Comment {
-  commentId: ID!
+  _id: ID!
   postId: ID!
   userId: ID!
   commenter: User!
@@ -42,7 +40,7 @@ type Comment {
 }
 
 type Class {
-  classId: ID!
+  _id: ID!
   classNumber: String!
   className: String!
 }
@@ -75,6 +73,7 @@ type Mutation {
     content: String!
     condition: String!
     deadline: DateTime!
+    tag: [String]
   ): Post!
   # update 的內容需要包含 ID、內文、文章徵人狀態、徵人截止期限
   updatePost(
@@ -82,9 +81,10 @@ type Mutation {
     content: String!
     condition: String!
     deadline: DateTime!
+    tag: [String]
   ): Post!
   deletePost(postId: ID!): Post!
-  updatePreference(userId: ID!, preference: [String!]): User!
+  updatePreference(userId: ID!, preference: String!): User!
   updateCollection(userId: ID!, collectionName: [String!]): User!
 
   createComment(postId: ID!, userId: ID!, content: String!): Comment!
