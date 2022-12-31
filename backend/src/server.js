@@ -10,8 +10,9 @@ import { PostModel } from "./models/post";
 import { UserModel } from "./models/user";
 import Query from "./resolvers/Query";
 import Mutation from "./resolvers/Mutation";
-// import Subscription from "./resolvers/Subscription";
+import Subscription from "./resolvers/Subscription";
 import ChatBox from "./resolvers/ChatBox";
+import Comment from "./resolvers/Comment";
 import Post from "./resolvers/Post";
 const pubsub = createPubSub();
 
@@ -21,9 +22,10 @@ const yoga = new createYoga({
     resolvers: {
       Query,
       Mutation,
-      // Subscription,
+      Subscription,
       ChatBox,
-      Post
+      Post,
+      Comment
     },
   }),
   context: {

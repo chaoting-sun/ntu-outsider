@@ -11,7 +11,7 @@ const PostSchema = new Schema(
     content: { type: String, required: true },
     condition: { type: String },
     deadline: { type: Date },
-    tag: [{ type: String }],
+    tag: [{type: String}],
     comments: [{type: mongoose.Types.ObjectId, ref: "Comment" }]
   },
   {

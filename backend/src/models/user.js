@@ -26,8 +26,9 @@ const UserSchema = Schema({
     lowercase: true,
     validate: [validateEmail, 'Please fill a valid email address'],
   },
-  preference: [{ type: mongoose.Types.ObjectId, ref: "Class" }],
-  // collection 是保留字
+  // preference 指想追蹤的自定義 tag
+  preference:  {type: [String]} ,
+  // collection 是保留字，故改成 collectionName
   collectionName: [{ type: mongoose.Types.ObjectId, ref: "Post" }],
   
 }, {
