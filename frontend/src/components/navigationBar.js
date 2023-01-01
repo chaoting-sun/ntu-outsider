@@ -1,17 +1,21 @@
 import React from 'react'
-import { useState } from "react";
-import '../css/navigationBar.css'
-import Filter from './filter';
-import { MdTune, MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useOusider } from '../containers/hooks/useOusider';
-import MenuBar from '../components/menuBar'
 import HeaderBar from '../components/headerBar'
+import MenuBar from '../components/menuBar'
+import '../css/navigationBar.css'
 
 
+const keyToPage = {
+  "savedPost": "savedPostPage",
+  "followedPost": "followedPostPage",
+  "appliedPost": "appliedPostPage",
+  "myPost": "myPostPage"
+}
 
 const NavBar = () => {
-  const { authenticated } = useOusider();
+  const { authenticated, postInfo, setCurrentPost } = useOusider();
   const navigate = useNavigate();
 
   const handleSearchInfo = ({ option, content }) => {
@@ -19,42 +23,33 @@ const NavBar = () => {
     console.log('content:', content);
   }
 
-  // const items = [
-  //   { label: "珍藏", key: "savedPost" },
-  //   { label: "追蹤", key: "following" },
-  //   { label: "申請", key: "application" },
-  //   { label: "我的貼文", key: "myPost" },
-  // ]
+  const handleOnClickLogInOut = () => {
+    // logIn or logOut
+    navigate("/logIn")
+  }
 
   const handleMenuNavigate = (key) => {
-    if (key === "savedPost") {
-      console.log("navigate to /savedPostPage");
-      navigate("/savedPostPage")
+    if (!authenticated) {
+      navigate("/logIn")
+      return;
+    } 
 
-    } else if (key === "following") {
-      console.log("navigate to /followedPostPage");
-      navigate("/followedPostPage")
-
-    } else if (key === "application") {
-      console.log("navigate to /applyPostPage");
-      navigate("/applyPostPage")
-
-    } else if (key === "myPost") {
-      console.log("navigate to /myPostPage");
-      navigate("/myPostPage")
-    }
+    setCurrentPost(keyToPage[key]);
+    navigate(`/${keyToPage[key]}`);
   }
 
   return (
-  
-      <>
-        <HeaderBar />
-        <MenuBar
-          handleSearchInfo={handleSearchInfo}
-          handleMenuNavigate={handleMenuNavigate}
-        />
-      </>
-     
+    <>
+      <HeaderBar
+        authenticated={authenticated} 
+        handleOnClickLogInOut={handleOnClickLogInOut}
+      />
+      <MenuBar
+        handleSearchInfo={handleSearchInfo}
+        handleMenuNavigate={handleMenuNavigate}
+      />
+      <Outlet />
+    </>
   )
 }
 export default NavBar

@@ -1,25 +1,36 @@
 import { useOusider } from "./hooks/useOusider";
 import { Button, Checkbox, Form, Input } from 'antd';
+import "../css/signInPage.css"
 import LogIn from "../components/logIn"
+import SignUp from "../components/signUp";
 // import Title from "../components/Title"
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 
 const users = [{ username: "guest", password: "guest" }];
 
 const SignInPage = () => {
-  const { username, setUsername, password, setPassword,
+  const { username, setUsername, setPassword,
     setAuthenticated, displayStatus } = useOusider();
+  const [signUp, setSignUp] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (input) => {
-    const account = users.find((user) => user.username === input.username);
-    
-    if (account && account.password === input.password) {
+  useEffect(() => {
+
+  }, [signUp])
+
+  const handleLogIn = ({ inputUserName, inputPassword }) => {
+    // check if there exists the user in the database
+    const account = users.find((user) => user.username === inputUserName);
+    const userId = 'guest12345678'
+
+    if (account && account.password === inputPassword) {
       setAuthenticated(true);
       localStorage.setItem("authenticated", true);
-      
-      setUsername(input.username);
-      setPassword(input.password);
+
+      setUsername(inputUserName);
+      setPassword(inputPassword);
 
       displayStatus({
         type: "success",
@@ -27,11 +38,7 @@ const SignInPage = () => {
       })
 
       // if confirmed, log in to the HomePage
-      navigate('/', {
-        state: {
-          test: 'test'
-        }
-      })
+      navigate('/')
 
     } else {
       displayStatus({
@@ -41,47 +48,37 @@ const SignInPage = () => {
     }
   }
 
-  const handleLogInOnFinish = (values) => {
-    // triggered when the input format is correct (meet the rules)
-    console.log('Input format is correct:', values);
-    
-    // check if the user is in the database
-    handleSubmit(values);
-  };
-
-  const handleLogInOnFinishFailed = (errorInfo) => {
-    // triggered when the input format is incorrect
-    console.log('Input format is :', errorInfo);
-  };
-
   console.log('enter signInPage component');
 
   return (
-    <>
-      <LogIn
-        onFinish={handleLogInOnFinish}
-        onFinishFailed={handleLogInOnFinishFailed}
-      />
+    <div className="mainContainer">
+      <div className="leftMainContainer">
+        <div className="brandName1">NTU</div>
+        <div className="brandName2">OUTSIDER</div>
+      </div>
+      <div className="rightMainContainer">
+        <div className="Form">
+          {
+            signUp ? (
+              <div>
+                
 
-      {/* <div>
-        <p>Welcome Back</p>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <input
-            type="password"
-            name="Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <input type="submit" value="Submit" />
-        </form>
-      </div> */}
-    </>
+              </div>
+            ) : (
+              <>
+                <div className="logInHeader">Log In</div>
+                <LogIn handleLogIn={handleLogIn} />
+                <div className='signUpRemind'>Do not have an account?
+                  <span onClick={() => setSignUp(true)}>Sign up</span>
+                </div>
+              </>
+            )
+          }
+        </div>
+      </div>
+    </div>
   )
+
 }
 
 export default SignInPage;

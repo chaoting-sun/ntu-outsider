@@ -16,21 +16,27 @@ import ViewPostPage from './containers/viewPostPage';
 // SignIn & Home implementation
 // ref: https://blog.shahednasser.com/react-context-tutorial-for-beginners/
 
+// separate router
+// ref: https://stackoverflow.com/questions/34607841/react-router-nav-bar-example
+// ref: https://blog.webdevsimplified.com/2022-07/react-router/
+
 function App() {
   return (
     <OutsiderProvider>
       <Router>
-        <Navbar />
         <Routes>
-          {/* <Route path="/signIn" element={<SignInPage />} /> */}
           <Route path="/logIn" element={<SignInPage />}/>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/savedPostPage" element={<SavedPostPage />} />
-          <Route path="/followedPostPage" element={<FollowedPostPage />} />
-          <Route path="/applyPostPage" element={<ApplyPostPage />} />
-          <Route path="/myPostPage" element={<MyPostPage />} />
-          <Route path="/editPostPage" element={<EditPostPage />} />
-          <Route path="/viewPostPage" element={<ViewPostPage />} /> {/*包含看自己貼文與別人貼文*/ }
+
+          <Route path='/' element={<Navbar />}>
+            <Route index element={<MainPage />} />
+            <Route path="/savedPostPage" element={<SavedPostPage />} />
+            <Route path="/followedPostPage" element={<FollowedPostPage />} />
+            <Route path="/applyPostPage" element={<ApplyPostPage />} />
+            <Route path="/myPostPage" element={<MyPostPage />} />
+            <Route path="/editPostPage" element={<EditPostPage />} />
+            <Route path="/viewPostPage" element={<ViewPostPage />} /> {/*包含看自己貼文與別人貼文*/ }
+          </Route>
+
         </Routes>
       </Router>
     </OutsiderProvider>

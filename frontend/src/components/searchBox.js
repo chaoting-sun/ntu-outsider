@@ -10,9 +10,11 @@ import '../css/searchBox.css'
 
 const selectOptions = [
   { value: 'select', label: '請選擇', },
-  { value: 'className', label: '課程名稱', },
   { value: 'classNumber', label: '流水號', },
+  { value: 'postTitle', label: '貼文標題', },
+  { value: 'className', label: '課程名稱', },
   { value: 'teacherName', label: '老師名稱', },
+  { value: 'tag', label: 'tag', },
 ]
 
 const SearchBox = ({ handleSearchInfo }) => {
