@@ -1,0 +1,74 @@
+# log in
+db <- queryUser(account, password)
+db -> exist ? userDocument : null
+
+# sign up
+db <- createAccount(account, userName, password)
+db -> exist ? userDocument : null
+
+# edit my info
+db <- updateUser(
+    userId,
+    name,
+    account
+    )
+db -> userDocument
+
+db <- updatePostCollection(
+    userId,
+    postId
+)
+db -> postId
+
+db <- updatePassword(userId, password)
+db -> userDocument
+
+# query post
+db <- queryPost(type, queryString)
+- type = serialNo, postTitle, className, teacherName, tag
+db -> [postDocument]!
+
+# query my post
+db <- queryPostCollection(userId, type)
+- type = savedPost, followedPost, uploadedPost
+db -> [postDocument]!
+
+# create a post
+db <- createPost(
+    userId, 
+    title, 
+    classNo, 
+    className,
+    teacherName,
+    content,
+    condition,
+    deadline,
+    tag
+)
+db -> postDocument!
+
+# edit my post
+db <- updatePost(
+    postId, 
+    title, 
+    classNo,
+    className,
+    teacherName,
+    content,
+    condition,
+    deadline,
+    tag
+)
+db -> postDocument!
+
+# delete my post
+db <- deletePost(postId)
+db -> postId
+
+# create a chatBox
+db <- createChatBox(name, to)
+db -> [chatBoxDocument!]!
+
+# send a message
+db <- createMessage(name, to, message) 
+db -> messageDocument
