@@ -11,8 +11,8 @@ import SearchBox from './searchBox';
 
 const items = [
   { label: "珍藏", key: "savedPost" },
-  { label: "追蹤", key: "following" },
-  { label: "申請", key: "application" },
+  { label: "追蹤", key: "followedPost" },
+  { label: "申請", key: "appliedPost" },
   { label: "我的貼文", key: "myPost" },
 ]
 
@@ -21,14 +21,11 @@ const MenuBar = ({ handleSearchInfo, handleMenuNavigate }) => {
   return (
     <aside className='sideLayoutSider'>
       <div className='sideLayoutSiderChildren'>
-        <SearchBox
-          handleSearchInfo={handleSearchInfo}
-        />
+        <SearchBox handleSearchInfo={handleSearchInfo} />
         <div className='menuContainer'>
           <Menu
             onClick={(e) => handleMenuNavigate(e.key)}
             style={{
-              // backgroundColor: 
               color: "#4a3935",
               fontSize: '1.15em',
               width: 256,

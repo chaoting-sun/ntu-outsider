@@ -1,29 +1,22 @@
 import React from 'react'
 import { useState, useEffect } from "react";
-import '../css/navigationBar.css'
-import Filter from './filter';
-import { MdTune, MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useOusider } from '../containers/hooks/useOusider';
-import MenuBar from '../components/menuBar'
 import HeaderBar from '../components/headerBar'
+import MenuBar from '../components/menuBar'
+import '../css/navigationBar.css'
 
+
+const keyToPage = {
+  "savedPost": "savedPostPage",
+  "followedPost": "followedPostPage",
+  "appliedPost": "appliedPostPage",
+  "myPost": "myPostPage"
+}
 
 const NavBar = () => {
-  console.log("render NavBar...");
-  const { authenticated, postInfo } = useOusider();
-  const [currentPage, setCurrentPage] = useState("MainPage");
-  // const [] = 
+  const { authenticated, postInfo, setCurrentPost } = useOusider();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log("useEffect: queryPostInfo");
-    queryPostInfo(currentPage);
-  }, [currentPage])
-
-  const queryPostInfo = (currentPage) => {
-    
-  }
 
   const handleSearchInfo = ({ option, content }) => {
     console.log('option:', option);
@@ -41,14 +34,8 @@ const NavBar = () => {
       return;
     } 
 
-    const keyToPage = {
-      "savedPost": "savedPostPage",
-      "following": "followedPostPage",
-      "application": "applyPostPage",
-      "myPost": "myPostPage"
-    }    
-    setCurrentPage(keyToPage[key]);
-    setCurrentPage(`/${keyToPage[key]}`);
+    setCurrentPost(keyToPage[key]);
+    navigate(`/${keyToPage[key]}`);
   }
 
   return (
