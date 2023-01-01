@@ -46,7 +46,7 @@ const NavBar = () => {
   }
 
   return (
-    authenticated ? (
+  
       <>
         <HeaderBar />
         <MenuBar
@@ -54,7 +54,7 @@ const NavBar = () => {
           handleMenuNavigate={handleMenuNavigate}
         />
       </>
-    ) : null
+     
   )
 }
 export default NavBar
