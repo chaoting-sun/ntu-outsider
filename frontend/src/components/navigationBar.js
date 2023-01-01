@@ -3,14 +3,15 @@ import { useState } from "react";
 import '../css/navigationBar.css'
 import Filter from './filter';
 import { MdTune, MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useOusider } from '../containers/hooks/useOusider';
 import MenuBar from '../components/menuBar'
 import HeaderBar from '../components/headerBar'
 
 
-
 const NavBar = () => {
+  console.log("render NavBar...");
+
   const { authenticated } = useOusider();
   const navigate = useNavigate();
 
@@ -26,7 +27,17 @@ const NavBar = () => {
   //   { label: "我的貼文", key: "myPost" },
   // ]
 
+  const handleOnClickLogInOut = () => {
+    // logIn or logOut
+    navigate("/logIn")
+  }
+
   const handleMenuNavigate = (key) => {
+    if (!authenticated) {
+      navigate("/logIn")
+      return;
+    }
+
     if (key === "savedPost") {
       console.log("navigate to /savedPostPage");
       navigate("/savedPostPage")
@@ -46,15 +57,17 @@ const NavBar = () => {
   }
 
   return (
-    authenticated ? (
-      <>
-        <HeaderBar />
-        <MenuBar
-          handleSearchInfo={handleSearchInfo}
-          handleMenuNavigate={handleMenuNavigate}
-        />
-      </>
-    ) : null
+    <>
+      <HeaderBar
+        authenticated={authenticated} 
+        handleOnClickLogInOut={handleOnClickLogInOut}
+      />
+      <MenuBar
+        handleSearchInfo={handleSearchInfo}
+        handleMenuNavigate={handleMenuNavigate}
+      />
+      <Outlet />
+    </>
   )
 }
 export default NavBar

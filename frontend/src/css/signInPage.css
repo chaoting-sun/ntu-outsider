@@ -1,0 +1,23 @@
+.mainContainer {
+  display: flex;
+  /* display: inline-block; */
+}
+
+.leftMainContainer {
+  background-color: rgb(240, 240, 240);
+  height: 100vh;
+  width: 50vw;
+}
+
+.rightMainContainer {
+  /* display: inline-block; */
+  background-color: rgb(240, 240, 240);
+  height: 100vh;
+  width: 50vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logInForm {
+}

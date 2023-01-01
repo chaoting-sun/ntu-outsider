@@ -1,8 +1,9 @@
 import { useOusider } from "./hooks/useOusider";
 import { Button, Checkbox, Form, Input } from 'antd';
+import "../css/signInPage.css"
 import LogIn from "../components/logIn"
 // import Title from "../components/Title"
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const users = [{ username: "guest", password: "guest" }];
 
@@ -13,11 +14,11 @@ const SignInPage = () => {
 
   const handleSubmit = (input) => {
     const account = users.find((user) => user.username === input.username);
-    
+
     if (account && account.password === input.password) {
       setAuthenticated(true);
       localStorage.setItem("authenticated", true);
-      
+
       setUsername(input.username);
       setPassword(input.password);
 
@@ -44,7 +45,7 @@ const SignInPage = () => {
   const handleLogInOnFinish = (values) => {
     // triggered when the input format is correct (meet the rules)
     console.log('Input format is correct:', values);
-    
+
     // check if the user is in the database
     handleSubmit(values);
   };
@@ -57,30 +58,26 @@ const SignInPage = () => {
   console.log('enter signInPage component');
 
   return (
-    <>
-      <LogIn
+    <div className="mainContainer">
+      {console.log("render SignInPage...")}
+      <div className="leftMainContainer">
+      </div>
+      <div className="rightMainContainer">
+        <div className="logInForm">
+
+
+        </div>
+        <LogIn
+          onFinish={handleLogInOnFinish}
+          onFinishFailed={handleLogInOnFinishFailed}
+        />
+      </div>
+
+      {/* <LogIn
         onFinish={handleLogInOnFinish}
         onFinishFailed={handleLogInOnFinishFailed}
-      />
-
-      {/* <div>
-        <p>Welcome Back</p>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <input
-            type="password"
-            name="Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <input type="submit" value="Submit" />
-        </form>
-      </div> */}
-    </>
+      /> */}
+    </div>
   )
 }
 
