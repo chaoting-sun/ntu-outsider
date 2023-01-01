@@ -71,7 +71,7 @@ const NameButton = styled(Buttonm)`
 const tags = ["網服", "Ric"]
 
 
-const MainPage = () => {
+const ViewPostPage = () => {
   const navigate = useNavigate();
   const {
     register,
@@ -161,7 +161,7 @@ const MainPage = () => {
       </div>
   )
 }
-export default MainPage
+export default ViewPostPage
 
 
 

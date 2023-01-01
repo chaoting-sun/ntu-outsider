@@ -20,6 +20,15 @@ const SignUp = ({ onFinish, onFinishFailed }) => {
           }}
         />
         <Input
+          placeholder='Email'
+          type='email'
+          style={{
+            width: '360px',
+            height: '49px',
+            fontSize: '1.3em'
+          }}
+        />
+        <Input
           placeholder='password'
           type='password'
           style={{
@@ -33,12 +42,12 @@ const SignUp = ({ onFinish, onFinishFailed }) => {
           htmlType="submit"
           style={{
             backgroundColor: '#787b7d',
-            fontSize: '2em',
+            fontSize: '1.6em',
             width: '360px',
-            height: '60px'
+            height: '50px'
           }}
         >
-          Log In
+          Sign Up
         </Button>
       </Space>
     </div>

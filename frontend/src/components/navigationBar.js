@@ -10,7 +10,7 @@ import '../css/navigationBar.css'
 const keyToPage = {
   "savedPost": "savedPostPage",
   "followedPost": "followedPostPage",
-  "appliedPost": "appliedPostPage",
+  "appliedPost": "appliedPostPage", // 沒了
   "myPost": "myPostPage"
 }
 
