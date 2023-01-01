@@ -6,18 +6,20 @@ const OusiderContext = createContext({
   username: "",
   passWord: "",
   authenticated: false,
+  postInfo: [],
   setUsername: () => {},
   setPassword: () => {},
   setAuthenticated: () => {},
-  displayStatus: () => {}
+  setPostInfo: () => {},
+  displayStatus: () => {},
 })
 
 
 const OutsiderProvider = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
-
+  const [authenticated, setAuthenticated] = useState(false);  
+  const [postInfo, setPostInfo] = useState([]);
 
   const displayStatus = (s) => {
     if (s.msg) {
@@ -45,6 +47,8 @@ const OutsiderProvider = (props) => {
         setPassword,
         authenticated,
         setAuthenticated,
+        postInfo,
+        setPostInfo,
         displayStatus
       }}
       {...props}

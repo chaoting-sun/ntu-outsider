@@ -61,22 +61,18 @@ const SignInPage = () => {
     <div className="mainContainer">
       {console.log("render SignInPage...")}
       <div className="leftMainContainer">
+        <div className="brandName1">NTU</div>
+        <div className="brandName2">OUTSIDER</div>
       </div>
       <div className="rightMainContainer">
         <div className="logInForm">
-
-
+          <div className="logInHeader">Log In</div>
+          <LogIn
+            onFinish={handleLogInOnFinish}
+            onFinishFailed={handleLogInOnFinishFailed}
+          />
         </div>
-        <LogIn
-          onFinish={handleLogInOnFinish}
-          onFinishFailed={handleLogInOnFinishFailed}
-        />
       </div>
-
-      {/* <LogIn
-        onFinish={handleLogInOnFinish}
-        onFinishFailed={handleLogInOnFinishFailed}
-      /> */}
     </div>
   )
 }

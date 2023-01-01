@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import '../css/navigationBar.css'
 import Filter from './filter';
 import { MdTune, MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
@@ -11,21 +11,24 @@ import HeaderBar from '../components/headerBar'
 
 const NavBar = () => {
   console.log("render NavBar...");
-
-  const { authenticated } = useOusider();
+  const { authenticated, postInfo } = useOusider();
+  const [currentPage, setCurrentPage] = useState("MainPage");
+  // const [] = 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("useEffect: queryPostInfo");
+    queryPostInfo(currentPage);
+  }, [currentPage])
+
+  const queryPostInfo = (currentPage) => {
+    
+  }
 
   const handleSearchInfo = ({ option, content }) => {
     console.log('option:', option);
     console.log('content:', content);
   }
-
-  // const items = [
-  //   { label: "珍藏", key: "savedPost" },
-  //   { label: "追蹤", key: "following" },
-  //   { label: "申請", key: "application" },
-  //   { label: "我的貼文", key: "myPost" },
-  // ]
 
   const handleOnClickLogInOut = () => {
     // logIn or logOut
@@ -36,24 +39,16 @@ const NavBar = () => {
     if (!authenticated) {
       navigate("/logIn")
       return;
-    }
+    } 
 
-    if (key === "savedPost") {
-      console.log("navigate to /savedPostPage");
-      navigate("/savedPostPage")
-
-    } else if (key === "following") {
-      console.log("navigate to /followedPostPage");
-      navigate("/followedPostPage")
-
-    } else if (key === "application") {
-      console.log("navigate to /applyPostPage");
-      navigate("/applyPostPage")
-
-    } else if (key === "myPost") {
-      console.log("navigate to /myPostPage");
-      navigate("/myPostPage")
-    }
+    const keyToPage = {
+      "savedPost": "savedPostPage",
+      "following": "followedPostPage",
+      "application": "applyPostPage",
+      "myPost": "myPostPage"
+    }    
+    setCurrentPage(keyToPage[key]);
+    setCurrentPage(`/${keyToPage[key]}`);
   }
 
   return (

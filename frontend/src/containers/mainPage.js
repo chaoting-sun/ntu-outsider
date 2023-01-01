@@ -37,13 +37,6 @@ const MainPage = () => {
       <>
         <div className="mainPageContainer">
           here is MainPage
-          {/* <div className="upSpace"></div>
-          <div className="downSpace">
-            <div className="leftSpace"></div>
-            <div className="rightSpace">
-
-            </div>
-          </div> */}
         </div>      
       </>
     ) : (

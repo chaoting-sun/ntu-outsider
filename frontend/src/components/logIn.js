@@ -29,12 +29,13 @@ const LogIn = ({ onFinish, onFinishFailed }) => {
         <Form.Item
           label="Username"
           name="username"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your username!',
-            },
-          ]}
+          colon={false}
+          style={{
+            // width: '350px',
+            fontSize: '3em',
+            fontWeight: 500
+          }}
+          // rules={[{ required: true, message: 'Please input your username!',},]}
         >
           <Input />
         </Form.Item>
@@ -42,7 +43,8 @@ const LogIn = ({ onFinish, onFinishFailed }) => {
         <Form.Item
           label="Password"
           name="password"
-          rules={[{ required: true, message: 'Please input your password!',}, ]}
+          colon={false}
+          // rules={[{ required: true, message: 'Please input your password!',}, ]}
         >
           <Input.Password />
         </Form.Item>
@@ -53,15 +55,13 @@ const LogIn = ({ onFinish, onFinishFailed }) => {
           valuePropName="checked"
           // wrapperCol={{ offset: 8, span: 16, }}
         >
-          <Checkbox>Remember me</Checkbox>
         </Form.Item>
 
-        {/* the Submit button */}
         <Form.Item
           // wrapperCol={{ offset: 8, span: 16, }}
         >
           <Button type="primary" htmlType="submit">
-            Submit
+            Log In
           </Button>
         </Form.Item>
       </Form>
