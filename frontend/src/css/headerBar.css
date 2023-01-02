@@ -82,7 +82,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin-right: 8px; */
+  margin-right: 25px;
 }
 
 .logIn .ant-menu-submenu-title {
@@ -106,7 +106,7 @@
     align-items: center;
 }
 
-.toolsMenu:hover::after {
+.toolsMenu:hover {
   border: none !important;
   text-decoration: none;
   background-color: rgb(93, 98, 96);
