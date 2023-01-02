@@ -1,19 +1,25 @@
+import bcrypt from 'bcrypt';
+
 const Mutation = {
   // 資料存在之後，應該有更好的寫法 send error
-  createUser: async (
+
+  createAccount: async (
     parent,
-    { name, email, password },
+    { account, name, password },
     { UserModel },
     info
   ) => {
-    let userExisitng = await UserModel.findOne({ email: email });
-    await UserModel.findOne({ email: email }).then(async (user) => {
+    let userExisitng = await UserModel.findOne({ account: account });
+    await UserModel.findOne({ account: account }).then(async (user) => {
       if (user) {
-        console.log("Email has been used.");
+        console.log(
+          "This account exists, please choose another account or log in your account."
+        );
+        return;
       } else {
         userExisitng = await new UserModel({
+          account: account,
           name: name,
-          email: email,
           password: password,
         }).save();
       }
@@ -24,27 +30,23 @@ const Mutation = {
     parent,
     {
       userId,
-      classNumber,
+      classNo,
       className,
+      teacher,
       title,
       content,
       tag,
       condition,
       deadline,
     },
-    { PostModel, ClassModel },
+    { PostModel },
     info
   ) => {
-    let classExisting = await ClassModel.findOne({ classNumber: classNumber });
-    if (!classExisting) {
-      classExisting = await new ClassModel({
-        classNumber: classNumber,
-        className: className,
-      }).save();
-    }
     let newPost = await new PostModel({
       userId: userId,
-      classId: classExisting._id,
+      classNo: classNo,
+      className: className,
+      teacher: teacher,
       title: title,
       tag: tag,
       content: content,
@@ -52,32 +54,6 @@ const Mutation = {
       deadline: deadline,
     }).save();
     return newPost;
-  },
-  createComment: async (
-    parent,
-    { postId, userId, content },
-    { CommentModel, PostModel },
-    info
-  ) => {
-    let newComment = await new CommentModel({
-      postId: postId,
-      userId: userId,
-      content: content,
-    }).save();
-    // console.log(newComment);
-    await PostModel.findOneAndUpdate({ _id: postId}, {$push: {comments: newComment._id}}, {new: true});
-    return newComment
-  },
-  createMessage: async (parent, { name, to, body }, { ChatBoxModel }, info) => {
-    const chatBoxName = makeName(name, to);
-    const chatBox = await ChatBoxModel.findOne({ name: chatBoxName });
-    if (!chatBox) {
-      await new ChatBoxModel({ name: chatBoxName }).save();
-    }
-    const newMsg = { sender: name, body };
-    chatBox.messages.push(newMsg);
-    await chatBox.save();
-    return newMsg;
   },
   deleteUser: async (parent, { userId }, { UserModel }, info) => {
     let deletedUser = await UserModel.findOne({ _id: userId });
@@ -89,96 +65,131 @@ const Mutation = {
     await PostModel.deleteOne({ _id: postId });
     return deletedPost;
   },
-  deleteComment: async (parent, { commentId }, { CommentModel }, info) => {
-    let deletedComment = await CommentModel.findOne({ _id: commentId });
-    await CommentModel.deleteOne({ _id: commentId });
-    return deletedComment;
-  },
   updateUser: async (
     parent,
-    { userId, name, password },
+    { userId, name, account },
     { UserModel },
     info
   ) => {
     let updatedUser = await UserModel.findOneAndUpdate(
       { _id: userId },
-      { name: name, password: password }
+      { name: name, account: account },
+      { new: true }
     );
     return updatedUser;
   },
+  updatePassword: async (
+    parent,
+    { userId, oldPassword, newPassword },
+    { UserModel },
+    info
+  ) => {
+    let password = await UserModel.findOne({ _id: userId }).password;
+    if (password === oldPassword) {
+      return await UserModel.findOneAndUpdate(
+        { _id: userId },
+        { password: newPassword },
+        { new: true }
+      );
+    } else {
+      // 輸入密碼錯誤的處理？
+      console.log("Password wrong!");
+      return null;
+    }
+  },
   updatePost: async (
     parent,
-    { postId, content, condition, tag, deadline },
+    {
+      postId,
+      title,
+      content,
+      classNo,
+      className,
+      teacher,
+      condition,
+      deadline,
+      tag,
+    },
     { PostModel },
     info
   ) => {
     let updatedPost = await PostModel.findOneAndUpdate(
       { _id: postId },
-      { content: content, condition: condition, deadline: deadline, tag: tag },
+      {
+        title: title,
+        content: content,
+        classNo: classNo,
+        className: className,
+        teacher: teacher,
+        condition: condition,
+        deadline: deadline,
+        tag: tag,
+      },
       { new: true }
     );
     return updatedPost;
   },
-  updateComment: async (
+  updatePostCollection: async (
     parent,
-    { commentId, content },
-    { CommentModel },
-    info
-  ) => {
-    let updatedComment = await CommentModel.findOneAndUpdate(
-      { _id: commentId },
-      { content: content },
-      { new: true }
-    );
-    return updatedComment;
-  },
-  updatePreference: async (
-    parent,
-    { userId, preference },
+    { userId, postId },
     { UserModel },
     info
   ) => {
     let userExisting = await UserModel.findOne({
       _id: userId,
-      preference: preference,
+      postCollection: postId,
     });
     console.log(userExisting);
     if (userExisting) {
       await UserModel.updateOne(
         { _id: userId },
-        { $pull: { preference: preference } }
+        { $pull: { postCollection: postId } }
       );
     } else {
       userExisting = await UserModel.findOneAndUpdate(
         { _id: userId },
-        { $push: { preference: preference } }, {new: true}
+        { $push: { postCollection: postId } },
+        { new: true }
       );
     }
     return await UserModel.findOne({ _id: userId });
   },
-  updateCollection: async (
+  createChatBox: async (
     parent,
-    { userId, collectionName },
-    { UserModel },
+    { name, to },
+    { ChatBoxModel, UserModel },
     info
   ) => {
-    let userExisting = await UserModel.findOne({
-      _id: userId,
-      collectionName: collectionName, 
-    });
-    console.log(userExisting);
-    if (userExisting) {
-      await UserModel.updateOne(
-        { _id: userId },
-        { $pull: { collectionName: collectionName } }
+    let chatBoxName = [name, to].sort().join("_");
+    let chatBox = await ChatBoxModel.findOne({ name: chatBoxName });
+    if (!chatBox) {
+      chatBox = await new ChatBoxModel({ name: chatBoxName }).save();
+      await UserModel.findOneAndUpdate(
+        { _id: name },
+        { $push: { chatboxes: chatBox._id } }
       );
-    } else {
-      userExisting = await UserModel.findOneAndUpdate(
-        { _id: userId },
-        { $push: { collectionName: collectionName } }, {new: true}
+      await UserModel.findOneAndUpdate(
+        { _id: to },
+        { $push: { chatboxes: chatBox._id } }
       );
     }
-    return await UserModel.findOne({ _id: userId });
+    return chatBox;
+  },
+  createMessage: async (
+    parent,
+    { name, to, message },
+    { ChatBoxModel },
+    info
+  ) => {
+    const chatBoxName = [name, to].sort().join("_");
+    const chatBox = await ChatBoxModel.findOne({ name: chatBoxName });
+    if (!chatBox) {
+      await new ChatBoxModel({ name: chatBoxName }).save();
+    }
+    const newMsg = { sender: name, body: message };
+    chatBox.messages.push(newMsg);
+    await chatBox.save();
+    return newMsg;
   },
 };
 

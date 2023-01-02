@@ -7,12 +7,14 @@ const PostSchema = new Schema(
   {
     userId: { type: mongoose.Types.ObjectId, ref: "User", required: true },
     title: { type: String, required: true },
-    classId: { type: mongoose.Types.ObjectId, ref: "Class", required: true },
+    classNo: { type: String, required: true },
+    className: { type: String, required: true},
+    teacher: {type: String, required: true},
     content: { type: String, required: true },
-    condition: { type: String },
+    // condition 是招收組員人數
+    condition: { type: String ,required: true},
     deadline: { type: Date },
     tag: [{type: String}],
-    comments: [{type: mongoose.Types.ObjectId, ref: "Comment" }]
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
