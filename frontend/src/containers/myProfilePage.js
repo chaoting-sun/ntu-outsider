@@ -12,14 +12,14 @@ const PostContainer = styled.div`
 `
 
 /* graphql query */
-const queryPostCollection = async (userId, type='savedPost') => {
+const queryPostCollection = async (userId, type='myPost') => {
   // db <- queryPostCollection(userId, 'followedPost')
   // db -> postExamples
-  return postExamples.slice(1,2);
+  return postExamples.slice(0,1);
 }
 
-const SavedPostPage = () => {
-  const { userId } = useOusider();
+const MyProfilePage = () => {
+  const {} = useOusider();
   const [existingPost, setExistingPost] = useState([]);
   const [postDom, setPostDom] = useState([]);
   
@@ -50,7 +50,7 @@ const SavedPostPage = () => {
   }, [existingPost])
 
   const handleQueryExistingPost = async () => {
-    const fetchedPost = await queryPostCollection(userId, 'savedPost');
+    const fetchedPost = await queryPostCollection();
     setExistingPost(fetchedPost);
   }
 
@@ -63,4 +63,4 @@ const SavedPostPage = () => {
   )
 }
 
-export default SavedPostPage;
+export default MyProfilePage;

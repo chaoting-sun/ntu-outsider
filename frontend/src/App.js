@@ -12,6 +12,7 @@ import MyPostPage  from './containers/myPostPage';
 import Navbar from './components/navigationBar';
 import EditPostPage from './containers/editPostPage';
 import ViewPostPage from './containers/viewPostPage';
+import SearchPostPage from './containers/searchPostPage';
 
 // SignIn & Home implementation
 // ref: https://blog.shahednasser.com/react-context-tutorial-for-beginners/
@@ -35,6 +36,7 @@ function App() {
             <Route path="/myPostPage" element={<MyPostPage />} />
             <Route path="/editPostPage" element={<EditPostPage />} />
             <Route path="/viewPostPage" element={<ViewPostPage />} /> {/*包含看自己貼文與別人貼文*/ }
+            <Route path="/searchPostPage" element={<SearchPostPage />} />
           </Route>
 
         </Routes>

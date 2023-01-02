@@ -7,45 +7,45 @@ import MenuBar from '../components/menuBar'
 import '../css/navigationBar.css'
 
 
-const keyToPage = {
-  "savedPost": "savedPostPage",
-  "followedPost": "followedPostPage",
-  "appliedPost": "appliedPostPage", // 沒了
-  "myPost": "myPostPage"
-}
-
 const NavBar = () => {
-  const { authenticated, postInfo, setCurrentPost } = useOusider();
+  const { authenticated, postInfo, 
+    displayStatus } = useOusider();
   const navigate = useNavigate();
-
-  const handleSearchInfo = ({ option, content }) => {
-    console.log('option:', option);
-    console.log('content:', content);
-  }
 
   const handleOnClickLogInOut = () => {
     // logIn or logOut
     navigate("/logIn")
   }
 
-  const handleMenuNavigate = (key) => {
+  const handleConditionedSearch = ({ type, queryString }) => {
+    navigate("/searchPostPage", {
+      state: {
+        type: type,
+        queryString: queryString
+      }
+    })    
+  }
+
+  const handleMenuNavigate = (page) => {
     if (!authenticated) {
+      displayStatus({
+        type: 'error',
+        msg: 'Please log in!'
+      })
       navigate("/logIn")
       return;
-    } 
-
-    setCurrentPost(keyToPage[key]);
-    navigate(`/${keyToPage[key]}`);
+    }
+    navigate(`/${page}`);
   }
 
   return (
     <>
       <HeaderBar
-        authenticated={authenticated} 
+        authenticated={authenticated}
         handleOnClickLogInOut={handleOnClickLogInOut}
       />
       <MenuBar
-        handleSearchInfo={handleSearchInfo}
+        handleConditionedSearch={handleConditionedSearch}
         handleMenuNavigate={handleMenuNavigate}
       />
       <Outlet />

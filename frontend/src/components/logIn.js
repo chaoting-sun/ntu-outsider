@@ -9,15 +9,15 @@ import { useState } from 'react';
 // ref: https://ant.design/components/space
 
 const LogIn = ({ handleLogIn }) => {
-  const [inputUserName, setInputUserName] = useState("");
-  const [inputPassword, setInputPassword] = useState("");
+  const [account, setAccount] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <div className='LogInFormWrapper'>
       <Space direction='vertical' size='large'>
         <Input
-          placeholder='username'
-          onChange={(e) => setInputUserName(e.target.value)}
+          placeholder='account'
+          onChange={(e) => setAccount(e.target.value)}
           style={{
             width: '360px',
             height: '49px',
@@ -27,26 +27,27 @@ const LogIn = ({ handleLogIn }) => {
         <Input
           placeholder='password'
           type='password'
-          onChange={(e) => setInputPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           style={{
             fontSize: '1.3em',
             width: '360px',
             height: '49px',
           }}
         />
+
         <Button
           type="primary"
-          htmlType="submit"
+          // htmlType="submit"
           style={{
             backgroundColor: '#787b7d',
             fontSize: '2em',
             width: '360px',
             height: '60px'
           }}
-          onClick={() => {
-            handleLogIn({
-              inputUserName: inputUserName,
-              inputPassword: inputPassword
+          onClick={async () => {
+            await handleLogIn({
+              inAccount: account,
+              inPassword: password
             })
           }}
         >
@@ -55,6 +56,7 @@ const LogIn = ({ handleLogIn }) => {
       </Space>
     </div>
   )
+
 }
 
 export default LogIn;

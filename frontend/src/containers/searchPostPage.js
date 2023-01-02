@@ -4,6 +4,7 @@ import { postExamples } from './db'
 import styled from 'styled-components'
 import PostLayout from '../components/postLayout'
 import '../css/mainPage.css'
+import { useLocation } from "react-router-dom";
 
 
 const PostContainer = styled.div`
@@ -12,21 +13,39 @@ const PostContainer = styled.div`
 `
 
 /* graphql query */
-const queryPostCollection = async (userId, type='savedPost') => {
-  // db <- queryPostCollection(userId, 'followedPost')
+const queryPost = async (type, queryString) => {
+  // db <- queryPostCollection(userId, type)
   // db -> postExamples
-  return postExamples.slice(1,2);
+  // type = classNo, postTitle, className, teacherName, tag
+  switch (type) {
+    case 'classNo':
+      return postExamples.slice(0,1);
+    case 'postTitle':
+      return postExamples.slice(1,2);
+    case 'className':
+      return postExamples.slice(2,4);
+    case 'teacherName':
+      return postExamples.slice(3,4);
+    case 'tag': 
+    return postExamples.slice(3,5);
+    default:
+      console.log(`Sorry, we are out of ${type}.`);
+  }
 }
 
-const SavedPostPage = () => {
-  const { userId } = useOusider();
+const SearchPostPage = () => {
+  const {} = useOusider();
   const [existingPost, setExistingPost] = useState([]);
   const [postDom, setPostDom] = useState([]);
-  
+  const location = useLocation();
+
   useEffect(() => {
-    handleQueryExistingPost()
-      .catch(console.error);
-  }, [])
+    if (location) {
+      const { type, queryString } = location.state;
+      handleQueryExistingPost(type, queryString)
+        .catch(console.error);
+    }
+  }, [location])
 
   useEffect(() => {
     if (existingPost.length) {
@@ -49,8 +68,8 @@ const SavedPostPage = () => {
     } 
   }, [existingPost])
 
-  const handleQueryExistingPost = async () => {
-    const fetchedPost = await queryPostCollection(userId, 'savedPost');
+  const handleQueryExistingPost = async (type, queryString) => {
+    const fetchedPost = await queryPost(type, queryString);
     setExistingPost(fetchedPost);
   }
 
@@ -63,4 +82,4 @@ const SavedPostPage = () => {
   )
 }
 
-export default SavedPostPage;
+export default SearchPostPage;

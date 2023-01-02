@@ -1,46 +1,36 @@
 import React, { useState } from 'react';
 import '../css/headerBar.css'
 import logo from './logo.png';
-import { MailOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons'
+import { MailOutlined, LoginOutlined, LogoutOutlined, EditOutlined } from '@ant-design/icons'
 // import 'antd/dist/antd.css';
 import { Dropdown, Button, Menu } from 'antd';
 import { Navigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 
-const logInItem = {
-  label: 'log in',
-  key: 'logIn',
-  icon: <LoginOutlined />
-}
-
-const logOutItem = {
-  label: 'log out',
-  key: 'logOut',
-  icon: <LogoutOutlined />
-}
-
-const items = [
+const unLogInItems = [
   {
     label: 'log in',
     key: 'logIn',
     icon: <LoginOutlined />
-  },
+  }
+]
+
+const logInItems = [
   {
     label: 'log out',
     key: 'logOut',
     icon: <LogoutOutlined />
   },
-
+  {
+    label: 'edit my profile',
+    key: 'editProfile',
+    icon: <EditOutlined />
+  }
 ]
 
-const HeaderBar = ({authenticated, handleOnClickLogInOut}) => {
-  const items = [
-    authenticated ? (
-      logOutItem
-    ) : (
-      logInItem
-    )
-  ]
+const HeaderBar = ({ authenticated, handleOnClickLogInOut }) => {
+  const items = authenticated ? logInItems : unLogInItems;
 
   return (
     <header className='headerBarContainer'>
@@ -61,6 +51,7 @@ const HeaderBar = ({authenticated, handleOnClickLogInOut}) => {
           </div>
           <div className='logIn'>
             <Menu
+              className='toolsMenu'
               onClick={() => handleOnClickLogInOut()}
               // selectedKeys={[current]}
               mode="horizontal"
