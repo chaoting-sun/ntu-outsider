@@ -1,14 +1,12 @@
 type Query {
-  # 傳入的值是使用者的 _id
-  chatBox(name1: ID!, name2: ID!): ChatBox!
   user(name: String!): [User!]!
   post(postId: String!): Post!
-  comment(commentId: ID!): Comment!
-  # Title of the post contains the word.
+  queryChatBox(name1: ID!, name2: ID!): ChatBox!
+  queryUser(acconut: String!, password: String!): User
+  queryPost(type: String!, queryString: String!): Post
   postByTitle(title: String!): [Post!]!
-  # The post contains the tag.
-  postByTag(tag: String!): [Post!]!
-  
+  queryPostCollection(userId: String!, type: String! ): [Post]!
+  queryChatBoxes(userId: ID!): [ChatBox!]!
 }
 
 scalar DateTime # ref: https://v1.prisma.io/forum/t/couldnt-find-type-datetime-in-any-of-the-schemas/4310/3
@@ -17,12 +15,13 @@ type Post {
   userId: ID!
   author: User!
   title: String!
-  classId: ID!
+  classNo: String!
+  className: String!
+  teacher: String!
   content: String!
   condition: String!
   deadline: DateTime! # 先暫時用 scalar 做某種轉換，還找不到其他更好的 DateTime 表示法
   tag: [String]
-  comments: [Comment!]!
 }
 
 type User {
@@ -30,23 +29,9 @@ type User {
   name: String!
   password: String!
   email: String!
-  preference: [String!]
-  collectionName: [String!]
+  postCollection: [ID]
 }
 
-type Comment {
-  _id: ID!
-  postId: ID!
-  userId: ID!
-  commenter: User!
-  content: String!
-}
-
-type Class {
-  _id: ID!
-  classNumber: String!
-  className: String!
-}
 
 type ChatBox {
   name: String!
@@ -59,46 +44,41 @@ type Message {
 }
 
 type Mutation {
-  createUser(name: String!, email: String!, password: String!): User!
-  updateUser(
-    userId: ID!
-    name: String!
-    email: String!
-    password: String!
-  ): User!
+  createAccount(account: String!, name: String!, password: String!): User!
+  updateUser(userId: ID!, name: String!, account: String!): User!
+  updatePassword(userId: ID!, oldpassword: String!, newPassword: String!): User!
   deleteUser(userId: ID!): User!
 
   createPost(
     userId: ID!
-    classNumber: String!
-    className: String!
     title: String!
+    classNo: String!
+    className: String!
+    teacher: String!
     content: String!
     condition: String!
     deadline: DateTime!
     tag: [String]
   ): Post!
-  # update 的內容需要包含 ID、內文、文章徵人狀態、徵人截止期限
+
   updatePost(
     postId: ID!
+    title: String!
     content: String!
+    classNo: String!
+    className: String!
+    teacher: String!
     condition: String!
     deadline: DateTime!
     tag: [String]
   ): Post!
   deletePost(postId: ID!): Post!
-  updatePreference(userId: ID!, preference: String!): User!
-  updateCollection(userId: ID!, collectionName: [String!]): User!
+  updatePostCollection(userId: ID!, postId: ID!): User!
 
-  createComment(postId: ID!, userId: ID!, content: String!): Comment!
-  updateComment(commentId: ID!, content: String!): Comment!
-  deleteComment(commentId: ID!): Comment!
-
-  createMessage(name: ID!, to: ID!, body: String!): Message!
-  # updateMessage: Comment!
-  # deleteMessage: Comment!
+  createChatBox(name: ID!, to: ID!): ChatBox!
+  createMessage(name: ID!, to: ID!, message: String!): Message!
 }
 
-type Subscription {
-  comment(commenter: ID!, content: String!): Comment!
-}
+# type Subscription {
+
+# }
