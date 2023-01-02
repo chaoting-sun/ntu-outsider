@@ -25,7 +25,7 @@ db -> userDocument
 
 # query post
 db <- queryPost(type, queryString)
-- type = serialNo, postTitle, className, teacherName, tag
+- type = classNo, postTitle, className, teacherName, tag
 db -> [postDocument]!
 
 # query my post
