@@ -54,11 +54,7 @@ const NameButton = styled(Button)`
 // e.g. defaultValue={state ? state.title: null}
 
 
-<<<<<<< HEAD
-export default () => {
-=======
 const EditPostPage = () => {
->>>>>>> 8ad4d880bf108168d36ec049e5f75612108f4432
   const navigate = useNavigate();
   const [tags, setTags] = useState([]);
   const {
@@ -127,11 +123,7 @@ const EditPostPage = () => {
     </ StylesProvider>
   )
 }
-<<<<<<< HEAD
-
-=======
 export default EditPostPage
->>>>>>> 8ad4d880bf108168d36ec049e5f75612108f4432
 
 
 
