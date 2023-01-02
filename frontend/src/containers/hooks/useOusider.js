@@ -22,7 +22,7 @@ const OusiderContext = createContext({
 const OutsiderProvider = (props) => {
   const [userId, setUserId] = useState("");
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [postInfo, setPostInfo] = useState([]);
   const [currentPost, setCurrentPost] = useState("allPost");
@@ -63,8 +63,8 @@ const OutsiderProvider = (props) => {
       value={{
         username,
         setUsername,
-        password,
-        setPassword,
+        // password,
+        // setPassword,
         authenticated,
         setAuthenticated,
         postInfo,

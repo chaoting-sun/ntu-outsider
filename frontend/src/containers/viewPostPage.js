@@ -71,7 +71,11 @@ const NameButton = styled(Buttonm)`
 const tags = ["網服", "Ric"]
 
 
+<<<<<<< HEAD
 export default () => {
+=======
+const ViewPostPage = () => {
+>>>>>>> 8ad4d880bf108168d36ec049e5f75612108f4432
   const navigate = useNavigate();
   const {
     register,
@@ -161,7 +165,11 @@ export default () => {
       </div>
   )
 }
+<<<<<<< HEAD
 
+=======
+export default ViewPostPage
+>>>>>>> 8ad4d880bf108168d36ec049e5f75612108f4432
 
 
 

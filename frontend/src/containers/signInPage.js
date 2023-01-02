@@ -1,7 +1,7 @@
 import { useOusider } from "./hooks/useOusider";
 import { Button, Checkbox, Form, Input } from 'antd';
-import "../css/signInPage.css"
-import LogIn from "../components/logIn"
+import "../css/signInPage.css";
+import LogIn from "../components/logIn";
 import SignUp from "../components/signUp";
 // import Title from "../components/Title"
 import { useNavigate, Link } from "react-router-dom";
@@ -9,10 +9,12 @@ import { useEffect, useState } from "react";
 
 
 const users = [{ username: "guest", password: "guest" }];
+const passwordEncryption = { 'guest': 'guest12345678' }
+
 
 const SignInPage = () => {
-  const { username, setUsername, setPassword,
-    setAuthenticated, displayStatus } = useOusider();
+  const { username, setUsername,
+    setAuthenticated, displayStatus, setUserId } = useOusider();
   const [signUp, setSignUp] = useState(false);
   const navigate = useNavigate();
 
@@ -21,24 +23,27 @@ const SignInPage = () => {
   }, [signUp])
 
   const handleLogIn = ({ inputUserName, inputPassword }) => {
-    // check if there exists the user in the database
-    const account = users.find((user) => user.username === inputUserName);
-    const userId = 'guest12345678'
+    const encryptedPassword = passwordEncryption[inputUserName]
+    /**TODO:
+     * db <- query(inputUserName, encryptedPassword)
+     * db -> exist ? basic info : null
+     */
+    const accountName = users.find((user) => user.username === inputUserName);
+    const accountId = 'guest12345678'
 
-    if (account && account.password === inputPassword) {
+    if (accountId) {
       setAuthenticated(true);
       localStorage.setItem("authenticated", true);
 
+      setUserId(accountId)
       setUsername(inputUserName);
-      setPassword(inputPassword);
 
       displayStatus({
         type: "success",
         msg: "log in successfully",
       })
 
-      // if confirmed, log in to the HomePage
-      navigate('/')
+      navigate('/') // HomePage
 
     } else {
       displayStatus({
@@ -48,7 +53,13 @@ const SignInPage = () => {
     }
   }
 
-  console.log('enter signInPage component');
+  const handleSignUp = ({inputUserName, inputUserAccount, inputPassword}) => {
+    /**TODO:
+     * 
+     * mutation(inputUserName, inputUserAccount, inputPassword)
+     */
+  }
+
 
   return (
     <div className="mainContainer">
@@ -60,10 +71,10 @@ const SignInPage = () => {
         <div className="Form">
           {
             signUp ? (
-              <div>
-                
-
-              </div>
+              <>
+                <div className="SignUpHeader">Sign Up</div>
+                <SignUp handleSignUp={handleSignUp} />
+              </>
             ) : (
               <>
                 <div className="logInHeader">Log In</div>

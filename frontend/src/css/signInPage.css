@@ -54,6 +54,11 @@
   font-size: 3.2em;
 }
 
+.SignUpHeader {
+  height: 90px;
+  font-size: 3em;
+}
+
 .signUpRemind {
   font-weight: 500;
   margin-top: 10px;
