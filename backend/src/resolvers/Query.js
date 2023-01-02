@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt";
+
 const Query = {
   queryChatBox: async (parent, { name1, name2 }, { ChatBoxModel }, info) => {
     let boxName = [name1, name2].sort().join("_");
@@ -12,15 +14,25 @@ const Query = {
     let userExisitng = await UserModel.findOne({ account: account });
     const varifyPassword = (password, hashedPassword) => {
       bcrypt.compareSync(password, hashedPassword);
-    } 
+    };
     if (userExisitng) {
       if (varifyPassword(password, userExisitng.password)) return userExisitng;
       else {
         // to deal with wrong password
         console.log("Wrong Password");
+        return null;
       }
-    } else {
-      console.log("User does not exist!")
+    }
+    // if (userExisitng) {
+    //   if (password === userExisitng.password) return userExisitng;
+    //   else {
+    //     // to deal with wrong password
+    //     console.log("Wrong Password");
+    //     return null;
+    //   }
+    // }
+    else {
+      console.log("User does not exist!");
       return null;
     }
   },
@@ -50,7 +62,7 @@ const Query = {
           teacher: { $regex: new RegExp(queryString, "i") },
         });
       default:
-        return []; // 如果 field 的值不是上述任何一個，則返回空數組
+        return []; // 如果 type 的值不是上述任何一個，則返回空數組
     }
   },
   queryPostCollection: async (
@@ -63,23 +75,35 @@ const Query = {
       case "uploadedPost":
         return await PostModel.find({ userId: userId });
       case "followedPost":
-        let followList = await UserModel.find({ _id: userId }).postCollection;
-        let allPosts = await PostModel.find();
-        allPosts.filter(post => {
-          console.log(post);
-          followList.includes(post._id);
-          return post;});
+        let user = await UserModel.findOne({ _id: userId });
+        let followList = await user.postCollection;
+        if (!followList) {
+          return [];
+        }
+        const followedPosts = [];
+        for (const postId of followList) {
+          followedPosts.push(await PostModel.findOne({ _id: postId.toHexString() }));
+        }
+        console.log(followedPosts);
+        return followedPosts;
+      default:
+        return [];
     }
   },
-  queryChatBoxes: async(parent, {userId}, {UserModel, ChatBoxModel}, info) => {
-    let chatBoxList = await UserModel.findOne({_id: userId}).chatboxes;
+  queryChatBoxes: async (
+    parent,
+    { userId },
+    { UserModel, ChatBoxModel },
+    info
+  ) => {
+    let chatBoxList = await UserModel.findOne({ _id: userId }).chatboxes;
     let allChatBoxes = await ChatBoxModel.find();
-    allChatBoxes.filter(chatbox => {
+    allChatBoxes.filter((chatbox) => {
       console.log(chatbox);
       chatBoxList.includes(chatbox._id);
-      return chatbox
-    })
-  }
+      return chatbox;
+    });
+  },
 };
 
 export default Query;

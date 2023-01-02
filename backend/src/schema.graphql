@@ -2,11 +2,11 @@ type Query {
   user(name: String!): [User!]!
   post(postId: String!): Post!
   queryChatBox(name1: ID!, name2: ID!): ChatBox!
-  queryUser(acconut: String!, password: String!): User
-  queryPost(type: String!, queryString: String!): Post
-  postByTitle(title: String!): [Post!]!
-  queryPostCollection(userId: String!, type: String! ): [Post]!
   queryChatBoxes(userId: ID!): [ChatBox!]!
+  queryUser(account: String!, password: String!): User
+  queryPost(type: String!, queryString: String!): [Post]
+  queryPostCollection(userId: String!, type: String! ): [Post]!
+  
 }
 
 scalar DateTime # ref: https://v1.prisma.io/forum/t/couldnt-find-type-datetime-in-any-of-the-schemas/4310/3
@@ -26,9 +26,9 @@ type Post {
 
 type User {
   _id: ID!
+  account: String!
   name: String!
   password: String!
-  email: String!
   postCollection: [ID]
 }
 
@@ -57,7 +57,7 @@ type Mutation {
     teacher: String!
     content: String!
     condition: String!
-    deadline: DateTime!
+    deadline: DateTime
     tag: [String]
   ): Post!
 
@@ -69,7 +69,7 @@ type Mutation {
     className: String!
     teacher: String!
     condition: String!
-    deadline: DateTime!
+    deadline: DateTime
     tag: [String]
   ): Post!
   deletePost(postId: ID!): Post!

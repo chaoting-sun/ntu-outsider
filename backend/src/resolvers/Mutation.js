@@ -1,3 +1,5 @@
+import bcrypt from 'bcrypt';
+
 const Mutation = {
   // 資料存在之後，應該有更好的寫法 send error
 
@@ -13,6 +15,7 @@ const Mutation = {
         console.log(
           "This account exists, please choose another account or log in your account."
         );
+        return;
       } else {
         userExisitng = await new UserModel({
           account: account,
@@ -70,7 +73,8 @@ const Mutation = {
   ) => {
     let updatedUser = await UserModel.findOneAndUpdate(
       { _id: userId },
-      { name: name, account: account }
+      { name: name, account: account },
+      { new: true }
     );
     return updatedUser;
   },
@@ -82,12 +86,14 @@ const Mutation = {
   ) => {
     let password = await UserModel.findOne({ _id: userId }).password;
     if (password === oldPassword) {
-      await UserModel.findOneAndUpdate(
+      return await UserModel.findOneAndUpdate(
         { _id: userId },
-        { password: newPassword }
+        { password: newPassword },
+        { new: true }
       );
     } else {
       // 輸入密碼錯誤的處理？
+      console.log("Password wrong!");
       return null;
     }
   },
@@ -157,7 +163,7 @@ const Mutation = {
     let chatBoxName = [name, to].sort().join("_");
     let chatBox = await ChatBoxModel.findOne({ name: chatBoxName });
     if (!chatBox) {
-      chatBox = await new ChatBoxModel({ name: chatBoxName });
+      chatBox = await new ChatBoxModel({ name: chatBoxName }).save();
       await UserModel.findOneAndUpdate(
         { _id: name },
         { $push: { chatboxes: chatBox._id } }
