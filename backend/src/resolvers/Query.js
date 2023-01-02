@@ -96,13 +96,14 @@ const Query = {
     { UserModel, ChatBoxModel },
     info
   ) => {
-    let chatBoxList = await UserModel.findOne({ _id: userId }).chatboxes;
-    let allChatBoxes = await ChatBoxModel.find();
-    allChatBoxes.filter((chatbox) => {
-      console.log(chatbox);
-      chatBoxList.includes(chatbox._id);
-      return chatbox;
-    });
+    let user = await UserModel.findOne({ _id: userId });
+    let chatBoxes = await user.chatboxes;
+    if(!chatBoxes){return [];}
+    const chatBoxesArray = [];
+    for (const boxId of chatBoxes){
+      chatBoxesArray.push(await ChatBoxModel.findOne({_id: boxId.toHexString()}));
+    }
+    return chatBoxesArray;
   },
 };
 
