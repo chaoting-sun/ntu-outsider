@@ -1,90 +1,55 @@
 import React from 'react'
-import { useState } from "react";
-import '../css/navigationBar.css'
-import Filter from './filter';
-import { MdTune, MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useOusider } from '../containers/hooks/useOusider';
-import MenuBar from './menuBar';
-
-
+import HeaderBar from '../components/headerBar'
+import MenuBar from '../components/menuBar'
+import '../css/navigationBar.css'
 
 
 const NavBar = () => {
-  const { authenticated } = useOusider();
-
-  const [priceFilter, setPriceFilter] = useState([])
-  const [mealFilter, setMealFilter] = useState([])
-  const [typeFilter, setTypeFilter] = useState([])
-
-  const [display, setDisplay] = useState("")
-  const options = ["price", "distance"];
-  const [sortMethod, setSortMethod] = useState(options[0]);
-  // Blank all
-  const [filterExpanded, setFilterExpanded] = useState(false);
-
+  const { authenticated, postInfo, 
+    displayStatus } = useOusider();
   const navigate = useNavigate();
 
-  const navigateToSearch = () => {
-    console.log("navigateToSearch...");
+  const handleOnClickLogInOut = () => {
+    // logIn or logOut
+    navigate("/logIn")
+  }
 
-    setFilterExpanded(false)
-
-    navigate('/search', {
+  const handleConditionedSearch = ({ type, queryString }) => {
+    navigate("/searchPostPage", {
       state: {
-        priceFilter: "",
-        mealFilter: mealFilter,
-        typeFilter: typeFilter,
-        sortBy: sortMethod
-      },
-    });
+        type: type,
+        queryString: queryString
+      }
+    })    
+  }
 
-  };
-
+  const handleMenuNavigate = (page) => {
+    if (!authenticated) {
+      displayStatus({
+        type: 'error',
+        msg: 'Please log in!'
+      })
+      navigate("/logIn")
+      return;
+    }
+    navigate(`/${page}`);
+  }
 
   return (
-    <>      
-      <MenuBar />
-
-
+    <>
+      <HeaderBar
+        authenticated={authenticated}
+        handleOnClickLogInOut={handleOnClickLogInOut}
+      />
+      <MenuBar
+        handleConditionedSearch={handleConditionedSearch}
+        handleMenuNavigate={handleMenuNavigate}
+      />
+      <Outlet />
     </>
-
-    // <div className='navBarContainer'>
-    //   <div className='titleContainer'>
-    //     <a href="/" className='titleName'>NTU OUTSIDER</a>
-    //   </div>
-    //   <div className='functionRow'>
-
-    //     <div className='filterContainer' onClick={e => setFilterExpanded(!filterExpanded)}>
-    //       <MdTune size={28} />
-    //       <div className='filter'>{display}</div>
-    //       {filterExpanded ? <MdOutlineKeyboardArrowUp size={28} /> :
-    //         <MdOutlineKeyboardArrowDown size={28} />}
-    //     </div>
-
-    //     <div className='sortContainer'>
-    //       <select value={sortMethod} onChange={e => setSortMethod(e.target.value)}>
-    //         {options.map((value) => (
-    //           <option value={value} key={value}>
-    //             {value}
-    //           </option>
-    //         ))}
-    //       </select>
-    //     </div>
-
-    //     <div className='searchContainer'>
-    //       <button onClick={navigateToSearch}>Search</button>
-    //     </div>
-    //   </div>
-
-    //   {filterExpanded ?
-    //     <Filter priceFilter={priceFilter} setPriceFilter={setPriceFilter}
-    //       mealFilter={mealFilter} setMealFilter={setMealFilter}
-    //       typeFilter={typeFilter} setTypeFilter={setTypeFilter}
-    //       setDisplay={setDisplay} />
-    //     : <></>
-    //   }
-    // </div>
   )
 }
 export default NavBar

@@ -1,23 +1,25 @@
 import { Space, Button, Checkbox, Form, Input } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import styled from 'styled-components'
+import React, { useState } from 'react'
 import '../css/signIn.css'
-import { useState } from 'react';
 
 
 // antd - Space
 // ref: https://ant.design/components/space
 
-const LogIn = ({ handleLogIn }) => {
-  const [account, setAccount] = useState("");
-  const [password, setPassword] = useState("");
+const SignUp = ({ handleSignUp }) => {
+  const [userName, setUserName] = useState();
+  const [account, setAccount] = useState();
+  const [password, setPassword] = useState();
 
   return (
     <div className='LogInFormWrapper'>
       <Space direction='vertical' size='large'>
         <Input
-          placeholder='account'
-          onChange={(e) => setAccount(e.target.value)}
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          placeholder='username'
           style={{
             width: '360px',
             height: '49px',
@@ -25,38 +27,46 @@ const LogIn = ({ handleLogIn }) => {
           }}
         />
         <Input
+          value={account}
+          onChange={(e) => setAccount(e.target.value)}
+          placeholder='account'
+          style={{
+            width: '360px',
+            height: '49px',
+            fontSize: '1.3em'
+          }}
+        />
+        <Input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           placeholder='password'
           type='password'
-          onChange={(e) => setPassword(e.target.value)}
           style={{
             fontSize: '1.3em',
             width: '360px',
             height: '49px',
           }}
         />
-
         <Button
           type="primary"
-          // htmlType="submit"
+          htmlType="submit"
           style={{
             backgroundColor: '#787b7d',
-            fontSize: '2em',
+            fontSize: '1.6em',
             width: '360px',
-            height: '60px'
+            height: '50px'
           }}
-          onClick={async () => {
-            await handleLogIn({
-              inAccount: account,
-              inPassword: password
-            })
-          }}
+          onClick={async () => await handleSignUp({
+            inAccount: account,
+            inUserName: userName, 
+            inPassword: password
+          })}
         >
-          Log In
+          Sign Up
         </Button>
       </Space>
     </div>
   )
-
 }
 
-export default LogIn;
+export default SignUp;

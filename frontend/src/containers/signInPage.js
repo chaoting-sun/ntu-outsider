@@ -1,86 +1,115 @@
 import { useOusider } from "./hooks/useOusider";
 import { Button, Checkbox, Form, Input } from 'antd';
-import LogIn from "../components/logIn"
+import "../css/signInPage.css";
+import LogIn from "../components/logIn";
+import SignUp from "../components/signUp";
 // import Title from "../components/Title"
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { hashPassword } from "../utils/hash"
+import { useEffect, useState } from "react";
+import { userExamples } from "./db";
 
-const users = [{ username: "guest", password: "guest" }];
+
+const queryUser = async (inAccount, inPassword) => {
+  // graphql - query
+  // inPassword should be the hashed password
+  const user = userExamples.find(({ account, password }) =>
+    inAccount === account && inPassword === password)
+  if (user !== undefined)
+    return user;
+  return null;
+}
+
+const createAccount = async (inAccount, inUserName, inPassword) => {
+  // graphql - query
+  // inPassword should be the hashed password
+  return {
+    userId: 5,
+    account: inAccount,
+    userName: inUserName,
+    password: inPassword,
+  }
+}
 
 const SignInPage = () => {
-  const { username, setUsername, password, setPassword,
-    setAuthenticated, displayStatus } = useOusider();
+  const { account, setAccount, username, setUsername,
+    setAuthenticated, displayStatus, setUserId } = useOusider();
+  const [signUp, setSignUp] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (input) => {
-    const account = users.find((user) => user.username === input.username);
-    
-    if (account && account.password === input.password) {
-      setAuthenticated(true);
-      localStorage.setItem("authenticated", true);
-      
-      setUsername(input.username);
-      setPassword(input.password);
+  const autheticateAccount = (user) => {
+    setAuthenticated(true);
+    localStorage.setItem("authenticated", true);
 
-      displayStatus({
-        type: "success",
-        msg: "log in successfully",
-      })
+    setUserId(user.userId)
+    setAccount(user.account)
+    setUsername(user.username);
 
-      navigate('/', {
-        state: {
-          test: 'test' 
-        }
-      })
+    displayStatus({
+      type: "success",
+      msg: "log in successfully",
+    })
+    navigate('/') // HomePage
+  }
 
+  const handleLogIn = async ({ inAccount, inPassword }) => {
+    const user = await queryUser(inAccount, inPassword);
+
+    if (user) {
+      autheticateAccount(user);
     } else {
       displayStatus({
         type: "error",
-        msg: "username or password is incorrect!",
+        msg: "Account or password is incorrect!",
       })
     }
   }
 
-  const handleLogInOnFinish = (values) => {
-    // triggered when the input format is correct (meet the rules)
-    console.log('Input format is correct:', values);
-    
-    // check if the user is in the database
-    handleSubmit(values);
-  };
+  const handleSignUp = async ({ inAccount, inUserName, inPassword }) => {
+    const hashedPassword = hashPassword(inPassword)
+    const user = await queryUser(inAccount, hashedPassword);
 
-  const handleLogInOnFinishFailed = (errorInfo) => {
-    // triggered when the input format is incorrect
-    console.log('Input format is :', errorInfo);
-  };
+    createAccount(inAccount, inUserName, inPassword);
 
-  console.log('enter signInPage component');
+    if (user) {
+      autheticateAccount(user);
+    } else {
+      displayStatus({
+        type: "error",
+        msg: "account saved error!"
+      })
+    }
+  }
 
   return (
-    <>
-      <LogIn
-        onFinish={handleLogInOnFinish}
-        onFinishFailed={handleLogInOnFinishFailed}
-      />
-
-      {/* <div>
-        <p>Welcome Back</p>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <input
-            type="password"
-            name="Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <input type="submit" value="Submit" />
-        </form>
-      </div> */}
-    </>
+    <div className="mainContainer">
+      <div className="leftMainContainer">
+        <div className="brandName1">NTU</div>
+        <div className="brandName2">OUTSIDER</div>
+      </div>
+      <div className="rightMainContainer">
+        <div className="Form">
+          {
+            signUp ? (
+              <>
+                <div className="SignUpHeader">Sign Up</div>
+                <SignUp handleSignUp={handleSignUp} />
+              </>
+            ) : (
+              <>
+                <div className="logInHeader">Log In</div>
+                <LogIn handleLogIn={handleLogIn} />
+                <div className='signUpRemind'>Do not have an account?
+                  <span onClick={() => setSignUp(true)}>Sign up</span>
+                </div>
+              </>
+            )
+          }
+        </div>
+      </div>
+    </div>
   )
+
 }
 
 export default SignInPage;

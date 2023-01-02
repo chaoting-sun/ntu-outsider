@@ -1,0 +1,17 @@
+.searchInfoContainer {
+  height: 80px;
+  /* background-color: aquamarine; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* .ant-select-selection {
+    background-color: transparent;
+  } */
+
+/* 
+.ant-select-selector:hover {
+    border-color:1px solid red;
+} */

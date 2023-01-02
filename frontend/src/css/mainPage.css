@@ -1,0 +1,29 @@
+.mainPageContainer {
+  position: fixed;
+  top: 72px;
+  left: 256px;
+  right: 0px;
+  box-sizing: border-box;
+  /* margin-right: 0; */
+
+  /* margin-top: 72px; */
+  /* margin-color */
+  /* padding-top: 72px; */
+  /* height: calc(100% - 72px); */
+  background-color: rgb(246, 246, 246);
+  height: 100%;
+
+  flex: fixed;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: ; */
+  align-items: center;
+
+  /* outline: 1px solid red; */
+  z-index: 100;
+  overflow: hidden scroll;
+}
+
+.test {
+  position: relative;
+}

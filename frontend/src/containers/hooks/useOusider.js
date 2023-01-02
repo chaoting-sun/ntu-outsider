@@ -1,23 +1,60 @@
 import { message } from 'antd'
 import { createContext, useContext, useState, useEffect } from "react";
+import { POST_QUERY } from "../graphql/index"
+import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
+import { postExamples } from "../db"
 
+/*async function in useEffect:
+  ref: https://devtrium.com/posts/async-functions-useeffect
+*/
 
 const OusiderContext = createContext({
+  userId: "",
   username: "",
   passWord: "",
   authenticated: false,
-  setUsername: () => {},
-  setPassword: () => {},
-  setAuthenticated: () => {},
-  displayStatus: () => {}
+  // postContent: [],
+  currentPage: "",
+  setUserId: () => { },
+  setUsername: () => { },
+  setPassword: () => { },
+  setAuthenticated: () => { },
+  // setPostContent: () => { },
+  setCurrentPage: () => { },
+  displayStatus: () => { },
 })
 
 
 const OutsiderProvider = (props) => {
+  const [userId, setUserId] = useState("");
+  const [account, setAccount] = useState("");
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
+  const [existingPost, setExistingPost] = useState([]);
+  const [myPost, setMyPost] = useState([]);
+  const [conditionedPost, setConditionedPost] = useState([]);
+  const [currentPage, setCurrentPage] = useState("allPost");
 
+
+  const queryPost = async (type, queryString) => {
+    // db <- queryPost(type, queryString)
+    // db -> 
+    return postExamples
+  }
+
+  const queryPostCollection = async (userId, type) => {
+    // query function
+    return postExamples.filter(({posterName}) => username === posterName)
+  }
+      
+  const handleQueryConditionedPost = async ({ type, queryString }) => {
+    // save the conditioned existing posts in conditionedPost
+    const fetchedPost = await queryPost(type, queryString);
+    /*TODO:
+      clean the post data and save it in "conditionedPost"
+    */
+    setConditionedPost(fetchedPost);
+  }
 
   const displayStatus = (s) => {
     if (s.msg) {
@@ -39,13 +76,21 @@ const OutsiderProvider = (props) => {
   return (
     <OusiderContext.Provider
       value={{
+        userId,
+        setUserId,
+        account,
+        setAccount,
         username,
         setUsername,
-        password,
-        setPassword,
         authenticated,
         setAuthenticated,
-        displayStatus
+        conditionedPost,
+        // postContent,
+        // setPostContent,
+        currentPage,
+        setCurrentPage,
+        displayStatus,
+        handleQueryConditionedPost,
       }}
       {...props}
     />
