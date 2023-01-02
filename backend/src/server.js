@@ -4,8 +4,6 @@ import { WebSocketServer } from "ws";
 import { createPubSub, createSchema, createYoga } from "graphql-yoga";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { ChatBoxModel } from "./models/chatbox";
-import { ClassModel } from "./models/class";
-import { CommentModel } from "./models/comment";
 import { PostModel } from "./models/post";
 import { UserModel } from "./models/user";
 import Query from "./resolvers/Query";
@@ -28,7 +26,6 @@ const yoga = new createYoga({
   }),
   context: {
     ChatBoxModel,
-    ClassModel,
     PostModel,
     UserModel,
     pubsub,
