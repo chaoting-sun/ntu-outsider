@@ -1,1 +1,1 @@
-export { POST_QUERY } from "./query";
+export { POST_QUERY, CHATBOXES_QUERY } from "./query";

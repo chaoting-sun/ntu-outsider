@@ -6,6 +6,8 @@ import {useState, useEffect, useRef} from 'react'
 import ChatList from '../components/chatList' 
 import { Typography, Divider, IconButton } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import {CHATBOXES_QUERY} from './graphql/index';
+import { useQuery} from '@apollo/react-hooks';
 
 const ChatBoxWrapper = styled.div`
     min-height: 80%;
@@ -31,11 +33,42 @@ const message = [{me:false, msg: "hollow"}, {me:true, msg: "heyyyyyyyyyheyyyyyyy
 const users = ["Amy", "Ric", "Bob", "mom", "dad", "Amy", "Ric", "Bob", "mom", "dad"]
 //test end
 
+//Test subscription
+//take me from useOutsider
+const me = {
+    _id: "63b3e2ce1478daad8f55bcdd",
+}
+//test end
+
 const MailPage =  () => {
     const msgFooter = useRef();
     const scrollToBottom = () => {
         msgFooter.current?.scrollIntoView({ behavior: 'smooth', block: 'start'})
     }
+
+    const { loading, error, data, subscribeToMore } = useQuery(CHATBOXES_QUERY, {
+        variables: {userId: me._id}, 
+        fetchPolicy: 'network-only'
+     });
+
+    /*useEffect(() => {
+        try {
+        console.log("subscribe");
+        subscribeToMore({
+            document: POSTS_SUBSCRIPTION,
+            updateQuery: (prev, { subscriptionData }) => {
+            if (!subscriptionData.data) return prev;
+            const newPost = subscriptionData.data.post;
+
+            return {
+                ...prev,
+                posts: [newPost, ...prev.posts],
+            };
+            },
+        });
+        } catch (e) {}
+    }, [subscribeToMore]);*/
+    console.log(data);
 
     return (
         <div className='mailPageContainer'>
