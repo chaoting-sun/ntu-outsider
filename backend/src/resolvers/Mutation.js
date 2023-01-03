@@ -159,7 +159,7 @@ const Mutation = {
   createChatBox: async (
     parent,
     { name, to },
-    { ChatBoxModel, UserModel },
+    { ChatBoxModel, UserModel, pubsub },
     info
   ) => {
     let chatBoxName = [name, to].sort().join("_");
@@ -175,12 +175,18 @@ const Mutation = {
         { $push: { chatboxes: chatBox._id } }
       );
     }
+    pubsub.publish(`chatBox ${name}`, {
+      subscribeChatBox: chatBox,
+    })
+    pubsub.publish(`chatBox ${to}}`, {
+      subscribeChatBox: chatBox,
+    })
     return chatBox;
   },
   createMessage: async (
     parent,
     { name, to, message },
-    { ChatBoxModel },
+    { ChatBoxModel, pubsub },
     info
   ) => {
     const chatBoxName = [name, to].sort().join("_");
@@ -191,7 +197,10 @@ const Mutation = {
     const newMsg = { sender: name, body: message };
     chatBox.messages.push(newMsg);
     await chatBox.save();
-    return newMsg;
+    pubsub.publish(`message ${name}`, {
+      subscribeMessage: {chatBoxName: chatBoxName, message: newMsg},
+    })
+    return {...newMsg};
   },
 };
 

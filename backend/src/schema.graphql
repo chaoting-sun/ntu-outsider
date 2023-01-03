@@ -29,12 +29,13 @@ type User {
   name: String!
   password: String!
   postCollection: [ID]
+  chatboxes: [ChatBox]
 }
 
 
 type ChatBox {
   name: String!
-  messages: [Message!]
+  messages: [Message]
 }
 
 type Message {
@@ -78,6 +79,13 @@ type Mutation {
   createMessage(name: ID!, to: ID!, message: String!): Message!
 }
 
-# type Subscription {
-  
-# }
+type Subscription {
+  subscribeChatBox(id: ID!): ChatBox!
+  subscribeMessage(id: ID!): MessageSubscriptionPayload!
+}
+
+type MessageSubscriptionPayload {
+  chatBoxName: String!
+  message: Message!
+}
+

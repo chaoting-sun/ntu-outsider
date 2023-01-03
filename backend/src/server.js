@@ -8,7 +8,7 @@ import { PostModel } from "./models/post";
 import { UserModel } from "./models/user";
 import Query from "./resolvers/Query";
 import Mutation from "./resolvers/Mutation";
-// import Subscription from "./resolvers/Subscription";
+import Subscription from "./resolvers/Subscription";
 import ChatBox from "./resolvers/ChatBox";
 import Post from "./resolvers/Post";
 
@@ -20,7 +20,7 @@ const yoga = new createYoga({
     resolvers: {
       Query,
       Mutation,
-      // Subscription,
+      Subscription,
       ChatBox,
       Post,
     },
