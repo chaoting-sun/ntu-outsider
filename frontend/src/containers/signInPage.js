@@ -4,62 +4,95 @@ import "../css/signInPage.css";
 import LogIn from "../components/logIn";
 import SignUp from "../components/signUp";
 // import Title from "../components/Title"
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { hashPassword } from "../utils/hash"
 import { useEffect, useState } from "react";
+import { userExamples } from "./db";
 
 
-const users = [{ username: "guest", password: "guest" }];
-const passwordEncryption = { 'guest': 'guest12345678' }
+const queryUser = async (inAccount, inPassword) => {
+  // graphql - query
+  // inPassword should be the hashed password
+  const user = userExamples.find(({ account, password }) =>
+    inAccount === account && inPassword === password)
+  if (user !== undefined)
+    return user;
+  return null;
+}
 
+const createAccount = async (inAccount, inUserName, inPassword) => {
+  // graphql - query
+  // inPassword should be the hashed password
+  return {
+    userId: 5,
+    account: inAccount,
+    userName: inUserName,
+    password: inPassword,
+  }
+}
 
 const SignInPage = () => {
-  const { username, setUsername,
+  const { account, setAccount, username, setUsername,
     setAuthenticated, displayStatus, setUserId } = useOusider();
   const [signUp, setSignUp] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (location) {
+      if (location.state === "signUp") {
+        setSignUp(true);
+        location.state = "";
+      }
+    }
+  }, [location]);
 
-  }, [signUp])
 
-  const handleLogIn = ({ inputUserName, inputPassword }) => {
-    const encryptedPassword = passwordEncryption[inputUserName]
-    /**TODO:
-     * db <- query(inputUserName, encryptedPassword)
-     * db -> exist ? basic info : null
-     */
-    const accountName = users.find((user) => user.username === inputUserName);
-    const accountId = 'guest12345678'
+  const autheticateAccount = (user) => {
+    setAuthenticated(true);
+    localStorage.setItem("authenticated", true);
 
-    if (accountId) {
-      setAuthenticated(true);
-      localStorage.setItem("authenticated", true);
+    setUserId(user.userId)
+    setAccount(user.account)
+    setUsername(user.username);
 
-      setUserId(accountId)
-      setUsername(inputUserName);
+    displayStatus({
+      type: "success",
+      msg: "log in successfully",
+    })
+    navigate('/') // HomePage
+  }
 
-      displayStatus({
-        type: "success",
-        msg: "log in successfully",
-      })
+  const handleLogIn = async ({ inAccount, inPassword }) => {
+    const user = await queryUser(inAccount, inPassword);
 
-      navigate('/') // HomePage
-
+    if (user) {
+      autheticateAccount(user);
     } else {
       displayStatus({
         type: "error",
-        msg: "username or password is incorrect!",
+        msg: "Account or password is incorrect!",
       })
     }
   }
 
-  const handleSignUp = ({inputUserName, inputUserAccount, inputPassword}) => {
-    /**TODO:
-     * 
-     * mutation(inputUserName, inputUserAccount, inputPassword)
-     */
-  }
+  const handleSignUp = async ({ inAccount, inUserName, inPassword }) => {
+    const hashedPassword = hashPassword(inPassword);    
+    const user = createAccount(inAccount, inUserName, inPassword);
 
+    if (user) {
+      displayStatus({
+        type: "success",
+        msg: "sign up successfully!"
+      })
+      setSignUp(false);
+    } else {
+      displayStatus({
+        type: "error",
+        msg: "account saved error!"
+      })
+    }
+  }
 
   return (
     <div className="mainContainer">
@@ -74,6 +107,9 @@ const SignInPage = () => {
               <>
                 <div className="SignUpHeader">Sign Up</div>
                 <SignUp handleSignUp={handleSignUp} />
+                <div className='signUpRemind'>Have an account?
+                  <span onClick={() => setSignUp(false)}>Sign in</span>
+                </div>
               </>
             ) : (
               <>

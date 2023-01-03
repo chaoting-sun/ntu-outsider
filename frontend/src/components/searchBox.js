@@ -8,28 +8,19 @@ import '../css/searchBox.css'
 // Select: https://ant.design/components/select
 
 
-const selectOptions = [
-  { value: 'select', label: '請選擇', },
-  { value: 'classNumber', label: '流水號', },
-  { value: 'postTitle', label: '貼文標題', },
-  { value: 'className', label: '課程名稱', },
+const queryTypes = [
+  { value: 'select',      label: '請選擇', },
+  { value: 'classNo',     label: '流水號', },
+  { value: 'postTitle',   label: '貼文標題', },
+  { value: 'className',   label: '課程名稱', },
   { value: 'teacherName', label: '老師名稱', },
-  { value: 'tag', label: 'tag', },
+  { value: 'tag',         label: 'tag', },
 ]
 
-const SearchBox = ({ handleSearchInfo }) => {
+const SearchBox = ({ handleConditionedSearch }) => {
   const { displayStatus } = useOusider();
-  const [searchOption, setSearchOption] = useState("select");
-  const [keyWord, setKeyWord] = useState("");
-
-  useEffect(() => {
-    if (keyWord === "" || searchOption === "select")
-      return;
-    handleSearchInfo({
-      option: searchOption,
-      content: keyWord
-    })
-  }, [keyWord])
+  const [queryType, setQueryType] = useState("select");
+  const [queryString, setQueryString] = useState("");
 
   return (
     <>
@@ -46,11 +37,10 @@ const SearchBox = ({ handleSearchInfo }) => {
             marginRight: 8,
             marginBottom: 8,
           }}
-          onChange={(value) => setSearchOption(value)}
-          options={selectOptions}
+          onChange={(value) => setQueryType(value)}
+          options={queryTypes}
         />
         <Input.Search
-          // ref={msgRef} // 把 msgRef 指定給 <Input.Search ref>
           style={{
             display: 'inline-block',
             marginTop: 8,
@@ -58,27 +48,33 @@ const SearchBox = ({ handleSearchInfo }) => {
             marginRight: 8,
             // width: '80%'
           }}
-          value={keyWord} // default value to be displayed on page load
-          onChange={(e) => setKeyWord(e.target.value)}
+          value={queryString} // default value to be displayed on page load
+          onChange={(e) => setQueryString(e.target.value)}
           placeholder="Type here..."
-          onSearch={(content) => {
-            console.log("Input.Search - onSearch:", content);
-
-            if (searchOption === "selection") {
+          onSearch={(queryContent) => {
+            queryContent = queryContent.trim();
+            console.log("onSearch:", queryContent);
+            if (queryTypes === "selection") {
               displayStatus({
                 type: 'error',
                 msg: 'Please choose options!'
               })
               return;
             }
-            if (!content) {
+            if (queryContent === "") {
               displayStatus({
                 type: 'error',
                 msg: 'Please input something!'
               })
               return;
             }
-            setKeyWord(content);
+
+            handleConditionedSearch({
+              type: queryType,
+              queryString: queryString
+            })
+        
+            setQueryString("");
           }}
         ></Input.Search>
       </div>

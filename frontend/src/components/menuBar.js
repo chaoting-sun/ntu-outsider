@@ -10,18 +10,16 @@ import SearchBox from './searchBox';
 // ref: https://ant.design/components/menu
 
 const items = [
-  { label: "珍藏", key: "savedPost" },
-  { label: "追蹤", key: "followedPost" },
-  { label: "申請", key: "appliedPost" },
-  { label: "我的貼文", key: "myPost" },
+  { label: "珍藏", key: "savedPostPage" },
+  { label: "追蹤", key: "followedPostPage" },
+  { label: "我的貼文", key: "myPostPage" },
 ]
 
-const MenuBar = ({ handleSearchInfo, handleMenuNavigate }) => {
-  console.log('render MenuBar');
+const MenuBar = ({ handleConditionedSearch, handleMenuNavigate }) => {
   return (
     <aside className='sideLayoutSider'>
       <div className='sideLayoutSiderChildren'>
-        <SearchBox handleSearchInfo={handleSearchInfo} />
+        <SearchBox handleConditionedSearch={handleConditionedSearch} />
         <div className='menuContainer'>
           <Menu
             onClick={(e) => handleMenuNavigate(e.key)}

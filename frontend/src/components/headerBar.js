@@ -1,46 +1,112 @@
 import React, { useState } from 'react';
 import '../css/headerBar.css'
 import logo from './logo.png';
-import { MailOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons'
+import { MailOutlined, LoginOutlined, LogoutOutlined, EditOutlined } from '@ant-design/icons'
 // import 'antd/dist/antd.css';
 import { Dropdown, Button, Menu } from 'antd';
 import { Navigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 
-const logInItem = {
-  label: 'log in',
-  key: 'logIn',
-  icon: <LoginOutlined />
+function getItem(label, key, icon, children, type) {
+  return {
+    key,
+    icon,
+    children,
+    label,
+    type,
+  };
 }
 
-const logOutItem = {
-  label: 'log out',
-  key: 'logOut',
-  icon: <LogoutOutlined />
-}
+const testItems = [
+  {
+    label: 'Navigation One',
+    key: 'mail',
+  },
+  {
+    label: 'Navigation Two',
+    key: 'app',
+    disabled: true,
+  },
+  {
+    label: 'Navigation Three - Submenu',
+    key: 'SubMenu',
+    children: [
+      {
+        type: 'group',
+        label: 'Item 1',
+        children: [
+          {
+            label: 'Option 1',
+            key: 'setting:1',
+          },
+          {
+            label: 'Option 2',
+            key: 'setting:2',
+          },
+        ],
+      },
+      {
+        type: 'group',
+        label: 'Item 2',
+        children: [
+          {
+            label: 'Option 3',
+            key: 'setting:3',
+          },
+          {
+            label: 'Option 4',
+            key: 'setting:4',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    label: (
+      <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
+        Navigation Four - Link
+      </a>
+    ),
+    key: 'alipay',
+  },
+];
 
-const items = [
+const unLogInItems = [
   {
     label: 'log in',
     key: 'logIn',
     icon: <LoginOutlined />
   },
   {
+    label: 'sign up',
+    key: 'signUp',
+    icon: <EditOutlined />
+  }
+]
+
+const logInItems = [
+  {
     label: 'log out',
     key: 'logOut',
     icon: <LogoutOutlined />
   },
-
+  {
+    label: 'edit my profile',
+    key: 'editProfile',
+    icon: <EditOutlined />
+  }
 ]
 
-const HeaderBar = ({authenticated, handleOnClickLogInOut}) => {
-  const items = [
-    authenticated ? (
-      logOutItem
-    ) : (
-      logInItem
-    )
-  ]
+const HeaderBar = ({ authenticated, handleOnClickLogInOut }) => {
+  const items = authenticated ? logInItems : unLogInItems;
+  // const items = testItems;
+  const [current, setCurrent] = useState("");
+
+  const onClick = (key) => {
+    setCurrent(key);
+    handleOnClickLogInOut(key);
+  }
 
   return (
     <header className='headerBarContainer'>
@@ -61,7 +127,8 @@ const HeaderBar = ({authenticated, handleOnClickLogInOut}) => {
           </div>
           <div className='logIn'>
             <Menu
-              onClick={() => handleOnClickLogInOut()}
+              className='toolsMenu'
+              onClick={(e) => onClick(e.key)}
               // selectedKeys={[current]}
               mode="horizontal"
               items={items}

@@ -125,9 +125,9 @@ const ViewPostPage = () => {
                 <NameButton>Name</NameButton>
                 <InformationBox item xs container direction="column" spacing={1}>
                     <Grid item xs>
-                      {/*<TitleItem gutterBottom variant="subtitle1" component="div" >
+                      {/* <TitleItem gutterBottom variant="subtitle1" component="div" >
                         標題
-                      </TitleItem>*/}
+                      </TitleItem> */}
                       <InformationItem variant="subtitle1">
                         課名
                       </InformationItem>
