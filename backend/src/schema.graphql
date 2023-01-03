@@ -29,7 +29,7 @@ type User {
   name: String!
   password: String!
   postCollection: [ID]
-  chatboxes: [ChatBox]
+  chatboxes: [ID]
 }
 
 
