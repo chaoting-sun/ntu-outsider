@@ -24,37 +24,24 @@ const OusiderContext = createContext({
   displayStatus: () => { },
 })
 
+const LOCALSTORAGE_KEY='save-username';
 
 const OutsiderProvider = (props) => {
+  const saveUsername=localStorage.getItem(LOCALSTORAGE_KEY);
   const [userId, setUserId] = useState("");
   const [account, setAccount] = useState("");
-  const [username, setUsername] = useState("");
+  const [preferTags, setPreferTags] = useState([]);
+  const [username, setUsername] = useState(saveUsername||"");
   const [authenticated, setAuthenticated] = useState(false);
   const [existingPost, setExistingPost] = useState([]);
   const [myPost, setMyPost] = useState([]);
   const [conditionedPost, setConditionedPost] = useState([]);
   const [currentPage, setCurrentPage] = useState("allPost");
 
-
-  const queryPost = async (type, queryString) => {
-    // db <- queryPost(type, queryString)
-    // db -> 
-    return postExamples
-  }
-
-  const queryPostCollection = async (userId, type) => {
-    // query function
-    return postExamples.filter(({posterName}) => username === posterName)
-  }
-      
-  const handleQueryConditionedPost = async ({ type, queryString }) => {
-    // save the conditioned existing posts in conditionedPost
-    const fetchedPost = await queryPost(type, queryString);
-    /*TODO:
-      clean the post data and save it in "conditionedPost"
-    */
-    setConditionedPost(fetchedPost);
-  }
+  useEffect(() => {
+    if (authenticated)
+      localStorage.setItem(LOCALSTORAGE_KEY, username);
+  }, [authenticated])
 
   const displayStatus = (s) => {
     if (s.msg) {
@@ -82,6 +69,8 @@ const OutsiderProvider = (props) => {
         setAccount,
         username,
         setUsername,
+        preferTags,
+        setPreferTags,
         authenticated,
         setAuthenticated,
         conditionedPost,
@@ -90,7 +79,6 @@ const OutsiderProvider = (props) => {
         currentPage,
         setCurrentPage,
         displayStatus,
-        handleQueryConditionedPost,
       }}
       {...props}
     />

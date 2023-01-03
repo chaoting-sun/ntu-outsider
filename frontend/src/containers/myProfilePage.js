@@ -65,7 +65,10 @@ const updateUser = async (userId, name, account) => {
 }
 
 const MyProfilePage = () => {
-  const { userId, setUsername, setAccount, displayStatus } = useOusider();
+  const { userId, username, 
+    account, setUsername, 
+    setAccount, displayStatus,
+    preferTags, setPreferTags } = useOusider();
   const [tags, setTags] = useState([]);
   const {
     register,
@@ -74,15 +77,21 @@ const MyProfilePage = () => {
     formState: { errors }
   } = useForm();
 
+  useEffect(() => {
+     if (preferTags.length)
+      setTags(preferTags)
+  }, [])
+
   const onSubmit = async (data) => {
     console.log('data:', data);
     const user = await updateUser(
-      userId, 
+      userId,
       data.username,
       data.account
     );
     setUsername(data.username);
     setAccount(data.account);
+    setPreferTags(tags);
 
     if (user !== null) {
       displayStatus({
@@ -118,19 +127,30 @@ const MyProfilePage = () => {
                 {/* include validation with required or other standard HTML validation rules */}
                 <div className='inputItem'>
                   <label>使用者名稱 </label>
-                  <input {...register("username", { required: "Username is required" })} className="detailInput" />
+                  <input 
+                    {...register("username", { required: "Username is required" })} 
+                    defaultValue={username} 
+                    className="detailInput"
+                  />
                 </div>
                 {/* errors will return when field validation fails  */}
                 {errors.userName ? <p className='error'>{errors.userName.message}</p> : null}
                 <div className='inputItem'>
                   <label>使用者帳號 </label>
-                  <input {...register("userAccount", { required: "User  is required" })} className="detailInput" />
+                  <input
+                    {...register("userAccount", { required: "User  is required" })}
+                    defaultValue={account}
+                    className="detailInput" />
                 </div>
                 {/* errors will return when field validation fails  */}
                 {errors.userAccount ? <p className='error'>{errors.userAccount.message}</p> : null}
                 <div className='inputItem'>
                   <label>使用者密碼 </label>
-                  <input {...register("password", { required: "Class number is required" })} type="password" className="detailInput" />
+                  <input {...register("password",
+                    { required: "Password is required" })}
+                    type="password"
+                    className="detailInput"
+                  />
                 </div>
                 {errors.password ? <p className='error'>{errors.password.message}</p> : null}
                 {/* <div className='inputItem'>

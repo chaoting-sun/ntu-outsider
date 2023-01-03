@@ -33,7 +33,7 @@ const createAccount = async (inAccount, inUserName, inPassword) => {
 
 const SignInPage = () => {
   const { account, setAccount, username, setUsername,
-    setAuthenticated, displayStatus, setUserId } = useOusider();
+    setAuthenticated, displayStatus, setUserId, setPreferTags } = useOusider();
   const [signUp, setSignUp] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -55,6 +55,7 @@ const SignInPage = () => {
     setUserId(user.userId)
     setAccount(user.account)
     setUsername(user.username);
+    setPreferTags(user.tags);
 
     displayStatus({
       type: "success",

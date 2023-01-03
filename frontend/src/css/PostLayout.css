@@ -1,20 +1,6 @@
-
-.postContainer {
-
-}
-
-.postAuthorBlock {
-
-}
-
-.postTitleBlock{
-
-}
-
-.teacherNameBlock {
-    
-}
-
-.tagsBlock {
-    
+.MuiButtonBase-root {
+  width: 100% !important;
+  height: 100% !important;
+  display: inherit !important;
+  justify-content: start !important;
 }

@@ -16,6 +16,7 @@ import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import { Button, Modal, Space, Tag } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import ButtonBase from '@material-ui/core/ButtonBase';
 
 // ref: viewPostPage.js
 
@@ -28,6 +29,7 @@ const PostCard = styled(Card)`
   position: relative;
   top: -15vh;
   border-radius: 10px !important;
+  cursor: pointer;
 `
 
 const InformationItem = styled(Typography)`
@@ -90,9 +92,17 @@ const PostLayout = ({
     navigate("/editPostPage");
   }
 
+  const testOnClick = () => {
+    console.log();
+  }
+
   return (
     // <div className='editPostPageContainer'>
-      <PostCard sx={{ minWidth: 400 }}>
+    <PostCard sx={{ minWidth: 400 }}>
+      <ButtonBase
+      // className={props.classes.cardAction}
+      // onClick={event => { ... }}
+      >
         <CardContent>
           <Typography sx={{ fontSize: 28, display: "flex", position: "relative", left: 30, marginTop: 5 }} gutterBottom>
             {title}
@@ -138,7 +148,8 @@ const PostLayout = ({
             </Grid>
           </InformationBox>
         </CardContent>
-      </PostCard>
+      </ButtonBase>
+    </PostCard>
     // </div>
   )
 }
