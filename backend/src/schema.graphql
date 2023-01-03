@@ -9,7 +9,6 @@ type Query {
   
 }
 
-scalar DateTime # ref: https://v1.prisma.io/forum/t/couldnt-find-type-datetime-in-any-of-the-schemas/4310/3
 type Post {
   _id: ID!
   userId: ID!
@@ -17,10 +16,10 @@ type Post {
   title: String!
   classNo: String!
   className: String!
-  teacher: String!
+  teacherName: String!
   content: String!
-  condition: String!
-  deadline: DateTime! # 先暫時用 scalar 做某種轉換，還找不到其他更好的 DateTime 表示法
+  condition: Int!
+  deadline: String!
   tag: [String]
 }
 
@@ -54,10 +53,10 @@ type Mutation {
     title: String!
     classNo: String!
     className: String!
-    teacher: String!
+    teacherName: String!
     content: String!
-    condition: String!
-    deadline: DateTime
+    condition: Int!
+    deadline: String!
     tag: [String]
   ): Post!
 
@@ -67,9 +66,9 @@ type Mutation {
     content: String!
     classNo: String!
     className: String!
-    teacher: String!
-    condition: String!
-    deadline: DateTime
+    teacherName: String!
+    condition: Int!
+    deadline: String!
     tag: [String]
   ): Post!
   deletePost(postId: ID!): Post!
@@ -80,5 +79,5 @@ type Mutation {
 }
 
 # type Subscription {
-
+  
 # }
