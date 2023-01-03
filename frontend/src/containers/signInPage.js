@@ -4,7 +4,7 @@ import "../css/signInPage.css";
 import LogIn from "../components/logIn";
 import SignUp from "../components/signUp";
 // import Title from "../components/Title"
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { hashPassword } from "../utils/hash"
 import { useEffect, useState } from "react";
 import { userExamples } from "./db";
@@ -33,9 +33,20 @@ const createAccount = async (inAccount, inUserName, inPassword) => {
 
 const SignInPage = () => {
   const { account, setAccount, username, setUsername,
-    setAuthenticated, displayStatus, setUserId } = useOusider();
+    setAuthenticated, displayStatus, setUserId, setPreferTags } = useOusider();
   const [signUp, setSignUp] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location) {
+      if (location.state === "signUp") {
+        setSignUp(true);
+        location.state = "";
+      }
+    }
+  }, [location]);
+
 
   const autheticateAccount = (user) => {
     setAuthenticated(true);
@@ -44,6 +55,7 @@ const SignInPage = () => {
     setUserId(user.userId)
     setAccount(user.account)
     setUsername(user.username);
+    setPreferTags(user.tags);
 
     displayStatus({
       type: "success",
@@ -66,13 +78,15 @@ const SignInPage = () => {
   }
 
   const handleSignUp = async ({ inAccount, inUserName, inPassword }) => {
-    const hashedPassword = hashPassword(inPassword)
-    const user = await queryUser(inAccount, hashedPassword);
-
-    createAccount(inAccount, inUserName, inPassword);
+    const hashedPassword = hashPassword(inPassword);    
+    const user = createAccount(inAccount, inUserName, inPassword);
 
     if (user) {
-      autheticateAccount(user);
+      displayStatus({
+        type: "success",
+        msg: "sign up successfully!"
+      })
+      setSignUp(false);
     } else {
       displayStatus({
         type: "error",
@@ -94,6 +108,9 @@ const SignInPage = () => {
               <>
                 <div className="SignUpHeader">Sign Up</div>
                 <SignUp handleSignUp={handleSignUp} />
+                <div className='signUpRemind'>Have an account?
+                  <span onClick={() => setSignUp(false)}>Sign in</span>
+                </div>
               </>
             ) : (
               <>

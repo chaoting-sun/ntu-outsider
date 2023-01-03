@@ -1,3 +1,6 @@
+deadtime -> 改成 String
+取消剩餘人數
+
 # log in
 db <- queryUser(account, password)
 db -> exist ? userDocument : null
@@ -21,11 +24,11 @@ db <- updatePostCollection(
 db -> postId
 
 db <- updatePassword(userId, password)
-db -> userDocument
+db -> userDocument  
 
 # query post
 db <- queryPost(type, queryString)
-- type = classNo, postTitle, className, teacherName, tag
+- type = classNo, postTitle, className, teacherName, tag, all
 db -> [postDocument]!
 
 # query my post

@@ -1,5 +1,5 @@
 const userExamples = [
-  { username: 'guest', account: 'guest', password: 'guest' }, 
+  { username: 'guest', account: 'guest', password: 'guest', tags: ['235813'] }, 
   { username: 'chaoting', account: 'chaoting', password: 'chaotingpw' }, 
   { username: 'Kerwin', account: 'Kerwin', password: 'kerwinpw' }, 
   { username: '蓁蓁', account: '蓁蓁', password: 'truetruepw' }, 
@@ -7,16 +7,16 @@ const userExamples = [
 
 const postExamples = [{
   postId: 0,
-  title: "徵求網服大腿",
+  title: "我要find my boss",
   posterName: "guest",
-  className: "網路服務程式設計",
-  teacherName: "Ric",
-  classNo: "235812",
+  className: "中華民國憲法與政府",
+  teacherName: "丁肇中",
+  classNo: "235813",
   deadline: "2022/12/01",
   condition: 2,
-  content: "拜託快跟我組隊求求你",
-  leftMembersRequired: 1,
-  tags: ["會用yarn add", "會用npm install"]
+  content: "來喔來喔來杯灰喔",
+  leftMembersRequired: 6,
+  tags: ["會寫字", "會來上課"]
 }, {
   postId: 1,
   title: "徵求網服大腿",

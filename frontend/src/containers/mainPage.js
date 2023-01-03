@@ -21,8 +21,8 @@ const PostContainer = styled.div`
 `
 
 /* graphql query */
-const queryExistingPost = async () => {
-  // db <- queryExistingPost
+const queryPost = async () => {
+  // db <- queryPost
   // db -> postExamples 
   return postExamples;
 }
@@ -33,7 +33,7 @@ const MainPage = () => {
   const [postDom, setPostDom] = useState([]);
 
   useEffect(() => {
-    handleQueryExistingPost()
+    handleQueryPost()
       .catch(console.error);
   }, [])
 
@@ -58,8 +58,8 @@ const MainPage = () => {
     } 
   }, [existingPost])
 
-  const handleQueryExistingPost = async () => {
-    const fetchedPost = await queryExistingPost();
+  const handleQueryPost = async () => {
+    const fetchedPost = await queryPost();
     setExistingPost(fetchedPost);
   }
 

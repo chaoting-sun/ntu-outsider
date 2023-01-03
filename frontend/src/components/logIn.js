@@ -49,6 +49,8 @@ const LogIn = ({ handleLogIn }) => {
               inAccount: account,
               inPassword: password
             })
+            setAccount("");
+            setPassword("");
           }}
         >
           Log In

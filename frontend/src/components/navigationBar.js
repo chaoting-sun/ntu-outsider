@@ -12,9 +12,26 @@ const NavBar = () => {
     displayStatus } = useOusider();
   const navigate = useNavigate();
 
-  const handleOnClickLogInOut = () => {
+  const handleOnClickLogInOut = (action) => {
     // logIn or logOut
-    navigate("/logIn")
+    console.log("action:", action);
+
+    switch (action) {
+      case "logIn":
+        navigate("/logIn")
+        break;
+      case "logOut":
+        navigate("/logIn");
+        break;
+      case "signUp":
+        navigate("/logIn", { state: 'signUp' });
+        break;
+      case "editProfile":
+        navigate("/myProfilePage");
+        break;
+      default:
+        console.log("only logIn | logOut | editProfile:", action);
+    }
   }
 
   const handleConditionedSearch = ({ type, queryString }) => {

@@ -1,0 +1,32 @@
+.myProfilePageContainer {
+  position: absolute;
+  margin-top: 72px;
+  padding: 10em;
+  left: 256px;
+  background-color: rgb(233, 233, 233);
+  height: auto;
+  width: 83%;
+  justify-content: start;
+  text-align: center;
+  z-index: 0;
+  /* overflow:visible; */
+}
+
+/* .myProfileSendButton {
+    color: rgb(233, 233, 233);
+    background-color: #8f8689;
+} */
+
+/* disable border line on click */
+button:focus {
+  outline: none !important;
+}
+
+.profileSubmit {
+    position: relative !important;
+    left: 5px !important;
+    bottom: -20px !important;
+    height: 50px !important;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}

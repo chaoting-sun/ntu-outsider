@@ -8,7 +8,9 @@
     width: 83%;
     justify-content: start;
     text-align: center;
-    z-index: 0;  
+    z-index: 0; 
+    overflow: scroll; 
+    min-height: 100%;
 }
 
 
@@ -194,5 +196,6 @@ label {
 .inputItem {
     display: flex;
     flex-direction: row;
+    padding: 5px;
 }
 

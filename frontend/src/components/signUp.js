@@ -9,9 +9,9 @@ import '../css/signIn.css'
 // ref: https://ant.design/components/space
 
 const SignUp = ({ handleSignUp }) => {
-  const [userName, setUserName] = useState();
-  const [account, setAccount] = useState();
-  const [password, setPassword] = useState();
+  const [userName, setUserName] = useState("");
+  const [account, setAccount] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <div className='LogInFormWrapper'>
@@ -49,18 +49,22 @@ const SignUp = ({ handleSignUp }) => {
         />
         <Button
           type="primary"
-          htmlType="submit"
           style={{
             backgroundColor: '#787b7d',
             fontSize: '1.6em',
             width: '360px',
             height: '50px'
           }}
-          onClick={async () => await handleSignUp({
-            inAccount: account,
-            inUserName: userName, 
-            inPassword: password
-          })}
+          onClick={async () => {
+            await handleSignUp({
+              inAccount: account,
+              inUserName: userName,
+              inPassword: password
+            })
+            setUserName("");
+            setAccount("");
+            setPassword("");
+          }}
         >
           Sign Up
         </Button>
