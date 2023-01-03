@@ -12,6 +12,7 @@ import MyPostPage  from './containers/myPostPage';
 import Navbar from './components/navigationBar';
 import EditPostPage from './containers/editPostPage';
 import ViewPostPage from './containers/viewPostPage';
+import MailPage from './containers/mailPage';
 import SearchPostPage from './containers/searchPostPage';
 import MyProfilePage from './containers/myProfilePage';
 
@@ -22,7 +23,7 @@ import MyProfilePage from './containers/myProfilePage';
 // ref: https://stackoverflow.com/questions/34607841/react-router-nav-bar-example
 // ref: https://blog.webdevsimplified.com/2022-07/react-router/
 
-function App() {
+function App() {  
   return (
     <OutsiderProvider>
       <Router>
@@ -37,6 +38,7 @@ function App() {
             <Route path="/myPostPage" element={<MyPostPage />} />
             <Route path="/editPostPage" element={<EditPostPage />} />
             <Route path="/viewPostPage" element={<ViewPostPage />} /> {/*包含看自己貼文與別人貼文*/ }
+            <Route path="/mailPage" element={<MailPage />} />
             <Route path="/searchPostPage" element={<SearchPostPage />} />
             <Route path="/myProfilePage" element={<MyProfilePage />} />
           </Route>
