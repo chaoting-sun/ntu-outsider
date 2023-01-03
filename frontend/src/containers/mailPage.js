@@ -21,8 +21,12 @@ const Footer = styled.div`
     height: 20px;    
 `;
 
+const SendButton = styled(IconButton)`
+   width: 50px !important; 
+`
+
 //For test
-const message = [{me:false, msg: "hollow"}, {me:true, msg: "heyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"},
+const message = [{me:false, msg: "hollow"}, {me:true, msg: "heyyyyyyyyyheyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"},
 {me:false, msg: "hollow"}, {me:false, msg: "hollow"}, {me:false, msg: "hollow"}, {me:false, msg: "hollow"}, ]
 const users = ["Amy", "Ric", "Bob", "mom", "dad", "Amy", "Ric", "Bob", "mom", "dad"]
 //test end
@@ -59,9 +63,9 @@ const MailPage =  () => {
                 </ChatBoxWrapper>
                 <div className='sendContainer'>
                     <input className='messageInput'/>
-                    <IconButton style = {{outline: 0}}>
-                        <SendIcon  />
-                    </IconButton>
+                    <SendButton>
+                        <SendIcon />        
+                    </SendButton>
                 </div>
             </div>
         </div>

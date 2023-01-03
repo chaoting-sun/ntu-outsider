@@ -13,7 +13,7 @@ import { ListItemButton } from '@mui/material';
 
 export default function AlignItemsList({chats}) {
   return (
-    <List sx={{ width: '100%', height: '100%', bgcolor: 'background.paper' }}>
+    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {chats.map( e => {
             return(
                 <>
@@ -27,10 +27,6 @@ export default function AlignItemsList({chats}) {
             )
             
         })}
-      
-      
-      
-      
     </List>
     
   );
