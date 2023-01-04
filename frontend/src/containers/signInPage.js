@@ -61,6 +61,7 @@ const SignInPage = () => {
 
   const handleSignUp = async ({ inAccount, inUserName, inPassword }) => {
     const hashedPassword = hashPassword(inPassword);
+
     const { data } = await createAccount({
       variables: {
         account: inAccount,

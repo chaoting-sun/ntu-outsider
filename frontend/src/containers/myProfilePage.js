@@ -17,13 +17,13 @@ import Tag from "../components/tag";
 import { useOusider } from "./hooks/useOusider";
 import { userExamples } from './db'
 import '../css/mainPage.css'
-import { USER_QUERY } from './graphql/query';
 import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
 import { hashPassword } from '../utils/hash';
 import {
   UPDATE_PASSWORD_MUTATION,
-  UPDATE_USER_MUTATION
-} from './graphql/mutation';
+  UPDATE_USER_MUTATION,
+  USER_QUERY
+} from './graphql/index';
 
 const { TextArea } = Input;
 
@@ -32,13 +32,15 @@ const PostCard = styled(Card)`
   top: -15vh;
 `
 
-const NameButton = styled(Button)`
+const Title = styled.div`
   {
     color: #20B2AA !important;
     margin-top:3vh !important;
-    font-size: 35px !important;
+    margin-left:5vh !important;
+    margin-bottom: 3vh;
+    font-size: 30px !important;
     display: flex !important;
-    left: 3vh !important;
+    font-weight: 500;
   }
 `
 
@@ -55,15 +57,56 @@ const ValidateButton = styled(Button)`
 
 const SendButton = styled(Button)`
   {
-    margin-top:15px !important;
-    font-size: 25px !important;
+    margin-top:20px !important;
+    font-size: 15px !important;
     display: flex !important;
     justify-content: center !important;
-    bottom: 5vh !important;
-    left: 80% !important;
-    width: 90px !important;
-    height: 50px !important;
+    padding: 5px !important; 
+    /*bottom: 5vh !important;*/
+    left: 50% !important;
+    width: 15% !important;
+    height: 40px !important;
+    position:relative;
+    border-radius: 15px !important;
   }
+`
+
+const SendButton2 = styled(Button)`
+  {
+    margin-top:20px !important;
+    font-size: 15px !important;
+    display: flex !important;
+    justify-content: center !important;
+    padding: 5px !important; 
+    /*bottom: 5vh !important;*/
+    left: 35% !important;
+    width: 15% !important;
+    height: 40px !important;
+    position:relative;
+    border-radius: 15px !important;
+  }
+`
+
+const FormContainer = styled.div`
+  display:flex;
+  flex-direction: column; 
+  width: 80%; 
+`
+
+const ProfileForm = styled.form`
+  width: 80%;  
+`
+
+const PasswordForm = styled.form`
+  margin-top: 20px;
+`
+
+const SecretTitle = styled.div`
+  font-size: 20px;
+  font-weight: 400;
+  display: flex;
+  margin-left:1vh;
+  margin-bottom: 1vh;
 `
 
 const MyProfilePage = () => {
@@ -76,25 +119,33 @@ const MyProfilePage = () => {
   const [queryUser, { data: UserByQuery, loading }] = useLazyQuery(USER_QUERY);
   const [updateUser] = useMutation(UPDATE_USER_MUTATION);
   const [updatePassword] = useMutation(UPDATE_PASSWORD_MUTATION);
+  //console.log(account);
+  //console.log(username);
+  const form1 = useForm()
+  const form2 = useForm()
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors }
-  } = useForm();
+  console.log(UserByQuery);
+
+
+  //const form1 = useForm({ name: 'form1' });
 
   useEffect(() => {
     if (!authenticated) navigate('/logIn');
   }, [])
-
-  const onSubmit = async (data) => {
+  
+  //更改name, account
+  const onSubmit1 = async (data) => {
     console.log('data:', data);
-    const user = await updateUser(userId, data.username, data.account);
+    const user = await updateUser({variables: {
+      userId,
+      name: data.username,
+      account: data.userAccount
+    }});
+    console.log(user);
 
     if (user) {
-      setUsername(watch("username"));
-      setAccount(watch("account"));
+      setUsername(form1.watch("username"));
+      setAccount(form1.watch("userAccount"));
 
       displayStatus({
         type: 'success',
@@ -111,18 +162,28 @@ const MyProfilePage = () => {
   const onError = () => {
   }; // your form submit function which will invoke after successful validation
 
-  const handleValidatePassword = async () => {
-    if (watch('password') === "") {
+  const handleValidatePassword = async (data) => {
+    if (form2.watch('password') === "") {
       displayStatus({
         "type": "fail",
         "msg": "Please enter password!"
       })
     } else {
-      const hashedPassword = hashPassword(watch("password"));
-      await queryUser(watch("account"), hashedPassword);
+      //const hashedPassword = hashPassword(data.password);
+      //console.log(hashedPassword);
+      queryUser({
+        variables: {password: data.password, account}, 
+      });
     }
-  }
+    //console.log(UserByQuery);
 
+    
+  }
+  const onSubmit2 = async(data) => {
+    //console.log(data);
+    handleValidatePassword(data);
+    //handleInputNewPassword(data)
+  }
   useEffect(() => {
     if (UserByQuery === undefined) return;
     if (UserByQuery !== null) {
@@ -140,19 +201,19 @@ const MyProfilePage = () => {
   }, [UserByQuery])
 
   const handleInputNewPassword = async () => {
-    if (watch('newPassword') === "") {
+    if (form2.watch('newPassword') === "") {
       displayStatus({
         "type": "fail",
         "msg": "Please enter new password"
       })
     } else {
-      const hashedPassword = hashPassword(watch("password"));
-      const hashedNewPassword = hashPassword(watch("newPassword"));
+      const hashedPassword = hashPassword(form2.watch("password"));
+      const hashedNewPassword = hashPassword(form2.watch("newPassword"));
 
       const res = await updatePassword(userId, hashedPassword, hashedNewPassword);
       if (res) {
         displayStatus({
-          "type": "fail",
+          "type": "success",
           "msg": "Update password successfully!"
         })
       } else {
@@ -163,79 +224,111 @@ const MyProfilePage = () => {
       }
     }
   }
-
+  console.log(form1.errors);
   return (
     <>
       <StylesProvider injectFirst>
         <div className='myProfilePageContainer'>
           <PostCard sx={{ minWidth: 500, width: 850 }} style={{ height: 560 }}>
             <CardContent>
-              <NameButton>個人資訊</NameButton>
-              <form className="profileFormSize">
-                {/* include validation with required or other standard HTML validation rules */}
-                <div className='inputItem'>
-                  <label>使用者名稱 </label>
-                  <input
-                    {...register("username", { required: "Username is required" })}
-                    defaultValue={username}
-                    className="detailInput"
-                  />
-                </div>
-                {/* errors will return when field validation fails  */}
-                {errors.userName ? <p className='error'>{errors.userName.message}</p> : null}
-                <div className='inputItem'>
-                  <div className="subInputItem">
-                    <label>使用者帳號 </label>
+              <Title>個人資訊</Title>
+              <FormContainer>
+                <ProfileForm>
+                  {/* include validation with required or other standard HTML validation rules */}
+                  <div className='inputItem'>
+                    <label>使用者名稱 </label>
                     <input
-                      {...register("userAccount", { required: "User  is required" })}
-                      defaultValue={account}
-                      className="detailInput" />
+                      {...form1.register("username", { required: "Username is required" })}
+                      defaultValue={username}
+                      className="detailInput"
+                    />
                   </div>
-                </div>
-                {/* errors will return when field validation fails  */}
-                {errors.userAccount ? <p className='error'>{errors.userAccount.message}</p> : null}
+                  {/* errors will return when field validation fails  */}
+                  {form1.errors ? <p className='error'>{form1.errors.username.message}</p> : null}
+                  <div className='inputItem'>
+                    <div className="subInputItem">
+                      <label>使用者帳號 </label>
+                      <input
+                        {...form1.register("userAccount", { required: "User  is required" })}
+                        defaultValue={account}
+                        className="detailInput" />
+                    </div>
+                  </div>
+                  {/* errors will return when field validation fails  */}
+                  {form1.errors ? <p className='error'>{form1.errors.userAccount.message}</p> : null}
+                  {/*
+                  {
+                    validated ?
+                      <div className='inputItem'>
+                        <label>使用者密碼 </label>
+                        <input {...register("newPassword")}
+                          type="password"
+                          className="detailInput"
+                        />
+                        <ValidateButton onClick={handleInputNewPassword}>輸入新密碼</ValidateButton>
+                      </div> : null
+                  }*/}
+                </ProfileForm>
+                {/*<div className='profileSubmit'>
+                  <input type="submit" />
+                </div> */}
+                <SendButton
+                  variant="contained"
+                  sx={{
+                    color: 'white',
+                    backgroundColor: '#919090',
+                    ':hover': {
+                      backgroundColor: '#878484'
+                    },
+                    ':focus': {
+                      border: 'none'
+                    }
+                  }}
+                  onClick={(e) => form1.handleSubmit(onSubmit1, onError)(e)}
+                >
+                  Save
+                </SendButton>
+              </FormContainer>
+              <PasswordForm>
+                <SecretTitle>修改密碼</SecretTitle>
                 <div className='inputItem'>
-                  <label>使用者密碼 </label>
-                  <input {...register("password",
+                  <label>原始密碼 </label>
+                  <input {...form2.register("password",
                     { required: "Password is required" })}
                     type="password"
                     className="detailInput"
                   />
-                  <ValidateButton onClick={handleValidatePassword}>確認密碼</ValidateButton>
+                  {/*<ValidateButton onClick={handleValidatePassword}>確認</ValidateButton>*/}
                 </div>
-                {errors.password ? <p className='error'>{errors.password.message}</p> : null}
-                {
-                  validated ?
-                    <div className='inputItem'>
-                      <label>使用者密碼 </label>
-                      <input {...register("newPassword")}
-                        type="password"
-                        className="detailInput"
-                      />
-                      <ValidateButton onClick={handleInputNewPassword}>輸入新密碼</ValidateButton>
-                    </div> : null
-                }
-              </form>
-              {/* <div className='profileSubmit'>
-                <input type="submit" />
-              </div> */}
+                {form2.errors ? <p className='error'>{form2.errors.password.message}</p> : null}
+                <div className='inputItem'>
+                  <label>新密碼 </label>
+                  <input {...form2.register("newPassword",
+                    { required: "New password is required" })}
+                    type="password"
+                    className="detailInput"
+                  />
+                  {/*<ValidateButton onClick={handleValidatePassword}>確認</ValidateButton>*/}
+                </div>
+                {form2.errors ? <p className='error'>{form2.errors.password.message}</p> : null}
+              </PasswordForm>
+              <SendButton2
+                  variant="contained"
+                  sx={{
+                    color: 'white',
+                    backgroundColor: '#919090',
+                    ':hover': {
+                      backgroundColor: '#878484'
+                    },
+                    ':focus': {
+                      border: 'none'
+                    }
+                  }}
+                  onClick={(e) => form2.handleSubmit(onSubmit2, onError)(e)}
+                >
+                  確認
+                </SendButton2>
             </CardContent>
-            <SendButton
-              variant="contained"
-              sx={{
-                color: 'white',
-                backgroundColor: '#919090',
-                ':hover': {
-                  backgroundColor: '#878484'
-                },
-                ':focus': {
-                  border: 'none'
-                }
-              }}
-              onClick={(e) => handleSubmit(onSubmit, onError)(e)}
-            >
-              更新
-            </SendButton>
           </PostCard>
         </div>
       </ StylesProvider>
