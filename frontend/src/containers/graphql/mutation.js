@@ -170,6 +170,7 @@ export const CREATE_CHATBOX_MUTATION = gql`
   mutation createChatBox($name: ID!, $to: ID!) {
     createChatBox(name: $name, to: $to) {
       name
+      namesOfTalkers
       messages {
         sender
         body
