@@ -14,6 +14,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import { ListItemButton } from '@mui/material';
+import { useOusider } from './hooks/useOusider'
 
 const ChatBoxWrapper = styled.div`
     min-height: 80%;
@@ -34,9 +35,9 @@ const SendButton = styled(IconButton)`
 `
 
 //For test
-const message = [{me:false, msg: "hollow"}, {me:true, msg: "heyyyyyyyyyheyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"},
-{me:false, msg: "hollow"}, {me:false, msg: "hollow"}, {me:false, msg: "hollow"}, {me:false, msg: "hollow"}, ]
-const users = ["Amy", "Ric", "Bob", "mom", "dad", "Amy", "Ric", "Bob", "mom", "dad"]
+//const message = [{me:false, msg: "hollow"}, {me:true, msg: "heyyyyyyyyyheyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"},
+//{me:false, msg: "hollow"}, {me:false, msg: "hollow"}, {me:false, msg: "hollow"}, {me:false, msg: "hollow"}, ]
+//const users = ["Amy", "Ric", "Bob", "mom", "dad", "Amy", "Ric", "Bob", "mom", "dad"]
 //test end
 
 //Test subscription
@@ -45,15 +46,16 @@ const users = ["Amy", "Ric", "Bob", "mom", "dad", "Amy", "Ric", "Bob", "mom", "d
 //test end
 
 const MailPage =  () => {
-    const me = {
+    /*const me = {
         _id: "63b54740fb8d79ecc3f215f9",
         name: "AAAA"
-    }
+    }*/
     const [messages, setMessages] = useState([]);
     const [chatBoxes, setChatBoxes] = useState([]);
     const [myMsg, setMyMsg] = useState("");
     const [friendId, setFriendId] = useState("");
     const [friendName, setFriendName] = useState("");
+    const {userId, userName} = useOusider();
     const msgFooter = useRef();
     const scrollToBottom = () => {
         msgFooter.current?.scrollIntoView({ behavior: 'smooth', block: 'start'})
@@ -65,24 +67,24 @@ const MailPage =  () => {
         //console.log(box);
         let name = "";
             for(let i = 0; i < 2; i += 1) {
-                if(box.namesOfTalkers[i] !== me.name)
+                if(box.namesOfTalkers[i] !== userName)
                     name = box.namesOfTalkers[i]
             }
             if(name === "")
-                name = me.name;
+                name = userName;
         setFriendName(name);
         let ids = box.name.split("_");
         for (let i = 0; i < 2; i += 1) {
-            if(ids[i] !== me._id)
+            if(ids[i] !== userId)
                 setFriendId(ids[i]);
         }
         setMessages(box.messages);
     }
 
     const HandleSend = async() => {
-        console.log(me._id, friendId, myMsg);
+        //console.log(me._id, friendId, myMsg);
         let a = await sendMessage({variables: {
-            name: me._id,
+            name: userId,
             to: friendId,
             message: myMsg
         }})
@@ -92,7 +94,7 @@ const MailPage =  () => {
 
 
     const { loading, error, data: boxesData, subscribeToMore} = useQuery(CHATBOXES_QUERY, {
-        variables: {userId: me._id}, 
+        variables: {userId}, 
      });
     //console.log(error);
 
@@ -103,7 +105,7 @@ const MailPage =  () => {
     useEffect(() => { 
         subscribeToMore({
             document: MESSAGE_SUBSCRIPTION,
-            variables: { id: me._id },
+            variables: { id: userId },
             updateQuery: (prev, { subscriptionData }) => {
             console.log(subscriptionData);
             if (!subscriptionData.data) return prev;
@@ -115,8 +117,8 @@ const MailPage =  () => {
                 queryChatBoxes: 
                     prev.queryChatBoxes.map(box => {
                         if(box.name === boxToPut) {
-                            const newBox = { ...box, messages: [...box.messages, newMessage] };
-                            setMessages([...box.messages, newMessage])
+                            const newBox = { ...box, messages: [newMessage, ...box.messages] };
+                            setMessages([newMessage, ...box.messages])
                             console.log(newBox);
                             return(newBox);
                         }
@@ -133,7 +135,7 @@ const MailPage =  () => {
         //console.log("subscribe");
         subscribeToMore({
             document: CHATBOX_SUBSCRIPTION,
-            variables: { id: me._id },
+            variables: { id: userId },
             updateQuery: (prev, { subscriptionData }) => {
             if (!subscriptionData.data) return prev;
             //console.log(subscriptionData.data.subscribeChatBox);
@@ -172,11 +174,11 @@ const MailPage =  () => {
                         {chatBoxes.map( (e) => {
                             let name = "";
                             for(let i = 0; i < 2; i += 1) {
-                                if(e.namesOfTalkers[i] !== me.name)
+                                if(e.namesOfTalkers[i] !== userName)
                                     name = e.namesOfTalkers[i]
                             }
                             if(name === "")
-                                name = me;
+                                name = userName;
                             return(
                                 <>
                                     <ListItemButton>
@@ -200,7 +202,7 @@ const MailPage =  () => {
                 <ChatBoxWrapper>
                     {
                         messages.map(({sender, body}, i) => (
-                            <Message isMe = {me._id === sender} message = {body} key = {i} />
+                            <Message isMe = {userId === sender} message = {body} key = {i} />
                         ))
                     }
                     <Footer ref = {msgFooter}></Footer>
