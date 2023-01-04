@@ -1,5 +1,3 @@
-import bcrypt from 'bcrypt';
-
 const Mutation = {
   // 資料存在之後，應該有更好的寫法 send error
 
