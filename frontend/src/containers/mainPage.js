@@ -12,68 +12,76 @@ import MainLayout from '../components/mainLayout'
 import styled from 'styled-components'
 import '../css/primaryLayout.css'
 import { postExamples } from './db'
-import PostLayout from '../components/postLayout'
+import PostDecorator from '../components/postDecorator'
+import EditPostPage from './editPostPage'
 
 
-const PostContainer = styled.div`
-  margin-top: 20px;
-  margin-bottom: 20px;
-`
-
-/* graphql query */
+/* graphql query in useOutsider */
 const queryPost = async () => {
-  // db <- queryPost
-  // db -> postExamples 
   return postExamples;
 }
 
 const MainPage = () => {
   const { authenticated } = useOusider();
-  const [existingPost, setExistingPost] = useState([]);
+  const [post, setPost] = useState([]);
   const [postDom, setPostDom] = useState([]);
+  const [edit, setEdit] = useState(false);
+  const [editPostId, setEditPostId] = useState("");
+
+  const handleQueryPost = async () => {
+    const fetchedPost = await queryPost();
+    setPost(fetchedPost);
+  }
 
   useEffect(() => {
+    // fetch all post from backend
     handleQueryPost()
       .catch(console.error);
   }, [])
 
-  useEffect(() => {
-    if (existingPost.length) {
-      setPostDom(existingPost.map((post) => (
-        <PostContainer key={post.postId}>
-          <PostLayout
-            title={post.title}
-            posterName={post.posterName}
-            className={post.className}
-            teacherName={post.teacherName}
-            classNo={post.classNo}
-            deadline={post.deadline}
-            condition={post.condition}
-            content={post.content}
-            leftMembersRequired={post.leftMembersRequired}
-            tags={post.tags}
-          />
-        </PostContainer>
-      )))
-    } 
-  }, [existingPost])
-
-  const handleQueryPost = async () => {
-    const fetchedPost = await queryPost();
-    setExistingPost(fetchedPost);
+  const handleDeletePost = (deletedPostId) => {
+    setPostDom(postDom.filter(({ id }) => (id !== deletedPostId)));
   }
 
+  const fetchEditedPost = (editedPostInfo) => {
+    
+  }
+
+  const handlePostOperation = (targetPostId, type) => {
+    switch (type) {
+      case 'delete':
+        handleDeletePost(targetPostId);
+        break;
+      case 'edit':
+        setEdit(true);
+        setEditPostId(targetPostId);
+        break;
+      default:
+        console.log("only support edit and delete post!");
+    }
+  }
+
+  useEffect(() => {
+    // create react DOM of post
+    if (post.length) {
+      setPostDom(PostDecorator(post, handlePostOperation));
+    }
+  }, [post])
+
   return (
-    <>
-      <div className="mainPageContainer">
-        { postDom }
+    edit ? (
+      <div className='editPostPageContainer'>
+        <EditPostPage
+          info={post.find(({ _id }) => editPostId === _id)}
+          fetchEditedPost={fetchEditedPost}
+        />
       </div>
-    </>
+    ) : (
+      <div className='mainPageContainer'>
+        {postDom.map(({ dom }) => dom)}
+      </div>
+    )
   )
 }
-
-
-
-
 
 export default MainPage

@@ -16,7 +16,6 @@ import { useState, useEffect } from "react";
 import Tag from "../components/tag";
 import { useOusider } from "./hooks/useOusider";
 import { userExamples } from './db'
-import PostLayout from '../components/postLayout'
 import '../css/mainPage.css'
 
 

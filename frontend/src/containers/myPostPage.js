@@ -41,7 +41,6 @@ const MyPostPage = () => {
             deadline={post.deadline}
             condition={post.condition}
             content={post.content}
-            leftMembersRequired={post.leftMembersRequired}
             tags={post.tags}
           />
         </PostContainer>

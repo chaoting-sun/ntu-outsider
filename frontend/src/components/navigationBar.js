@@ -12,6 +12,10 @@ const NavBar = () => {
     displayStatus } = useOusider();
   const navigate = useNavigate();
 
+  const handleOnClickMail = () => {
+    navigate("/mailPage")
+  }
+
   const handleOnClickLogInOut = (action) => {
     // logIn or logOut
     console.log("action:", action);
@@ -59,6 +63,7 @@ const NavBar = () => {
     <>
       <HeaderBar
         authenticated={authenticated}
+        handleOnClickMail={handleOnClickMail}
         handleOnClickLogInOut={handleOnClickLogInOut}
       />
       <MenuBar
