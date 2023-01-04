@@ -13,7 +13,7 @@ export const CHATBOX_QUERY = gql`
 `;
 export const CHATBOXES_QUERY = gql`
   query queryChatBoxes($userId: ID!) {
-    queryChatBoxes(data:{userId: $userId}) {
+    queryChatBoxes(userId: $userId) {
       name
       messages {
         sender

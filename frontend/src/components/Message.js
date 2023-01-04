@@ -4,7 +4,7 @@ const StyledMessage = styled.div`
     display: flex;
     align-items: center;
     flex-direction: ${({isMe}) => (isMe ? 'row-reverse' : 'row')};
-    margin: 8px 0px;
+    margin: 3px 0px;
     padding: 8px;
 
     & p:first-child {

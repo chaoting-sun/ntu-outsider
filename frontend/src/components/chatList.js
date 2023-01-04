@@ -11,15 +11,16 @@ import { ListItemButton } from '@mui/material';
 
 
 
-export default function AlignItemsList({ chats }) {
+export default function AlignItemsList({chats, OpenChatBox}) {
   return (
     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        {chats.map( e => {
+        {chats.map( (e) => {
+            //console.log(i);
             return(
                 <>
-                    <ListItemButton>
+                    <ListItemButton onClick={() => OpenChatBox(e)}>
                         <ListItem alignItems="flex-start">
-                            <ListItemText primary= {e}/>
+                            <ListItemText primary= {e.name}/>
                         </ListItem>
                     </ListItemButton>
                     <Divider/>
