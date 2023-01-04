@@ -64,7 +64,7 @@ const SignInPage = () => {
     navigate('/') // HomePage
   }
 
-  const handleLogIn = async ({ inAccount, inPassword }) => {
+  const handleLogIn = async ({ inAccount, inPassword }) => {  
     const user = await queryUser(inAccount, inPassword);
 
     if (user) {
