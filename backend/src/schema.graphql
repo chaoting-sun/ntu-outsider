@@ -35,6 +35,7 @@ type User {
 
 type ChatBox {
   name: String!
+  namesOfTalkers: [String!]
   messages: [Message]
 }
 
