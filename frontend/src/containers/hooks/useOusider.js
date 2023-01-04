@@ -6,9 +6,12 @@ import { postExamples } from "../db"
 import { USER_QUERY } from '../graphql/query';
 
 
-/*async function in useEffect:
-  ref: https://devtrium.com/posts/async-functions-useeffect
-*/
+// How to Persist a Logged-in User in React
+// ref: https://www.freecodecamp.org/news/how-to-persist-a-logged-in-user-in-react/
+const USERID_KEY = "save-userId";
+const USERNAME_KEY = "save-username";
+const ACCOUNT_KEY = "save-account";
+const AUTHENTICATED_KEY = "save-autheticated"
 
 const OusiderContext = createContext({
   userId: "",
@@ -26,22 +29,35 @@ const OusiderContext = createContext({
   displayStatus: () => { },
 })
 
-const LOCALSTORAGE_KEY = "save-username";
-
 const OutsiderProvider = (props) => {
-  const savedUsername = localStorage.getItem(LOCALSTORAGE_KEY);
-  const [userId, setUserId] = useState(null);
-  const [account, setAccount] = useState("");
-  const [preferTags, setPreferTags] = useState([]);
+  const savedUserId = localStorage.getItem(USERID_KEY);
+  const savedUsername = localStorage.getItem(USERNAME_KEY);
+  const savedAccount = localStorage.getItem(ACCOUNT_KEY);
+  const savedAuthenticated = localStorage.getItem(AUTHENTICATED_KEY);
+  const [userId, setUserId] = useState(savedUserId || null);
   const [username, setUsername] = useState(savedUsername || "");
-  const [authenticated, setAuthenticated] = useState(false);
-
+  const [account, setAccount] = useState(savedAccount || "");
+  const [authenticated, setAuthenticated] = useState(savedAuthenticated || false);
+  const [preferTags, setPreferTags] = useState([]);
   const [currentPage, setCurrentPage] = useState("MainPage");
 
   useEffect(() => {
-    if (authenticated)
-      localStorage.setItem(LOCALSTORAGE_KEY, username);
+    if (authenticated) {
+      localStorage.setItem(USERID_KEY, userId);
+      localStorage.setItem(USERNAME_KEY, account);
+      localStorage.setItem(ACCOUNT_KEY, username);
+      localStorage.setItem(AUTHENTICATED_KEY, authenticated);
+    }
   }, [authenticated])
+
+  const autheticateAccount = (user) => {
+    setAuthenticated(true);
+    localStorage.setItem("authenticated", true);
+    setUserId(user._id)
+    setAccount(user.account)
+    setUsername(user.name);
+    console.log('authenticate account:', user._id, user.account, user.name)
+  }
 
   const displayStatus = (s) => {
     if (s.msg) {
@@ -78,6 +94,7 @@ const OutsiderProvider = (props) => {
         currentPage,
         setCurrentPage,
         displayStatus,
+        autheticateAccount
       }}
       {...props}
     />
