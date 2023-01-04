@@ -1,9 +1,6 @@
-import { Space, Button, Checkbox, Form, Input } from 'antd';
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import styled from 'styled-components'
-import '../css/signIn.css'
+import { Space, Button, Input } from 'antd';
 import { useState } from 'react';
-
+import '../css/signIn.css';
 
 // antd - Space
 // ref: https://ant.design/components/space
@@ -16,6 +13,7 @@ const LogIn = ({ handleLogIn }) => {
     <div className='LogInFormWrapper'>
       <Space direction='vertical' size='large'>
         <Input
+          value={account}
           placeholder='account'
           onChange={(e) => setAccount(e.target.value)}
           style={{
@@ -25,6 +23,7 @@ const LogIn = ({ handleLogIn }) => {
           }}
         />
         <Input
+          value={password}
           placeholder='password'
           type='password'
           onChange={(e) => setPassword(e.target.value)}
@@ -37,7 +36,6 @@ const LogIn = ({ handleLogIn }) => {
 
         <Button
           type="primary"
-          // htmlType="submit"
           style={{
             backgroundColor: '#787b7d',
             fontSize: '2em',
@@ -45,10 +43,7 @@ const LogIn = ({ handleLogIn }) => {
             height: '60px'
           }}
           onClick={async () => {
-            await handleLogIn({
-              inAccount: account,
-              inPassword: password
-            })
+            await handleLogIn({ inAccount: account, inPassword: password })
             setAccount("");
             setPassword("");
           }}

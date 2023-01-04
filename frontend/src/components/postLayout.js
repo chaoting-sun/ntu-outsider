@@ -72,21 +72,6 @@ const NameButton = styled(Buttonm)`
   display: flex !important;
   left: 3vh !important;
 `
-/*
-postId={post._id}
-posterName={post.author.name}
-posterAccount={post.author.account}
-title={post.title}
-classNo={post.classNo}
-className={post.className}
-teacherName={post.teacherName}
-content={post.content}
-condition={post.condition}
-deadline={post.deadline}
-tags={post.tags}
-handleEditPost={handleEditPost}
-*/
-
 const deletePost = async () => {
   return "successfully delete post";
 }
@@ -108,12 +93,10 @@ const PostLayout = ({ post, handlePostOperation }) => {
   } = useForm();
 
   useEffect(() => {
-    console.log("post->", post);
     setInfo(post);
   }, []);
 
   useEffect(() => {
-    console.log("info->lll", info);
     if (info) setMe(info.author.account === account);
   }, [info])
 
@@ -155,7 +138,6 @@ const PostLayout = ({ post, handlePostOperation }) => {
       {
         info === null ? null :
           <PostCard sx={{ minWidth: 400 }}>
-            {console.log('info:', info)}
             <ButtonBase
             // className={props.classes.cardAction}
             // onClick={event => { ... }}

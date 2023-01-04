@@ -26,56 +26,22 @@ const OusiderContext = createContext({
   displayStatus: () => { },
 })
 
-const LOCALSTORAGE_KEY = 'save-username';
+const LOCALSTORAGE_KEY = "save-username";
 
 const OutsiderProvider = (props) => {
-  const saveUsername = localStorage.getItem(LOCALSTORAGE_KEY);
+  const savedUsername = localStorage.getItem(LOCALSTORAGE_KEY);
   const [userId, setUserId] = useState("");
   const [account, setAccount] = useState("");
   const [preferTags, setPreferTags] = useState([]);
-  const [username, setUsername] = useState(saveUsername || "");
+  const [username, setUsername] = useState(savedUsername || "");
   const [authenticated, setAuthenticated] = useState(false);
 
   const [currentPage, setCurrentPage] = useState("MainPage");
-  const [mainPagePost, setMainPagePost] = useState([]);
-  const [searchPagePost, setSearchPagePost] = useState([]);
-  const [followedPagePost, setFollowedPagePost] = useState([]);
-  const [myPostPagePost, setMyPostPagePost] = useState([]);
-  const [postDom, setPostDom] = useState([]);
 
   useEffect(() => {
     if (authenticated)
       localStorage.setItem(LOCALSTORAGE_KEY, username);
   }, [authenticated])
-
-  // useEffect(() => {
-  //   switch (currentPage) {
-  //     case "MainPage":
-  //       setPostDom();
-  //       break;
-  //   }
-  // }, [mainPagePost, searchPagePost]);
-
-
-  // const ViewPost = (posts) => {
-  //   return posts.map((post) => (
-  //     <PostContainer key={post.postId}>
-  //       <PostLayout
-  //         postId={post.postId}
-  //         posterName={post.author.name}
-  //         posterAccount={post.author.account}
-  //         title={post.title}
-  //         classNo={post.classNo}
-  //         className={post.className}
-  //         teacherName={post.teacherName}
-  //         content={post.content}
-  //         condition={post.condition}
-  //         deadline={post.deadline}
-  //         tags={post.tags}
-  //       />
-  //     </PostContainer>
-  //   ))
-  // }
 
   const displayStatus = (s) => {
     if (s.msg) {
