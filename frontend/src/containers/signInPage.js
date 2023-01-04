@@ -37,7 +37,7 @@ const SignInPage = () => {
     })
     console.log('sign up result:', data.queryUser)
     if (data.queryUser !== null) {
-      autheticateAccount(data);
+      autheticateAccount(data.queryUser);
       displayStatus({
         type: "success",
         msg: "log in successfully",

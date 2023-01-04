@@ -9,7 +9,7 @@
     justify-content: start;
     text-align: center;
     z-index: 0; 
-    overflow: scroll; 
+    /* overflow: scroll;  */
     min-height: 100%;
 }
 
