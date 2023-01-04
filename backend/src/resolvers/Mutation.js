@@ -15,7 +15,7 @@ const Mutation = {
         console.log(
           "This account exists, please choose another account or log in your account."
         );
-        return;
+        return null;
       } else {
         userExisitng = await new UserModel({
           account: account,
