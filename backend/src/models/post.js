@@ -13,7 +13,7 @@ const PostSchema = new Schema(
     content: { type: String, required: true },
     // condition 是招收組員人數
     condition: { type: String ,required: true},
-    deadline: { type: Date },
+    deadline: { type: String },
     tag: [{type: String}],
   },
   {

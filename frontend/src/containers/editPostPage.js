@@ -145,7 +145,7 @@ const EditPostPage = () => {
     if (outData) {
       displayStatus({
         'type': 'success',
-        'msg': 'successful to save post!',
+        'msg': 'create a post!',
       })
       setUpdatedPost(outData.data.createPost);
       setSentPost(true);
@@ -157,11 +157,12 @@ const EditPostPage = () => {
     }
   }; // your form submit function which will invoke after successful validation
 
-  useEffect(() => {
-    if (sentPost) {
-      navigate(-1, { variables: updatedPost });
-    }
-  }, [sentPost])
+  // useEffect(() => {
+  //   if (sentPost) {
+  //     navigate(-1, { state: updatedPost });
+  //     setSentPost(false);
+  //   }
+  // }, [sentPost])
 
   useEffect(() => {
     if (sentPost) {

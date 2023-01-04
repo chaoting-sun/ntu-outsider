@@ -1,5 +1,4 @@
 .sideLayoutSider {
-  background: #f0f1f5;
   position: fixed;
   top: 72px;
   left: 0;
@@ -12,7 +11,6 @@
 }
 
 .sideLayoutSiderChildren {
-  background: #f0f1f5; /* just for check */
   display: flex;
   flex-direction: column;
   justify-content: space-between;

@@ -10,25 +10,25 @@ import SearchBox from './searchBox';
 // ref: https://ant.design/components/menu
 
 const items = [
-  { label: "珍藏", key: "savedPostPage" },
-  { label: "追蹤", key: "followedPostPage" },
-  { label: "我的貼文", key: "myPostPage" },
-  { label: "新增貼文", key: "editPostPage" },
+  { label: "追蹤", key: "followedPost" },
+  { label: "我的貼文", key: "uploadedPost" },
+  { label: "新增貼文", key: "editPost" },
 ]
 
-const MenuBar = ({ handleConditionedSearch, handleMenuNavigate }) => {
+const MenuBar = ({ handleQueryPost, handleMenuOperation }) => {
   return (
     <aside className='sideLayoutSider'>
       <div className='sideLayoutSiderChildren'>
-        <SearchBox handleConditionedSearch={handleConditionedSearch} />
+        <SearchBox handleQueryPost={handleQueryPost} />
         <div className='menuContainer'>
           <Menu
-            onClick={(e) => handleMenuNavigate(e.key)}
+            onClick={(e) => handleMenuOperation(e.key)}
             style={{
               color: "#4a3935",
-              backgroundColor: "#f0f1f5",
+              backgroundColor: "#e9e9e9",
               fontSize: '1.15em',
               width: 256,
+              border: 'none'
             }}
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}

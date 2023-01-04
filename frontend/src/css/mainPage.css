@@ -3,9 +3,10 @@
   margin-top: 72px;
   left: 256px;
   right: 0;
+  /* bottom: 0; */
   padding: 10em;
-  background-color: rgb(233, 233, 233);
-  height: auto;
+  /* background-color: rgb(233, 233, 233); */
+  /* height: calc(100vh - 72px); */
   width: calc(100% - 256px);
   /* min-height: 100%; */
   display: flex;
