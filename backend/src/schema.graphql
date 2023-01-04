@@ -1,11 +1,11 @@
 type Query {
   user(name: String!): [User!] # for backend checking not used in frontend
   post(postId: String!): Post! # for backend checking not used in frontend
-  queryChatBox(name1: ID!, name2: ID!): ChatBox!
-  queryChatBoxes(userId: ID!): [ChatBox]!
+  queryChatBox(name1: ID!, name2: ID!): ChatBox
+  queryChatBoxes(userId: ID!): [ChatBox]
   queryUser(account: String!, password: String!): User
   queryPost(type: String!, queryString: String!): [Post]
-  queryPostCollection(userId: String!, type: String! ): [Post]!
+  queryPostCollection(userId: String!, type: String! ): [Post]
   
 }
 

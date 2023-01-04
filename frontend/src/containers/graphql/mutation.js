@@ -88,7 +88,7 @@ export const CREATE_POST_MUTATION = gql`
  }`;
 
 export const UPDATE_POST_MUTATION = gql`
-  mutation updatedPost(
+  mutation updatePost(
     $postId: ID!
     $title: String!
     $classNo: String!
@@ -170,6 +170,7 @@ export const CREATE_CHATBOX_MUTATION = gql`
   mutation createChatBox($name: ID!, $to: ID!) {
     createChatBox(name: $name, to: $to) {
       name
+      namesOfTalkers
       messages {
         sender
         body

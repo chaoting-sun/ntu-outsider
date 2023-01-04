@@ -8,7 +8,7 @@ import '../css/navigationBar.css'
 
 
 const NavBar = () => {
-  const { authenticated, postInfo, 
+  const { authenticated, postInfo,
     displayStatus } = useOusider();
   const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ const NavBar = () => {
         type: type,
         queryString: queryString
       }
-    })    
+    })
   }
 
   const handleMenuNavigate = (page) => {
@@ -58,7 +58,12 @@ const NavBar = () => {
     }
 
     if (page === 'editPostPage') {
-      navigate(`/${page}`, {state: { action: 'createPost', info: null }});
+      navigate(`/${page}`, {
+        state: {
+          action: 'createPost',
+          post: null
+        }
+      });
     } else {
       navigate(`/${page}`);
     }

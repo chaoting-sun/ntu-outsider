@@ -15,6 +15,8 @@ import { StylesProvider } from "@material-ui/core/styles";
 import { useState, useEffect } from "react";
 import Tag from "../components/tag";
 import { useOusider } from './hooks/useOusider';
+import { CREATE_POST_MUTATION, UPDATE_POST_MUTATION } from './graphql/mutation';
+import { useMutation } from '@apollo/client';
 
 const { TextArea } = Input;
 
@@ -54,24 +56,35 @@ const NameButton = styled(Button)`
 // }
 // e.g. defaultValue={state ? state.title: null}
 
-const updatePost = async (
-  postId, title, classNo, className, teacherName,
-  content, condition, deadline, tag
-) => {
-  return {
-    postId, title, classNo, className, teacherName,
-    content, condition, deadline, tag
-  } 
-}
+
+// const getInfo = (post) => {
+//   const infoList = ['title', 'className', 'teacherName',
+//                     'classNo', 'content', 'condition', 'tags'];
+//   let info = {};
+//   for (let i = 0; i < infoList.length; i++) {
+//     info[infoList[i]] = post ? post[infoList[i]] : null;
+//   }
+//   info['endDate'] = post ? post.deadline.split(" ")[0] : null;
+//   info['endTime'] = post ? post.deadline.split(" ")[1] : null;
+//   return info;
+// }
 
 const EditPostPage = () => {
-  const { username } = useOusider()
+  const { username, userId, displayStatus } = useOusider();
+  const [action, setAction] = useState('');
+  const [updatedPost, setUpdatedPost] = useState(null);
+  const [sentPost, setSentPost] = useState(false);
+  const [postId, setPostId] = useState(null);
+  const [post, setPost] = useState(null);
   const [tags, setTags] = useState([]);
-  const [updatedPost, setUpdatedPost] = useState({});
-  const [sendPost, setSendPost] = useState(false);
-  const [post, setPost] = useState({});
+
   const location = useLocation();
   const navigate = useNavigate();
+  const [createPost] = useMutation(CREATE_POST_MUTATION);
+  const [updatePost] = useMutation(UPDATE_POST_MUTATION);
+
+  console.log("username:", username);
+
   const {
     register,
     handleSubmit,
@@ -81,63 +94,95 @@ const EditPostPage = () => {
 
   useEffect(() => {
     if (location.state !== null) {
-      if (location.state.action === 'createPost') {
-        // create a new post
-      } else if (location.state.action === 'editPost') {
-        setPost(location.state.info);
-      }
+      setAction(location.state.action);
+      setPost(post);
+      setTags(post ? post.tag : []);
+      setPostId(location.state._id);
     }
   }, [location])
+
 
   const onSubmit = async (data) => {
     console.log(data);
     console.log(tags);
-    
-    const postDoc = await updatePost(
-      data.postId,
-      data.title,
-      data.classNo,
-      data.className,
-      data.teacherName,
-      data.content,
-      data.condition,
-      `${data.endDate} ${data.endTime}`,
-      tags
-    )
 
-    data.deadline = `${data.endDate} ${data.endTime}`
-    setUpdatedPost(postDoc);
-    setSendPost(true);
+    if (action === 'createPost') {
+      const updatedPost = await createPost({
+        variables: {
+          userId: userId,
+          title: data.title,
+          classNo: data.classNo,
+          className: data.className,
+          teacherName: data.teacherName,
+          content: data.content,
+          condition: data.condition,
+          deadline: data.dealine,
+          tag: tags
+        }
+      })
+    } else if (action === 'editPost') {
+      const updatedPost = await updatePost({
+        variables: {
+          postId: postId,
+          title: data.title,
+          classNo: data.classNo,
+          className: data.className,
+          teacherName: data.teacherName,
+          content: data.content,
+          condition: data.condition,
+          deadline: data.dealine,
+          tag: tags
+        }
+      })
+    }
+
+    if (updatedPost) {
+      displayStatus({
+        'type': 'sucess',
+        'msg': 'successful to save post!',
+      })
+      setUpdatedPost(updatedPost);
+      setSentPost(true);
+    } else {
+      displayStatus({
+        'type': 'fail',
+        'msg': 'fail to save post!',
+      })
+    }
   }; // your form submit function which will invoke after successful validation
 
-  // useEffect(() => {
-  //   console.log('state:', state);
-  //   console.log("test state endDate:", state.endDate);
-  // }, [])
+  useEffect(() => {
+    if (sentPost) {
+      navigate(-1, { variables: updatedPost });
+    }
+  }, [sentPost])
 
   useEffect(() => {
-    if (sendPost) {
-      navigate("..", { 
+    if (sentPost) {
+      navigate("..", {
         state: {
           actionType: 'edit',
           postInfo: updatedPost,
-        } 
+        }
       }); //use mutation; 傳入該篇文章資料
-      // setPostSent(false);
+      setSentPost(false);
     }
-  }, [sendPost])
+  }, [sentPost])
 
   //console.log(watch("example")); // you can watch individual input by pass the name of the input
 
+
   return (
-    <StylesProvider injectFirst>
+    <div className="editPostPageContainer">
+      <StylesProvider injectFirst>
+        {console.log('post:', post)}
         <PostCard sx={{ minWidth: 500 }}>
           <CardContent>
             <NameButton>{username}</NameButton>
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* register your input into the hook by invoking the "register" function */}
               <input
-                defaultValue={post.title}
+                defaultValue={post ? post.title : null}
                 placeholder="Title"
                 className='titleInput'
                 {...register("title", { required: "Title is required" })}
@@ -147,7 +192,7 @@ const EditPostPage = () => {
               <div className='inputItem'>
                 <label>課名 </label>
                 <input
-                  defaultValue={post.className}
+                  defaultValue={post ? post.className : null}
                   className="detailInput"
                   {...register("class", { required: "Class name is required" })}
                 />
@@ -157,7 +202,7 @@ const EditPostPage = () => {
               <div className='inputItem'>
                 <label>授課老師 </label>
                 <input
-                  defaultValue={post.teacherName}
+                  defaultValue={post ? post.teacherName : null}
                   className="detailInput"
                   {...register("teacher", { required: "Teacher name is required" })}
                 />
@@ -167,7 +212,7 @@ const EditPostPage = () => {
               <div className='inputItem'>
                 <label>課程流水號 </label>
                 <input
-                  defaultValue={post.classNo}
+                  defaultValue={post ? post.classNo : null}
                   className="detailInput"
                   {...register("classNo", { required: "Class number is required" })}
                 />
@@ -176,7 +221,7 @@ const EditPostPage = () => {
               <div className='inputItem'>
                 <label>尚須徵求人數 </label>
                 <input
-                  defaultValue={post.condition}
+                  defaultValue={post ? post.condition : null}
                   type="number"
                   min="0"
                   className="detailInput"
@@ -186,21 +231,21 @@ const EditPostPage = () => {
               <div className='inputItem'>
                 <label> 截止時間 </label>
                 <input
-                  value={post.deadline.split(" ")[0]}
+                  value={post ? post.deadline.split(" ")[0] : null}
                   type="date"
                   className="timeInput"
                   {...register("endDate")}
                 /> &nbsp;
                 <input
-                  value={post.deadline.split(" ")[1]}
+                  value={post ? post.deadline.split(" ")[1] : null}
                   type="time"
                   className="timeInput"
                   {...register("endTime")}
                 />
               </div>
               <Content
-                defaultValue={post.content}
-                rows={12} 
+                defaultValue={post ? post.content : null}
+                rows={12}
               />
               <Tag tags={tags} setTags={setTags} />
               <input type="submit" />
@@ -211,7 +256,8 @@ const EditPostPage = () => {
                   <Button size="small">Learn More</Button>
                 </CardActions>*/}
         </PostCard>
-    </ StylesProvider>
+      </ StylesProvider>
+    </div>
   )
 }
 export default EditPostPage

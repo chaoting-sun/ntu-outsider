@@ -16,7 +16,7 @@ const verifyPassword = (password, hashedPassword) => {
   // 後端的 function
   // 後端收到前端傳來的 password 之後，將 password 和 db 中
   // 的 hashedPassword 對照來確認，回傳 boolean value
-  bcrypt.compareSync(password, hashedPassword)
+  return bcrypt.compareSync(password, hashedPassword)
 }
 
 

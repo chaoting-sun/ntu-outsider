@@ -8,21 +8,19 @@ const Mutation = {
     info
   ) => {
     let userExisitng = await UserModel.findOne({ account: account });
-    await UserModel.findOne({ account: account }).then(async (user) => {
-      if (user) {
-        console.log(
-          "This account exists, please choose another account or log in your account."
-        );
-        return null;
-      } else {
-        userExisitng = await new UserModel({
-          account: account,
-          name: name,
-          password: password,
-        }).save();
-      }
-    });
-    return userExisitng;
+    if (userExisitng) {
+      console.log(
+        "This account exists, please choose another account or log in your account."
+      );
+      return null;
+    } else {
+      let newUser = await new UserModel({
+        account: account,
+        name: name,
+        password: password,
+      }).save();
+      return newUser;
+    }
   },
   createPost: async (
     parent,
@@ -69,8 +67,6 @@ const Mutation = {
     { UserModel },
     info
   ) => {
-    let accountUsed = await findOne({account: account});
-    if(accountUsed){return null;}
     let updatedUser = await UserModel.findOneAndUpdate(
       { _id: userId },
       { name: name, account: account },
@@ -181,7 +177,7 @@ const Mutation = {
     })
     pubsub.publish(`chatBox ${to}`, {
       subscribeChatBox: chatBox,
-    })
+    });
     return chatBox;
   },
   createMessage: async (

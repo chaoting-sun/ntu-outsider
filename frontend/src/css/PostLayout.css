@@ -1,3 +1,17 @@
+.editPostPageContainer {
+    /* position: absolute; 
+    margin-top: 72px;
+    padding: 10em;
+    left: 256px;
+    background-color: rgb(233, 233, 233);
+    height: auto;
+    min-height: 100%;
+    width: 83%;
+    justify-content: start;
+    text-align: center;
+    z-index: 0;   */
+}
+
 .MuiButtonBase-root {
   width: 100% !important;
   height: 100% !important;

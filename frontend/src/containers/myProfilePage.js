@@ -32,13 +32,6 @@ const PostCard = styled(Card)`
   top: -15vh;
 `
 
-const Content = styled(TextArea)`
-  margin-top: 5vh; 
-  width: 100%;
-  font-size: 18px;
-  padding: 1vh 2vh; 
-`
-
 const NameButton = styled(Button)`
   {
     color: #20B2AA !important;
@@ -73,15 +66,10 @@ const SendButton = styled(Button)`
   }
 `
 
-const PostContainer = styled.div`
-  margin-top: 20px;
-  margin-bottom: 20px;
-`
-
 const MyProfilePage = () => {
-  const { userId, username, account, setUsername, setAccount, 
-    displayStatus, preferTags, setPreferTags, authenticated } = useOusider();
-  const [tags, setTags] = useState([]);
+  const { userId, username, account, setUsername,
+    setAccount, displayStatus, authenticated } = useOusider();
+  
   const [validated, setValidated] = useState(false);
   const navigate = useNavigate();
 
@@ -97,11 +85,6 @@ const MyProfilePage = () => {
   } = useForm();
 
   useEffect(() => {
-    if (preferTags.length)
-      setTags(preferTags)
-  }, [])
-
-  useEffect(() => {
     if (!authenticated) navigate('/logIn');
   }, [])
 
@@ -112,7 +95,6 @@ const MyProfilePage = () => {
     if (user) {
       setUsername(watch("username"));
       setAccount(watch("account"));
-      setPreferTags(tags);
 
       displayStatus({
         type: 'success',
@@ -233,11 +215,6 @@ const MyProfilePage = () => {
                       <ValidateButton onClick={handleInputNewPassword}>輸入新密碼</ValidateButton>
                     </div> : null
                 }
-                <div className='inputItem'>
-                  <label>偏好設定&nbsp;&nbsp;</label>
-                  <Tag tags={tags} setTags={setTags} />
-                </div>
-                {/* <input type="submit" className="profileSubmit" onSubmit={(e) => handleSubmit(onSubmit, onError)(e)}/> */}
               </form>
               {/* <div className='profileSubmit'>
                 <input type="submit" />
