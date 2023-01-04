@@ -9,7 +9,7 @@ const PostSchema = new Schema(
     title: { type: String, required: true },
     classNo: { type: String, required: true },
     className: { type: String, required: true},
-    teacher: {type: String, required: true},
+    teacherName: {type: String, required: true},
     content: { type: String, required: true },
     // condition 是招收組員人數
     condition: { type: String ,required: true},

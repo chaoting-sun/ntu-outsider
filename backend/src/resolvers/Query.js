@@ -57,10 +57,12 @@ const Query = {
         return await PostModel.find({
           classNo: { $regex: new RegExp(queryString, "i") },
         });
-      case "teacher":
+      case "teacherName":
         return await PostModel.find({
-          teacher: { $regex: new RegExp(queryString, "i") },
+          teacherName: { $regex: new RegExp(queryString, "i") },
         });
+      case "all":
+        return await PostModel.find({});
       default:
         return []; // 如果 type 的值不是上述任何一個，則返回空數組
     }
@@ -82,7 +84,9 @@ const Query = {
         }
         const followedPosts = [];
         for (const postId of followList) {
-          followedPosts.push(await PostModel.findOne({ _id: postId.toHexString() }));
+          followedPosts.push(
+            await PostModel.findOne({ _id: postId.toHexString() })
+          );
         }
         console.log(followedPosts);
         return followedPosts;
@@ -98,10 +102,14 @@ const Query = {
   ) => {
     let user = await UserModel.findOne({ _id: userId });
     let chatBoxes = await user.chatboxes;
-    if(!chatBoxes){return [];}
+    if (!chatBoxes) {
+      return [];
+    }
     const chatBoxesArray = [];
-    for (const boxId of chatBoxes){
-      chatBoxesArray.push(await ChatBoxModel.findOne({_id: boxId.toHexString()}));
+    for (const boxId of chatBoxes) {
+      chatBoxesArray.push(
+        await ChatBoxModel.findOne({ _id: boxId.toHexString() })
+      );
     }
     return chatBoxesArray;
   },

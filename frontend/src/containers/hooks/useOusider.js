@@ -3,6 +3,8 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { POST_QUERY } from "../graphql/index"
 import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
 import { postExamples } from "../db"
+import { USER_QUERY } from '../graphql/query';
+
 
 /*async function in useEffect:
   ref: https://devtrium.com/posts/async-functions-useeffect

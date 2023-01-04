@@ -64,11 +64,13 @@ const updatePost = async (
   } 
 }
 
-const EditPostPage = ({info, fetchEditedPost}) => {
+const EditPostPage = () => {
   const { username } = useOusider()
   const [tags, setTags] = useState([]);
   const [updatedPost, setUpdatedPost] = useState({});
   const [sendPost, setSendPost] = useState(false);
+  const [post, setPost] = useState({});
+  const location = useLocation();
   const navigate = useNavigate();
   const {
     register,
@@ -76,6 +78,16 @@ const EditPostPage = ({info, fetchEditedPost}) => {
     watch,
     formState: { errors }
   } = useForm();
+
+  useEffect(() => {
+    if (location.state !== null) {
+      if (location.state.action === 'createPost') {
+        // create a new post
+      } else if (location.state.action === 'editPost') {
+        setPost(location.state.info);
+      }
+    }
+  }, [location])
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -94,7 +106,6 @@ const EditPostPage = ({info, fetchEditedPost}) => {
     )
 
     data.deadline = `${data.endDate} ${data.endTime}`
-    fetchEditedPost(data);
     setUpdatedPost(postDoc);
     setSendPost(true);
   }; // your form submit function which will invoke after successful validation
@@ -126,7 +137,7 @@ const EditPostPage = ({info, fetchEditedPost}) => {
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* register your input into the hook by invoking the "register" function */}
               <input
-                defaultValue={info.title}
+                defaultValue={post.title}
                 placeholder="Title"
                 className='titleInput'
                 {...register("title", { required: "Title is required" })}
@@ -136,7 +147,7 @@ const EditPostPage = ({info, fetchEditedPost}) => {
               <div className='inputItem'>
                 <label>課名 </label>
                 <input
-                  defaultValue={info.className}
+                  defaultValue={post.className}
                   className="detailInput"
                   {...register("class", { required: "Class name is required" })}
                 />
@@ -146,7 +157,7 @@ const EditPostPage = ({info, fetchEditedPost}) => {
               <div className='inputItem'>
                 <label>授課老師 </label>
                 <input
-                  defaultValue={info.teacherName}
+                  defaultValue={post.teacherName}
                   className="detailInput"
                   {...register("teacher", { required: "Teacher name is required" })}
                 />
@@ -156,7 +167,7 @@ const EditPostPage = ({info, fetchEditedPost}) => {
               <div className='inputItem'>
                 <label>課程流水號 </label>
                 <input
-                  defaultValue={info.classNo}
+                  defaultValue={post.classNo}
                   className="detailInput"
                   {...register("classNo", { required: "Class number is required" })}
                 />
@@ -165,7 +176,7 @@ const EditPostPage = ({info, fetchEditedPost}) => {
               <div className='inputItem'>
                 <label>尚須徵求人數 </label>
                 <input
-                  defaultValue={info.condition}
+                  defaultValue={post.condition}
                   type="number"
                   min="0"
                   className="detailInput"
@@ -175,20 +186,20 @@ const EditPostPage = ({info, fetchEditedPost}) => {
               <div className='inputItem'>
                 <label> 截止時間 </label>
                 <input
-                  value={info.deadline.split(" ")[0]}
+                  value={post.deadline.split(" ")[0]}
                   type="date"
                   className="timeInput"
                   {...register("endDate")}
                 /> &nbsp;
                 <input
-                  value={info.deadline.split(" ")[1]}
+                  value={post.deadline.split(" ")[1]}
                   type="time"
                   className="timeInput"
                   {...register("endTime")}
                 />
               </div>
               <Content
-                defaultValue={info.content}
+                defaultValue={post.content}
                 rows={12} 
               />
               <Tag tags={tags} setTags={setTags} />

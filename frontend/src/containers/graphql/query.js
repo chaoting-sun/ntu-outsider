@@ -1,58 +1,82 @@
 import { gql } from "@apollo/client";
 
-
-/**query post by 'type':
- * 1. serialNo
- * 2. postTitle
- * 3. className
- * 4. teacherName
- * 5. tag
- */
-
+export const CHATBOX_QUERY = gql`
+  query queryChatBox($name1: ID!, $name2: ID!) {
+    queryChatBox(name1: $name1, name2: $name2) {
+      name
+      messages {
+        sender
+        body
+      }
+    }
+  }
+`;
+export const CHATBOXES_QUERY = gql`
+  query queryChatBoxes($userId: ID!) {
+    queryChatBoxes(data:{userId: $userId}) {
+      name
+      messages {
+        sender
+        body
+      }
+    }
+  }
+`;
+export const USER_QUERY = gql`
+  query queryUser($account: String!, $password: String!) {
+    queryUser(account: $account, password: $password) {
+      _id
+      account
+      name
+      password
+      postCollection
+    }
+  }
+`;
 export const POST_QUERY = gql`
-  query queryPost($type: String!) {
-    querySavedPost(type:$type) {
-      classNumber
-      className
+  query queryPost($type: String!, $queryString: String!) {
+    queryPost(type: $type, queryString: $queryString) {
+      _id
+      userId
+      author {
+        _id
+        account
+        name
+        password
+        postCollection
+      }
       title
+      classNo
+      className
+      teacherName
       content
       condition
       deadline
-      tags
+      tag
     }
   }
-`
+`;
 
-/**query mypost by 'type':
- * 1. savedPost
- * 2. followedPost
- * 3. myPost
- */
-
-export const MYPOST_QUERY = gql`
-  query queryPost($userId: String!, $type: String!) {
-    querySavedPost(userId:$userId, type:$type) {
-      classNumber
-      className
+export const POST_COLLECTION_QUERY = gql`
+  query queryPostCollection($userId: String!, $type: String!) {
+    queryPostCollection(userId: $userId, type: $type) {
+      _id
+      userId
+      author {
+        _id
+        account
+        name
+        password
+        postCollection
+      }
       title
+      classNo
+      className
+      teacherName
       content
       condition
       deadline
-      tags
+      tag
     }
   }
-`
-
-// export const POST_QUERY = gql`
-//   query queryPost($userId: String!, $type: String!) {
-//     querySavedPost(userId:$userId, type:$type) {
-//       classNumber
-//       className
-//       title
-//       content
-//       condition
-//       deadline
-//       tags
-//     }
-//   }
-// `
+`;

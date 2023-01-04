@@ -56,7 +56,12 @@ const NavBar = () => {
       navigate("/logIn")
       return;
     }
-    navigate(`/${page}`);
+
+    if (page === 'editPostPage') {
+      navigate(`/${page}`, {state: { action: 'createPost', info: null }});
+    } else {
+      navigate(`/${page}`);
+    }
   }
 
   return (

@@ -32,7 +32,7 @@ const Mutation = {
       userId,
       classNo,
       className,
-      teacher,
+      teacherName,
       title,
       content,
       tag,
@@ -46,7 +46,7 @@ const Mutation = {
       userId: userId,
       classNo: classNo,
       className: className,
-      teacher: teacher,
+      teacherName: teacherName,
       title: title,
       tag: tag,
       content: content,
@@ -71,6 +71,8 @@ const Mutation = {
     { UserModel },
     info
   ) => {
+    let accountUsed = await findOne({account: account});
+    if(accountUsed){return null;}
     let updatedUser = await UserModel.findOneAndUpdate(
       { _id: userId },
       { name: name, account: account },
@@ -105,7 +107,7 @@ const Mutation = {
       content,
       classNo,
       className,
-      teacher,
+      teacherName,
       condition,
       deadline,
       tag,
@@ -120,7 +122,7 @@ const Mutation = {
         content: content,
         classNo: classNo,
         className: className,
-        teacher: teacher,
+        teacherName: teacherName,
         condition: condition,
         deadline: deadline,
         tag: tag,
@@ -157,7 +159,7 @@ const Mutation = {
   createChatBox: async (
     parent,
     { name, to },
-    { ChatBoxModel, UserModel },
+    { ChatBoxModel, UserModel, pubsub },
     info
   ) => {
     let chatBoxName = [name, to].sort().join("_");
@@ -173,12 +175,18 @@ const Mutation = {
         { $push: { chatboxes: chatBox._id } }
       );
     }
+    pubsub.publish(`chatBox ${name}`, {
+      subscribeChatBox: chatBox,
+    })
+    pubsub.publish(`chatBox ${to}}`, {
+      subscribeChatBox: chatBox,
+    })
     return chatBox;
   },
   createMessage: async (
     parent,
     { name, to, message },
-    { ChatBoxModel },
+    { ChatBoxModel, pubsub },
     info
   ) => {
     const chatBoxName = [name, to].sort().join("_");
@@ -189,7 +197,10 @@ const Mutation = {
     const newMsg = { sender: name, body: message };
     chatBox.messages.push(newMsg);
     await chatBox.save();
-    return newMsg;
+    pubsub.publish(`message ${name}`, {
+      subscribeMessage: {chatBoxName: chatBoxName, message: newMsg},
+    })
+    return {...newMsg};
   },
 };
 

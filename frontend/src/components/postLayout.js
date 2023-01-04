@@ -95,7 +95,7 @@ const savePost = async () => {
   return "successfully save post";
 }
 
-const PostLayout = ({ post, handlePostOperation }) => {
+const PostLayout = ({post, handlePostOperation}) => {
   const { account, authenticated } = useOusider();
   const [info, setInfo] = useState(null);
   const [me, setMe] = useState(false);
@@ -151,7 +151,7 @@ const PostLayout = ({ post, handlePostOperation }) => {
   }
 
   return (
-    // <div className='editPostPageContainer'>
+    <div className='editPostPageContainer'>
     info === null ? null :
       <PostCard sx={{ minWidth: 400 }}>
         {console.log('info:', info)}
@@ -236,7 +236,7 @@ const PostLayout = ({ post, handlePostOperation }) => {
           </CardContent>
         </ButtonBase>
       </PostCard>
-    // </div>
+    </div>
   )
 }
 

@@ -1,6 +1,6 @@
 type Query {
-  user(name: String!): [User!]!
-  post(postId: String!): Post!
+  user(name: String!): [User!]! # for backend checking not used in frontend
+  post(postId: String!): Post! # for backend checking not used in frontend
   queryChatBox(name1: ID!, name2: ID!): ChatBox!
   queryChatBoxes(userId: ID!): [ChatBox!]!
   queryUser(account: String!, password: String!): User
@@ -9,7 +9,6 @@ type Query {
   
 }
 
-scalar DateTime # ref: https://v1.prisma.io/forum/t/couldnt-find-type-datetime-in-any-of-the-schemas/4310/3
 type Post {
   _id: ID!
   userId: ID!
@@ -17,10 +16,10 @@ type Post {
   title: String!
   classNo: String!
   className: String!
-  teacher: String!
+  teacherName: String!
   content: String!
-  condition: String!
-  deadline: DateTime! # 先暫時用 scalar 做某種轉換，還找不到其他更好的 DateTime 表示法
+  condition: Int!
+  deadline: String!
   tag: [String]
 }
 
@@ -30,12 +29,13 @@ type User {
   name: String!
   password: String!
   postCollection: [ID]
+  chatboxes: [ID]
 }
 
 
 type ChatBox {
   name: String!
-  messages: [Message!]
+  messages: [Message]
 }
 
 type Message {
@@ -54,10 +54,10 @@ type Mutation {
     title: String!
     classNo: String!
     className: String!
-    teacher: String!
+    teacherName: String!
     content: String!
-    condition: String!
-    deadline: DateTime
+    condition: Int!
+    deadline: String!
     tag: [String]
   ): Post!
 
@@ -67,9 +67,9 @@ type Mutation {
     content: String!
     classNo: String!
     className: String!
-    teacher: String!
-    condition: String!
-    deadline: DateTime
+    teacherName: String!
+    condition: Int!
+    deadline: String!
     tag: [String]
   ): Post!
   deletePost(postId: ID!): Post!
@@ -79,6 +79,13 @@ type Mutation {
   createMessage(name: ID!, to: ID!, message: String!): Message!
 }
 
-# type Subscription {
+type Subscription {
+  subscribeChatBox(id: ID!): ChatBox!
+  subscribeMessage(id: ID!): MessageSubscriptionPayload!
+}
 
-# }
+type MessageSubscriptionPayload {
+  chatBoxName: String!
+  message: Message!
+}
+
