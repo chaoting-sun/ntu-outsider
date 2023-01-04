@@ -1,3 +1,5 @@
+import bcrypt from 'bcrypt';
+
 const Mutation = {
   // 資料存在之後，應該有更好的寫法 send error
 
@@ -7,22 +9,21 @@ const Mutation = {
     { UserModel },
     info
   ) => {
-    let userExisitng = await UserModel.findOne({ account: account });
-    await UserModel.findOne({ account: account }).then(async (user) => {
-      if (user) {
-        console.log(
-          "This account exists, please choose another account or log in your account."
-        );
-        return null;
-      } else {
-        userExisitng = await new UserModel({
-          account: account,
-          name: name,
-          password: password,
-        }).save();
-      }
-    });
-    return userExisitng;
+    let userExisting = await UserModel.findOne({ account: account });
+    if (userExisting) {
+      console.log(
+        "This account exists, please choose another account or log in your account."
+      );
+      return null;
+    } else {
+      const newUser = await new UserModel({
+        account: account,
+        name: name,
+        password: password,
+      }).save();
+      console.log('newUser:', newUser);
+      return newUser;
+    }
   },
   createPost: async (
     parent,
