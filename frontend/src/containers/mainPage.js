@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import '../css/mainPage.css'
 import { posts } from '../db'
 import { useOusider } from './hooks/useOusider'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import PostLayout from '../components/postLayout'
 // import NavBar from '../components/navigationBar'
@@ -26,7 +26,7 @@ const MainPage = () => {
   const [post, setPost] = useState([]);
   const [postDom, setPostDom] = useState([]);
   const [editPostId, setEditPostId] = useState("");
-  const navigate = Navigate();
+  const navigate = useNavigate();
 
   const handleQueryPost = async () => {
     const fetchedPost = await queryPost();
@@ -50,7 +50,7 @@ const MainPage = () => {
         handleDeletePost(targetPostId);
         break;
       case 'edit':
-        navigate('./editPostPage', {state: {
+        navigate('/editPostPage', {state: {
           action: 'editPost',
           info: post
         }});

@@ -95,7 +95,7 @@ const savePost = async () => {
   return "successfully save post";
 }
 
-const PostLayout = ({post, handlePostOperation}) => {
+const PostLayout = ({ post, handlePostOperation }) => {
   const { account, authenticated } = useOusider();
   const [info, setInfo] = useState(null);
   const [me, setMe] = useState(false);
@@ -152,90 +152,92 @@ const PostLayout = ({post, handlePostOperation}) => {
 
   return (
     <div className='editPostPageContainer'>
-    info === null ? null :
-      <PostCard sx={{ minWidth: 400 }}>
-        {console.log('info:', info)}
-        <ButtonBase
-        // className={props.classes.cardAction}
-        // onClick={event => { ... }}
-        >
-          <CardContent>
-            <div className="cardHeader">
-              <Typography
-                sx={{
-                  fontSize: 28,
-                  display: "flex",
-                  position: "relative",
-                  left: 30,
-                  marginTop: 5
-                }}
-                gutterBottom
-              >
-                {info.title}
-              </Typography>
-              {
-                authenticated ? (
-                  <ToolBox me={me}>
-                    {
-                      me ? (
-                        <>
-                          <MyIconButton
-                            aria-label="delete"
-                            onClick={ShowDeletePostModal}
-                          >
-                            <DeleteIcon />
-                          </MyIconButton>
-                          <MyIconButton
-                            aria-label="edit"
-                            onClick={EditPost}
-                          >
-                            <EditIcon />
-                          </MyIconButton>
-                        </>
-                      ) : null
-                    }
-                    <MyIconButton aria-label="save" onClick={SavePost}>
-                      <DataSaverOnIcon />
-                    </MyIconButton>
-                  </ToolBox>
-                ) : null
-              }
-            </div>
-            <Divider />
-            <NameButton>{info.author.info}</NameButton>
-            <InformationBox item xs container direction="column" spacing={1}>
-              <Grid item xs>
-                <InformationItem variant="subtitle1">
-                  {info.className}
-                </InformationItem>
-                <InformationItem variant="body2" color="text.secondary">
-                  授課老師： {info.teacherName}
-                </InformationItem>
-                <InformationItem variant="body2" color="text.secondary">
-                  流水號： {info.classNo}
-                </InformationItem>
-                <InformationItem variant="body2" color="text.secondary">
-                  截止時間： {info.deadline}
-                </InformationItem>
-                <InformationItem variant="body2" color="text.secondary">
-                  剩餘徵求名額： {info.condition}
-                </InformationItem>
-                <div className='tags'>
-                  {info.tags.map(e => (
-                    <Tag key={e} color="processing"> {e} </Tag>
-                  ))}
-
+      {
+        info === null ? null :
+          <PostCard sx={{ minWidth: 400 }}>
+            {console.log('info:', info)}
+            <ButtonBase
+            // className={props.classes.cardAction}
+            // onClick={event => { ... }}
+            >
+              <CardContent>
+                <div className="cardHeader">
+                  <Typography
+                    sx={{
+                      fontSize: 28,
+                      display: "flex",
+                      position: "relative",
+                      left: 30,
+                      marginTop: 5
+                    }}
+                    gutterBottom
+                  >
+                    {info.title}
+                  </Typography>
+                  {
+                    authenticated ? (
+                      <ToolBox me={me}>
+                        {
+                          me ? (
+                            <>
+                              <MyIconButton
+                                aria-label="delete"
+                                onClick={ShowDeletePostModal}
+                              >
+                                <DeleteIcon />
+                              </MyIconButton>
+                              <MyIconButton
+                                aria-label="edit"
+                                onClick={EditPost}
+                              >
+                                <EditIcon />
+                              </MyIconButton>
+                            </>
+                          ) : null
+                        }
+                        <MyIconButton aria-label="save" onClick={SavePost}>
+                          <DataSaverOnIcon />
+                        </MyIconButton>
+                      </ToolBox>
+                    ) : null
+                  }
                 </div>
-              </Grid>
-              <Grid item>
-                <Typography paragraph className='content' align="left">
-                  {info.content}
-                </Typography>
-              </Grid>
-            </InformationBox>
-          </CardContent>
-        </ButtonBase>
-      </PostCard>
+                <Divider />
+                <NameButton>{info.author.info}</NameButton>
+                <InformationBox item xs container direction="column" spacing={1}>
+                  <Grid item xs>
+                    <InformationItem variant="subtitle1">
+                      {info.className}
+                    </InformationItem>
+                    <InformationItem variant="body2" color="text.secondary">
+                      授課老師： {info.teacherName}
+                    </InformationItem>
+                    <InformationItem variant="body2" color="text.secondary">
+                      流水號： {info.classNo}
+                    </InformationItem>
+                    <InformationItem variant="body2" color="text.secondary">
+                      截止時間： {info.deadline}
+                    </InformationItem>
+                    <InformationItem variant="body2" color="text.secondary">
+                      剩餘徵求名額： {info.condition}
+                    </InformationItem>
+                    <div className='tags'>
+                      {info.tags.map(e => (
+                        <Tag key={e} color="processing"> {e} </Tag>
+                      ))}
+
+                    </div>
+                  </Grid>
+                  <Grid item>
+                    <Typography paragraph className='content' align="left">
+                      {info.content}
+                    </Typography>
+                  </Grid>
+                </InformationBox>
+              </CardContent>
+            </ButtonBase>
+          </PostCard>
+      }
     </div>
   )
 }
