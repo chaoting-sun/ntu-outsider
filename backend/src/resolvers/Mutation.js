@@ -49,6 +49,7 @@ const Mutation = {
       condition: condition,
       deadline: deadline,
     }).save();
+    console.log('newPost:', newPost);
     return newPost;
   },
   deleteUser: async (parent, { userId }, { UserModel }, info) => {
@@ -135,20 +136,23 @@ const Mutation = {
       _id: userId,
       postCollection: postId,
     });
-    console.log(userExisting);
     if (userExisting) {
+      console.log("unfollow the post!");
       await UserModel.updateOne(
         { _id: userId },
         { $pull: { postCollection: postId } }
       );
     } else {
+      console.log("follow the post!");
       userExisting = await UserModel.findOneAndUpdate(
         { _id: userId },
         { $push: { postCollection: postId } },
         { new: true }
       );
     }
-    return await UserModel.findOne({ _id: userId });
+    const user = await UserModel.findOne({ _id: userId });
+    console.log('updated user:', user);
+    return user;
   },
   createChatBox: async (
     parent,

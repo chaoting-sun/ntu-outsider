@@ -76,22 +76,27 @@ const Query = {
   ) => {
     switch (type) {
       case "uploadedPost":
-        return await PostModel.find({ userId: userId });
+        const post = await PostModel.find({ userId: userId });
+        console.log('uploadedPost:', post);
+        return post;
       case "followedPost":
         let user = await UserModel.findOne({ _id: userId });
         let followList = await user.postCollection;
         if (!followList) {
           return [];
         }
-        const followedPosts = [];
+        let followedPosts = [];
         for (const postId of followList) {
           followedPosts.push(
             await PostModel.findOne({ _id: postId.toHexString() })
           );
         }
-        console.log(followedPosts);
+        console.log('followedPosts:', followedPosts);
         return followedPosts;
+      case "allPost":
+        return await PostModel.find({});
       default:
+        console.log('no such query:', type);
         return [];
     }
   },

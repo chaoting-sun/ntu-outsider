@@ -13,8 +13,10 @@ import { CREATE_ACCOUNT_MUTATION } from "./graphql/mutation";
 
 
 const SignInPage = () => {
-  const { setAccount, setUsername, authenticated,
-    setAuthenticated, displayStatus, setUserId } = useOusider();
+  const { setAccount, setUsername,
+    authenticated, setAuthenticated,
+    displayStatus, setUserId,
+    autheticateAccount } = useOusider();
   const [signUp, setSignUp] = useState(false);
   const [queryUser, { data }] = useLazyQuery(USER_QUERY);
   const [createAccount] = useMutation(CREATE_ACCOUNT_MUTATION);
@@ -27,14 +29,14 @@ const SignInPage = () => {
     }
   }, [location]);
 
-  const autheticateAccount = (user) => {
-    setAuthenticated(true);
-    localStorage.setItem("authenticated", true);
-    console.log('authenticate account:', user.account, user.name)
-    setUserId(user._id)
-    setAccount(user.account)
-    setUsername(user.name);
-  }
+  // const autheticateAccount = (user) => {
+  //   setAuthenticated(true);
+  //   localStorage.setItem("authenticated", true);
+  //   console.log('authenticate account:', user.account, user.name)
+  //   setUserId(user._id)
+  //   setAccount(user.account)
+  //   setUsername(user.name);
+  // }
 
   const handleLogIn = async ({ inAccount, inPassword }) => {
     const { data } = await queryUser({

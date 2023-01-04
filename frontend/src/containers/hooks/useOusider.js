@@ -1,47 +1,95 @@
 import { message } from 'antd'
 import { createContext, useContext, useState, useEffect } from "react";
-import { POST_QUERY } from "../graphql/index"
-import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
-import { postExamples } from "../db"
-import { USER_QUERY } from '../graphql/query';
+import { POST_QUERY, POST_COLLECTION_QUERY } from '../graphql';
+import { useLazyQuery } from "@apollo/client";
 
 
-/*async function in useEffect:
-  ref: https://devtrium.com/posts/async-functions-useeffect
-*/
+// How to Persist a Logged-in User in React
+// ref: https://www.freecodecamp.org/news/how-to-persist-a-logged-in-user-in-react/
+const USERID_KEY = "save-userId";
+const USERNAME_KEY = "save-username";
+const ACCOUNT_KEY = "save-account";
+const AUTHENTICATED_KEY = "save-autheticated"
 
 const OusiderContext = createContext({
-  userId: "",
+  userId: null,
   username: "",
   passWord: "",
   authenticated: false,
   // postContent: [],
-  currentPage: "",
   setUserId: () => { },
   setUsername: () => { },
   setPassword: () => { },
   setAuthenticated: () => { },
   // setPostContent: () => { },
-  setCurrentPage: () => { },
   displayStatus: () => { },
 })
 
-const LOCALSTORAGE_KEY = "save-username";
-
 const OutsiderProvider = (props) => {
-  const savedUsername = localStorage.getItem(LOCALSTORAGE_KEY);
-  const [userId, setUserId] = useState(null);
-  const [account, setAccount] = useState("");
-  const [preferTags, setPreferTags] = useState([]);
+  // local storage for user account
+  const savedUserId = localStorage.getItem(USERID_KEY);
+  const savedUsername = localStorage.getItem(USERNAME_KEY);
+  const savedAccount = localStorage.getItem(ACCOUNT_KEY);
+  const savedAuthenticated = localStorage.getItem(AUTHENTICATED_KEY);
+  // global hooks
+  const [userId, setUserId] = useState(savedUserId || null);
   const [username, setUsername] = useState(savedUsername || "");
-  const [authenticated, setAuthenticated] = useState(false);
-
-  const [currentPage, setCurrentPage] = useState("MainPage");
+  const [account, setAccount] = useState(savedAccount || "");
+  const [authenticated, setAuthenticated] = useState(savedAuthenticated || false);
+  const [preferTags, setPreferTags] = useState([]);
+  const [currentPost, setCurrentPost] = useState([]);
+  // appollo functions / helper hooks
+  const [queryPost] = useLazyQuery(POST_QUERY, { fetchPolicy: 'network-only' });
+  const [queryPostCollection] = useLazyQuery(POST_COLLECTION_QUERY, { fetchPolicy: 'network-only' });
+  const [doingQueryPost, setDoingQueryPost] = useState(false);
+  const [doingQueryPostCollection, setDoingQueryPostCollection] = useState(false);
 
   useEffect(() => {
-    if (authenticated)
-      localStorage.setItem(LOCALSTORAGE_KEY, username);
+    if (authenticated) {
+      localStorage.setItem(USERID_KEY, userId);
+      localStorage.setItem(ACCOUNT_KEY, account);
+      localStorage.setItem(USERNAME_KEY, username);
+      localStorage.setItem(AUTHENTICATED_KEY, authenticated);
+    }
   }, [authenticated])
+
+  const autheticateAccount = (user) => {
+    setAuthenticated(true);
+    setUserId(user._id);
+    setAccount(user.account);
+    setUsername(user.name);
+    console.log('authenticate account:', user._id, user.account, user.name)
+  }
+
+  const handleQueryPost = async (type, queryString) => {
+    // type = classNo, postTitle, className, teacherName, tag, all
+    setDoingQueryPost(true);
+    const { data } = await queryPost({
+      variables: {
+        type: type,
+        queryString: queryString
+      }
+    })
+    console.log('handleQueryPost:', type, queryString);
+    console.log('fetched post:', data);
+    setCurrentPost(data.queryPost);
+    return data.queryPost;
+  }
+
+  const handleQueryPostCollection = async (type) => {
+    // type = savedPost, followedPost, uploadedPost
+    setDoingQueryPostCollection(true);
+    const { data } = await queryPostCollection({
+      variables: {
+        userId: userId,
+        type: type
+      }
+    })
+    console.log('handleQueryPostCollection:', type);
+    console.log('fetched post:', data);
+    setCurrentPost(data.queryPostCollection);
+    return data.queryPostCollection;
+  }
 
   const displayStatus = (s) => {
     if (s.msg) {
@@ -71,13 +119,17 @@ const OutsiderProvider = (props) => {
         setUsername,
         preferTags,
         setPreferTags,
+        currentPost,
         authenticated,
         setAuthenticated,
-        // postContent,
-        // setPostContent,
-        currentPage,
-        setCurrentPage,
         displayStatus,
+        autheticateAccount,
+        handleQueryPost,
+        handleQueryPostCollection,
+        doingQueryPost,
+        setDoingQueryPost,
+        doingQueryPostCollection,
+        setDoingQueryPostCollection
       }}
       {...props}
     />
