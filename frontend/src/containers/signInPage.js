@@ -19,10 +19,18 @@ const SignInPage = () => {
   const [queryUser, { data }] = useLazyQuery(USER_QUERY);
   const [createAccount] = useMutation(CREATE_ACCOUNT_MUTATION);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state != null) {
+      setSignUp(location.state.signUp);
+    }
+  }, [location]);
 
   const autheticateAccount = (user) => {
     setAuthenticated(true);
     localStorage.setItem("authenticated", true);
+    console.log('authenticate account:', user.account, user.name)
     setUserId(user._id)
     setAccount(user.account)
     setUsername(user.name);
@@ -35,7 +43,6 @@ const SignInPage = () => {
         password: inPassword
       }
     })
-    console.log('sign up result:', data.queryUser)
     if (data.queryUser !== null) {
       autheticateAccount(data.queryUser);
       displayStatus({

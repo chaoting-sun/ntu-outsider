@@ -70,11 +70,7 @@ const Mutation = {
     { UserModel },
     info
   ) => {
-    let accountUsed = await findOne({ account: account });
-    if (accountUsed) {
-      return null;
-    }
-    let updatedUser = await UserModel.findOneAndUpdate(
+    const updatedUser = await UserModel.findOneAndUpdate(
       { _id: userId },
       { name: name, account: account },
       { new: true }

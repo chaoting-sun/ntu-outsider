@@ -48,7 +48,8 @@ export const UPDATE_PASSWORD_MUTATION = gql`
 `;
 
 export const CREATE_POST_MUTATION = gql`
- mutation createPost($userId: ID!
+ mutation createPost(
+    $userId: ID!
     $title: String!
     $classNo: String!
     $className: String!
@@ -58,14 +59,16 @@ export const CREATE_POST_MUTATION = gql`
     $deadline: String!
     $tag: [String])
     {
-    createPost(title: $title,
-    classNo: $classNo,
-    className: $className,
-    teacherName: $teacherName,
-    content: $content,
-    condition: $condition,
-    deadline: $deadline,
-    tag: $tag)
+    createPost(
+      userId: $userId,
+      title: $title,
+      classNo: $classNo,
+      className: $className,
+      teacherName: $teacherName,
+      content: $content,
+      condition: $condition,
+      deadline: $deadline,
+      tag: $tag)
     {
     _id
     userId

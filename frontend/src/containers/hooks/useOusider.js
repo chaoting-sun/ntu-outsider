@@ -30,7 +30,7 @@ const LOCALSTORAGE_KEY = "save-username";
 
 const OutsiderProvider = (props) => {
   const savedUsername = localStorage.getItem(LOCALSTORAGE_KEY);
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState(null);
   const [account, setAccount] = useState("");
   const [preferTags, setPreferTags] = useState([]);
   const [username, setUsername] = useState(savedUsername || "");
