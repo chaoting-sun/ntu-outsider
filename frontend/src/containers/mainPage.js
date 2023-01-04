@@ -3,11 +3,11 @@ import '../css/mainPage.css'
 import { posts } from '../db'
 import { useOusider } from './hooks/useOusider'
 import { useNavigate } from 'react-router-dom'
+import { useLazyQuery } from "@apollo/client";
 import styled from 'styled-components'
 import PostLayout from '../components/postLayout'
 // import NavBar from '../components/navigationBar'
-
-import '../css/primaryLayout.css'
+import { POST_QUERY } from './graphql'
 import { postExamples } from './db'
 
 
@@ -27,15 +27,27 @@ const MainPage = () => {
   const [postDom, setPostDom] = useState([]);
   const [editPostId, setEditPostId] = useState("");
   const navigate = useNavigate();
+  const [queryPost, { data }] = useLazyQuery(POST_QUERY);
 
   const handleQueryPost = async () => {
-    const fetchedPost = await queryPost();
+    const fetchedPost = await queryPost({
+      variables: {
+        type: "all",
+        queryString: ""
+      }
+    });
     setPost(fetchedPost);
+    return fetchedPost;
   }
 
   useEffect(() => {
-    // fetch all post from backend
     handleQueryPost()
+      .then((data) => {
+        const fetchedPost = data.data.queryPost;
+        console.log("fetchedPost:", fetchedPost);
+        // const fetchedPostDOM = createPostDOM(fetchedPost);
+        // setPostDom(fetchedPostDOM);
+      })
       .catch(console.error);
   }, [])
 
@@ -61,6 +73,8 @@ const MainPage = () => {
   }
 
   const createPostDOM = (posts) => {
+
+    
     return posts.map((post) => ({
       id: post._id,
       dom:
@@ -73,16 +87,16 @@ const MainPage = () => {
     }))
   }
 
-  useEffect(() => {
-    // create react DOM of post
-    if (post.length) {
-      setPostDom(createPostDOM(post));
-    }
-  }, [post])
+  // useEffect(() => {
+  //   // create react DOM of post
+  //   if (post.length) {
+  //     setPostDom(createPostDOM(post));
+  //   }
+  // }, [post])
 
   return (
     <div className='mainPageContainer'>
-      {postDom.map(({ dom }) => dom)}
+      {/* {postDom.map(({ dom }) => dom)} */}
     </div>
   )
 }

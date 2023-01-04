@@ -88,7 +88,7 @@ export const CREATE_POST_MUTATION = gql`
  }`;
 
 export const UPDATE_POST_MUTATION = gql`
-  mutation updatedPost(
+  mutation updatePost(
     $postId: ID!
     $title: String!
     $classNo: String!
