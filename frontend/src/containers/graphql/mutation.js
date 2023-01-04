@@ -48,7 +48,8 @@ export const UPDATE_PASSWORD_MUTATION = gql`
 `;
 
 export const CREATE_POST_MUTATION = gql`
- mutation createPost($userId: ID!
+ mutation createPost(
+    $userId: ID!
     $title: String!
     $classNo: String!
     $className: String!
@@ -58,14 +59,16 @@ export const CREATE_POST_MUTATION = gql`
     $deadline: String!
     $tag: [String])
     {
-    createPost(title: $title,
-    classNo: $classNo,
-    className: $className,
-    teacherName: $teacherName,
-    content: $content,
-    condition: $condition,
-    deadline: $deadline,
-    tag: $tag)
+    createPost(
+      userId: $userId,
+      title: $title,
+      classNo: $classNo,
+      className: $className,
+      teacherName: $teacherName,
+      content: $content,
+      condition: $condition,
+      deadline: $deadline,
+      tag: $tag)
     {
     _id
     userId
@@ -175,17 +178,18 @@ export const CREATE_CHATBOX_MUTATION = gql`
         sender
         body
       }
+      namesOfTalkers
     }
   }
 `;
 
 export const CREATE_MESSAGE_MUTATION = gql`
-  mutation createMessage($name: ID!, $to: ID!, $message: String!) {
-    createMessage(name: $name, to: $to, message: $message) {
-      messages {
+  mutation createMessage($message: String!, $name: ID!, $to: ID!) {
+    createMessage(message: $message, name: $name, to: $to) {
+      
         sender
         body
-      }
+      
     }
   }
 `;

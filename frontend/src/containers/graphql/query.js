@@ -9,6 +9,7 @@ export const CHATBOX_QUERY = gql`
         sender
         body
       }
+      namesOfTalkers
     }
   }
 `;
@@ -19,8 +20,9 @@ export const CHATBOXES_QUERY = gql`
       namesOfTalkers
       messages {
         sender
-        body
+        body    
       }
+      namesOfTalkers
     }
   }
 `;

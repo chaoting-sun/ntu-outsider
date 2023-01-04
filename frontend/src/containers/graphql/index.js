@@ -1,3 +1,5 @@
+
+export { CHATBOX_SUBSCRIPTION, MESSAGE_SUBSCRIPTION } from "./subscription";
 export {
   POST_QUERY,
   CHATBOXES_QUERY,
@@ -16,4 +18,3 @@ export {
   CREATE_CHATBOX_MUTATION,
   CREATE_MESSAGE_MUTATION
 } from "./mutation";
-export { CHATBOX_SUBSCRIPTION } from "./subscription";
