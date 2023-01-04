@@ -93,6 +93,8 @@ const Query = {
         }
         console.log('followedPosts:', followedPosts);
         return followedPosts;
+      case "allPost":
+        return await PostModel.find({});
       default:
         console.log('no such query:', type);
         return [];

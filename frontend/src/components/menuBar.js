@@ -10,6 +10,7 @@ import SearchBox from './searchBox';
 // ref: https://ant.design/components/menu
 
 const items = [
+  { label: "全部", key: "allPost" },
   { label: "追蹤", key: "followedPost" },
   { label: "我的貼文", key: "uploadedPost" },
   { label: "新增貼文", key: "editPost" },

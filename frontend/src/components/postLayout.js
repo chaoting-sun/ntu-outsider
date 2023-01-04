@@ -73,8 +73,7 @@ const NameButton = styled(Buttonm)`
 `
 
 const PostLayout = ({ post, handleChat, handleSavePost, handleEditPost, handleDeletePost }) => {
-  // console.log('PostLayout:');
-  // console.log(post);
+  // console.log("PostLayout:", post);
 
   const { userId, account, authenticated } = useOusider();
   const [info, setInfo] = useState(null);

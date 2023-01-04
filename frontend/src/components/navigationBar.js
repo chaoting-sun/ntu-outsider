@@ -9,8 +9,7 @@ import '../css/navigationBar.css'
 
 const NavBar = () => {
   const { authenticated, displayStatus,
-    handleQueryPost, handleQueryPostCollection,
-    setDoingQueryPost  } = useOusider();
+    handleQueryPost, handleQueryPostCollection } = useOusider();
   const navigate = useNavigate();
 
   const handleOnClickMail = () => {
@@ -59,7 +58,7 @@ const NavBar = () => {
         }
       })
     } else {
-      // key = savedPost, followedPost, myPost
+      // key = savedPost, followedPost, myPost, all
       handleQueryPostCollection(key);
     }
   }

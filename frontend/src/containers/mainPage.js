@@ -125,11 +125,12 @@ const MainPage = () => {
     }
   }
 
-  const handleEditPost = (post) => {
+  const handleEditPost = (editedPost) => {
+
     navigate('/editPostPage', {
       state: {
         action: 'editPost',
-        info: post
+        post: editedPost
       }
     });
   }
