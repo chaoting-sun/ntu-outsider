@@ -5,7 +5,7 @@ import LogIn from "../components/logIn";
 import SignUp from "../components/signUp";
 // import Title from "../components/Title"
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { hashPassword } from "../utils/hash"
+import { hashPassword, verifyPassword } from "../utils/hash"
 import { useEffect, useState } from "react";
 import { USER_QUERY } from "./graphql/query";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -13,60 +13,44 @@ import { CREATE_ACCOUNT_MUTATION } from "./graphql/mutation";
 
 
 const SignInPage = () => {
-  const { setAccount, setUsername,
+  const { setAccount, setUsername, authenticated,
     setAuthenticated, displayStatus, setUserId } = useOusider();
   const [signUp, setSignUp] = useState(false);
-  const [queryUser, { data, loading, error }] = useLazyQuery(USER_QUERY);
+  const [queryUser, { data }] = useLazyQuery(USER_QUERY);
   const [createAccount] = useMutation(CREATE_ACCOUNT_MUTATION);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (data === undefined) return;
+  const autheticateAccount = (user) => {
+    setAuthenticated(true);
+    localStorage.setItem("authenticated", true);
+    setUserId(user._id)
+    setAccount(user.account)
+    setUsername(user.name);
+  }
 
-
-    if (data !== null) {
+  const handleLogIn = async ({ inAccount, inPassword }) => {
+    const { data } = await queryUser({
+      variables: {
+        account: inAccount,
+        password: inPassword
+      }
+    })
+    console.log('sign up result:', data.queryUser)
+    if (data.queryUser !== null) {
       autheticateAccount(data);
+      displayStatus({
+        type: "success",
+        msg: "log in successfully",
+      })  
     } else {
       displayStatus({
         type: "error",
         msg: "Account or password is incorrect!",
       })
     }
-  }, [data, loading]);
 
-  console.log();
-
-  if (loading) return <p>Loading ...</p>;
-  if (error) return <>Error! {error.message}</>;
-
-
-  const autheticateAccount = (user) => {
-    setAuthenticated(true);
-    localStorage.setItem("authenticated", true);
-
-    setUserId(user._id)
-    setAccount(user.account)
-    setUsername(user.name);
-
-    displayStatus({
-      type: "success",
-      msg: "log in successfully",
-    })
-    // navigate('/') // HomePage
+    navigate('/') // HomePage
   }
-
-  const handleLogIn = async ({ inAccount, inPassword }) => {
-    const hashedPassword = hashPassword(inPassword);
-
-    console.log('queryUser input:\n', inAccount, hashedPassword)
-    await queryUser({
-      variables: {
-        account: inAccount,
-        password: hashedPassword
-      }
-    })
-  }
-
 
   const handleSignUp = async ({ inAccount, inUserName, inPassword }) => {
     const hashedPassword = hashPassword(inPassword);
@@ -78,20 +62,18 @@ const SignInPage = () => {
       }
     })
     console.log('sign up result:', data.createAccount)
-    if (data !== null) {
-      setUsername(data.createAccount.name);
-      setAccount(data.createAccount.account);
+    if (data.createAccount !== null) {
       displayStatus({
         type: "success",
         msg: "sign up successfully!"
       })
-      setSignUp(false);
     } else {
       displayStatus({
         type: "error",
         msg: "Account already exists!"
       })
     }
+    setSignUp(false);
   }
 
   return (
