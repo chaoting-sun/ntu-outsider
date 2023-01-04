@@ -8,6 +8,19 @@ export const CHATBOX_SUBSCRIPTION = gql`
               sender
             }
             name
+            namesOfTalkers
         }
     }
 `
+export const MESSAGE_SUBSCRIPTION = gql`
+    subscription($id: ID!) {
+        subscribeMessage(id: $id) {
+            chatBoxName
+            message {
+                body
+                sender
+            }
+        }
+    }
+`
+

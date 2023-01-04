@@ -160,6 +160,7 @@ const Mutation = {
     { ChatBoxModel, UserModel, pubsub },
     info
   ) => {
+    console.log("create chatBox")
     let chatBoxName = [name, to].sort().join("_");
     let chatBox = await ChatBoxModel.findOne({ name: chatBoxName });
     if (!chatBox) {
@@ -173,10 +174,12 @@ const Mutation = {
         { $push: { chatboxes: chatBox._id } }
       );
     }
+    //console.log(`chatBox ${name}`)
+    //console.log(`chatBox ${to}}`)
     pubsub.publish(`chatBox ${name}`, {
       subscribeChatBox: chatBox,
     })
-    pubsub.publish(`chatBox ${to}}`, {
+    pubsub.publish(`chatBox ${to}`, {
       subscribeChatBox: chatBox,
     })
     return chatBox;
@@ -187,6 +190,7 @@ const Mutation = {
     { ChatBoxModel, pubsub },
     info
   ) => {
+    console.log("create message")
     const chatBoxName = [name, to].sort().join("_");
     const chatBox = await ChatBoxModel.findOne({ name: chatBoxName });
     if (!chatBox) {
@@ -196,6 +200,9 @@ const Mutation = {
     chatBox.messages.push(newMsg);
     await chatBox.save();
     pubsub.publish(`message ${name}`, {
+      subscribeMessage: {chatBoxName: chatBoxName, message: newMsg},
+    })
+    pubsub.publish(`message ${to}`, {
       subscribeMessage: {chatBoxName: chatBoxName, message: newMsg},
     })
     return {...newMsg};

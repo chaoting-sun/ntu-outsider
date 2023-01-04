@@ -174,17 +174,18 @@ export const CREATE_CHATBOX_MUTATION = gql`
         sender
         body
       }
+      namesOfTalkers
     }
   }
 `;
 
 export const CREATE_MESSAGE_MUTATION = gql`
-  mutation createMessage($name: ID!, $to: ID!, $message: String!) {
-    createMessage(name: $name, to: $to, message: $message) {
-      messages {
+  mutation createMessage($message: String!, $name: ID!, $to: ID!) {
+    createMessage(message: $message, name: $name, to: $to) {
+      
         sender
         body
-      }
+      
     }
   }
 `;

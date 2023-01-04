@@ -11,16 +11,22 @@ import { ListItemButton } from '@mui/material';
 
 
 
-export default function AlignItemsList({chats, OpenChatBox}) {
+export default function AlignItemsList({chats, OpenChatBox, me}) {
   return (
     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {chats.map( (e) => {
-            //console.log(i);
+            let name = "";
+            for(let i = 0; i < 2; i += 1) {
+                if(e.namesOfTalkers[i] !== me)
+                    name = e.namesOfTalkers[i]
+            }
+            if(name === "")
+                name = me;
             return(
                 <>
                     <ListItemButton onClick={() => OpenChatBox(e)}>
                         <ListItem alignItems="flex-start">
-                            <ListItemText primary= {e.name}/>
+                            <ListItemText primary= {name}/>  
                         </ListItem>
                     </ListItemButton>
                     <Divider/>
