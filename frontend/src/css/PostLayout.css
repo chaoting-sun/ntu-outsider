@@ -4,3 +4,20 @@
   display: inherit !important;
   justify-content: start !important;
 }
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-content: flex-end;
+}
+
+.editBox {
+    /* position: relative; */
+    width: 150px;
+    height: 50px;
+    margin-top: 40px;
+    display: flex;
+    /* align-self: flex-start; */
+    /* justify-content: flex-end; */
+}
+

@@ -13,6 +13,7 @@ const items = [
   { label: "珍藏", key: "savedPostPage" },
   { label: "追蹤", key: "followedPostPage" },
   { label: "我的貼文", key: "myPostPage" },
+  { label: "新增貼文", key: "editPostPage" },
 ]
 
 const MenuBar = ({ handleConditionedSearch, handleMenuNavigate }) => {
@@ -25,6 +26,7 @@ const MenuBar = ({ handleConditionedSearch, handleMenuNavigate }) => {
             onClick={(e) => handleMenuNavigate(e.key)}
             style={{
               color: "#4a3935",
+              backgroundColor: "#f0f1f5",
               fontSize: '1.15em',
               width: 256,
             }}

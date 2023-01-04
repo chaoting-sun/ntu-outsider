@@ -3,16 +3,12 @@ import '../css/mainPage.css'
 import { posts } from '../db'
 import { useOusider } from './hooks/useOusider'
 import { useNavigate } from 'react-router-dom'
-// import NavBar from '../components/navigationBar'
-import MenuBar from '../components/menuBar'
-import HeaderBar from '../components/headerBar'
-import PrimaryLayout from '../components/primaryLayout'
-import MainLayout from '../components/mainLayout'
-
 import styled from 'styled-components'
+import PostLayout from '../components/postLayout'
+// import NavBar from '../components/navigationBar'
+
 import '../css/primaryLayout.css'
 import { postExamples } from './db'
-import PostLayout from '../components/postLayout'
 
 
 const PostContainer = styled.div`
@@ -20,60 +16,75 @@ const PostContainer = styled.div`
   margin-bottom: 20px;
 `
 
-/* graphql query */
+/* graphql query in useOutsider */
 const queryPost = async () => {
-  // db <- queryPost
-  // db -> postExamples 
   return postExamples;
 }
 
 const MainPage = () => {
   const { authenticated } = useOusider();
-  const [existingPost, setExistingPost] = useState([]);
+  const [post, setPost] = useState([]);
   const [postDom, setPostDom] = useState([]);
+  const [editPostId, setEditPostId] = useState("");
+  const navigate = useNavigate();
+
+  const handleQueryPost = async () => {
+    const fetchedPost = await queryPost();
+    setPost(fetchedPost);
+  }
 
   useEffect(() => {
+    // fetch all post from backend
     handleQueryPost()
       .catch(console.error);
   }, [])
 
-  useEffect(() => {
-    if (existingPost.length) {
-      setPostDom(existingPost.map((post) => (
-        <PostContainer key={post.postId}>
-          <PostLayout
-            title={post.title}
-            posterName={post.posterName}
-            className={post.className}
-            teacherName={post.teacherName}
-            classNo={post.classNo}
-            deadline={post.deadline}
-            condition={post.condition}
-            content={post.content}
-            leftMembersRequired={post.leftMembersRequired}
-            tags={post.tags}
-          />
-        </PostContainer>
-      )))
-    } 
-  }, [existingPost])
-
-  const handleQueryPost = async () => {
-    const fetchedPost = await queryPost();
-    setExistingPost(fetchedPost);
+  const handleDeletePost = (deletedPostId) => {
+    setPost(post.filter(({ id }) => (id !== deletedPostId)))
+    setPostDom(postDom.filter(({ id }) => (id !== deletedPostId)));
   }
 
+  const handlePostOperation = (targetPostId, type) => {
+    switch (type) {
+      case 'delete':
+        handleDeletePost(targetPostId);
+        break;
+      case 'edit':
+        navigate('/editPostPage', {state: {
+          action: 'editPost',
+          info: post
+        }});
+        break;
+      default:
+        console.log("only support edit and delete post!");
+    }
+  }
+
+  const createPostDOM = (posts) => {
+    return posts.map((post) => ({
+      id: post._id,
+      dom:
+        <PostContainer key={post._id}>
+          <PostLayout
+            post={post}
+            handlePostOperation={handlePostOperation}
+          />
+        </PostContainer>
+    }))
+  }
+
+  useEffect(() => {
+    // create react DOM of post
+    if (post.length) {
+      setPostDom(createPostDOM(post));
+    }
+  }, [post])
+
   return (
-    <>
-      <div className="mainPageContainer">
-        { postDom }
-      </div>
-    </>
+    <div className='mainPageContainer'>
+      {postDom.map(({ dom }) => dom)}
+    </div>
   )
 }
-
-
-
-
 
 export default MainPage

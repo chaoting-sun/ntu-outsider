@@ -30,3 +30,25 @@ button:focus {
     margin-top: 0px !important;
     margin-bottom: 0px !important;
 }
+
+.inputItem {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start !important;
+    align-items: center;
+    padding: 5px;
+    width: 100% !important;
+}
+
+.subInputItem {
+    /* width: 80%; */
+    display: flex;
+    align-content: flex-start;
+}
+
+.profileFormSize {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 15px;
+}

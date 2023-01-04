@@ -10,10 +10,11 @@ import styled from 'styled-components';
 import { useForm } from "react-hook-form";
 import TextField from '@mui/material/TextField';
 import { Input, Tooltip } from 'antd';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { StylesProvider } from "@material-ui/core/styles";
 import { useState, useEffect } from "react";
 import Tag from "../components/tag";
+import { useOusider } from './hooks/useOusider';
 
 const { TextArea } = Input;
 
@@ -53,80 +54,165 @@ const NameButton = styled(Button)`
 // }
 // e.g. defaultValue={state ? state.title: null}
 
+const updatePost = async (
+  postId, title, classNo, className, teacherName,
+  content, condition, deadline, tag
+) => {
+  return {
+    postId, title, classNo, className, teacherName,
+    content, condition, deadline, tag
+  } 
+}
 
 const EditPostPage = () => {
-  const navigate = useNavigate();
+  const { username } = useOusider()
   const [tags, setTags] = useState([]);
+  const [updatedPost, setUpdatedPost] = useState({});
+  const [sendPost, setSendPost] = useState(false);
+  const [post, setPost] = useState({});
+  const location = useLocation();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors }
   } = useForm();
-  const onSubmit = (data) => {
+
+  useEffect(() => {
+    if (location.state !== null) {
+      if (location.state.action === 'createPost') {
+        // create a new post
+      } else if (location.state.action === 'editPost') {
+        setPost(location.state.info);
+      }
+    }
+  }, [location])
+
+  const onSubmit = async (data) => {
     console.log(data);
     console.log(tags);
-    navigate("/viewPostPage"); //use mutation; 傳入該篇文章資料
+    
+    const postDoc = await updatePost(
+      data.postId,
+      data.title,
+      data.classNo,
+      data.className,
+      data.teacherName,
+      data.content,
+      data.condition,
+      `${data.endDate} ${data.endTime}`,
+      tags
+    )
 
+    data.deadline = `${data.endDate} ${data.endTime}`
+    setUpdatedPost(postDoc);
+    setSendPost(true);
   }; // your form submit function which will invoke after successful validation
 
+  // useEffect(() => {
+  //   console.log('state:', state);
+  //   console.log("test state endDate:", state.endDate);
+  // }, [])
+
+  useEffect(() => {
+    if (sendPost) {
+      navigate("..", { 
+        state: {
+          actionType: 'edit',
+          postInfo: updatedPost,
+        } 
+      }); //use mutation; 傳入該篇文章資料
+      // setPostSent(false);
+    }
+  }, [sendPost])
+
   //console.log(watch("example")); // you can watch individual input by pass the name of the input
-  
+
   return (
     <StylesProvider injectFirst>
-      <div className='editPostPageContainer'>
-          <PostCard sx={{ minWidth: 500 }}>
-              <CardContent>
-                <NameButton>me.name</NameButton>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  {/* register your input into the hook by invoking the "register" function */}
-                  <input {...register("title", { required: "Title is required"})}  placeholder = "Title" className='titleInput' />
-                  {errors.title ? <p className='error'>{errors.title.message}</p>: null}
-                  {/* include validation with required or other standard HTML validation rules */}
-                  <div className='inputItem'>
-                    <label>課名 </label>
-                    <input {...register("class", { required: "Class name is required"})} className = "detailInput"/>
-                  </div>
-                  {/* errors will return when field validation fails  */}
-                  {errors.class ? <p className='error'>{errors.class.message}</p>: null}
-                  <div className='inputItem'>
-                    <label>授課老師 </label>
-                    <input {...register("teacher", { required: "Teacher name is required"})} className = "detailInput"/>
-                  </div>
-                  {/* errors will return when field validation fails  */}
-                  {errors.teacher ? <p className='error'>{errors.teacher.message}</p>: null}
-                  <div className='inputItem'>
-                    <label>課程流水號 </label>
-                    <input {...register("classNo", { required: "Class number is required"})} className = "detailInput"/>
-                  </div>
-                  {errors.classNo ? <p className='error'>{errors.classNo.message}</p>: null}
-                  <div className='inputItem'>
-                    <label>尚須徵求人數 </label>
-                    <input {...register("remainder")} type = "number" min = "0" className = "detailInput"/>
-                  </div>
-                  <div className='inputItem'>
-                    <label> 截止時間 </label>
-                    <input {...register("endDate")} type = "date" className = "timeInput"/> &nbsp;
-                    <input {...register("endTime")} type = "time" className = "timeInput"/>
-                  </div>
-                  <Content rows={12} />
-                  <Tag tags = {tags} setTags = {setTags}/>
-                  <input type="submit" />
-                </form>
-              </CardContent>
-              
-              {/*<CardActions>
+        <PostCard sx={{ minWidth: 500 }}>
+          <CardContent>
+            <NameButton>{username}</NameButton>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* register your input into the hook by invoking the "register" function */}
+              <input
+                defaultValue={post.title}
+                placeholder="Title"
+                className='titleInput'
+                {...register("title", { required: "Title is required" })}
+              />
+              {errors.title ? <p className='error'>{errors.title.message}</p> : null}
+              {/* include validation with required or other standard HTML validation rules */}
+              <div className='inputItem'>
+                <label>課名 </label>
+                <input
+                  defaultValue={post.className}
+                  className="detailInput"
+                  {...register("class", { required: "Class name is required" })}
+                />
+              </div>
+              {/* errors will return when field validation fails  */}
+              {errors.class ? <p className='error'>{errors.class.message}</p> : null}
+              <div className='inputItem'>
+                <label>授課老師 </label>
+                <input
+                  defaultValue={post.teacherName}
+                  className="detailInput"
+                  {...register("teacher", { required: "Teacher name is required" })}
+                />
+              </div>
+              {/* errors will return when field validation fails  */}
+              {errors.teacher ? <p className='error'>{errors.teacher.message}</p> : null}
+              <div className='inputItem'>
+                <label>課程流水號 </label>
+                <input
+                  defaultValue={post.classNo}
+                  className="detailInput"
+                  {...register("classNo", { required: "Class number is required" })}
+                />
+              </div>
+              {errors.classNo ? <p className='error'>{errors.classNo.message}</p> : null}
+              <div className='inputItem'>
+                <label>尚須徵求人數 </label>
+                <input
+                  defaultValue={post.condition}
+                  type="number"
+                  min="0"
+                  className="detailInput"
+                  {...register("remainder")}
+                />
+              </div>
+              <div className='inputItem'>
+                <label> 截止時間 </label>
+                <input
+                  value={post.deadline.split(" ")[0]}
+                  type="date"
+                  className="timeInput"
+                  {...register("endDate")}
+                /> &nbsp;
+                <input
+                  value={post.deadline.split(" ")[1]}
+                  type="time"
+                  className="timeInput"
+                  {...register("endTime")}
+                />
+              </div>
+              <Content
+                defaultValue={post.content}
+                rows={12} 
+              />
+              <Tag tags={tags} setTags={setTags} />
+              <input type="submit" />
+            </form>
+          </CardContent>
+
+          {/*<CardActions>
                   <Button size="small">Learn More</Button>
                 </CardActions>*/}
-          </PostCard>
-      </div>
+        </PostCard>
     </ StylesProvider>
   )
 }
 export default EditPostPage
-
-
-
-
-
 

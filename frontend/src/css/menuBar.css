@@ -24,3 +24,9 @@
   flex: 1 1;
   padding: 24px 0;
 }
+
+.menuBar {
+  color: "#4a3935" !important;
+  font-size: "1.15em" !important;
+  width: 256 !important;
+}

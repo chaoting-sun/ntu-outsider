@@ -98,7 +98,7 @@ const logInItems = [
   }
 ]
 
-const HeaderBar = ({ authenticated, handleOnClickLogInOut }) => {
+const HeaderBar = ({ authenticated, handleOnClickMail ,handleOnClickLogInOut }) => {
   const items = authenticated ? logInItems : unLogInItems;
   // const items = testItems;
   const [current, setCurrent] = useState("");
@@ -123,7 +123,10 @@ const HeaderBar = ({ authenticated, handleOnClickLogInOut }) => {
       <div className='toolBarContainer'>
         <div className='tools'>
           <div className='mail'>
-            <MailOutlined />
+            <MailOutlined
+              className='toolsMail'
+              onClick={handleOnClickMail}
+            />
           </div>
           <div className='logIn'>
             <Menu

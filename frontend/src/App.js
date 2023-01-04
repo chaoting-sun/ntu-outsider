@@ -5,7 +5,6 @@ import { OutsiderProvider } from './containers/hooks/useOusider';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MainPage from './containers/mainPage';
 import SignInPage from './containers/signInPage';
-import ApplyPostPage from './containers/applyPostPage';
 import FollowedPostPage from './containers/followedPostPage';
 import SavedPostPage from './containers/savedPostPage';
 import MyPostPage  from './containers/myPostPage';
@@ -34,7 +33,6 @@ function App() {
             <Route index element={<MainPage />} />
             <Route path="/savedPostPage" element={<SavedPostPage />} />
             <Route path="/followedPostPage" element={<FollowedPostPage />} />
-            <Route path="/applyPostPage" element={<ApplyPostPage />} />
             <Route path="/myPostPage" element={<MyPostPage />} />
             <Route path="/editPostPage" element={<EditPostPage />} />
             <Route path="/viewPostPage" element={<ViewPostPage />} /> {/*包含看自己貼文與別人貼文*/ }

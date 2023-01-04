@@ -12,6 +12,10 @@ const NavBar = () => {
     displayStatus } = useOusider();
   const navigate = useNavigate();
 
+  const handleOnClickMail = () => {
+    navigate("/mailPage")
+  }
+
   const handleOnClickLogInOut = (action) => {
     // logIn or logOut
     console.log("action:", action);
@@ -52,13 +56,19 @@ const NavBar = () => {
       navigate("/logIn")
       return;
     }
-    navigate(`/${page}`);
+
+    if (page === 'editPostPage') {
+      navigate(`/${page}`, {state: { action: 'createPost', info: null }});
+    } else {
+      navigate(`/${page}`);
+    }
   }
 
   return (
     <>
       <HeaderBar
         authenticated={authenticated}
+        handleOnClickMail={handleOnClickMail}
         handleOnClickLogInOut={handleOnClickLogInOut}
       />
       <MenuBar

@@ -29,6 +29,6 @@ export default function AlignItemsList({chats, OpenChatBox}) {
             
         })}
     </List>
-    
+
   );
 }
