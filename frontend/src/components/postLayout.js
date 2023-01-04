@@ -19,6 +19,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
 import { useOusider } from '../containers/hooks/useOusider';
+import Tooltip from '@mui/material/Tooltip';
 
 // ref: viewPostPage.js
 
@@ -27,7 +28,7 @@ const { TextArea } = Input;
 
 
 const PostCard = styled(Card)`
-  width: 700px;
+  width: 100% important!;
   position: relative;
   top: -15vh;
   border-radius: 10px !important;
@@ -70,17 +71,9 @@ const NameButton = styled(Buttonm)`
   font-size: 22px !important;
   display: flex !important;
 `
-const deletePost = async () => {
-  return "successfully delete post";
-}
 
-const savePost = async () => {
-  return "successfully save post";
-}
-
-const PostLayout = ({ post, handleChat, handlePostOperation }) => {
-  console.log('PostLayout:');
-  console.log(post);
+const PostLayout = ({ post, handleChat, handleSavePost, handleEditPost, handleDeletePost }) => {
+  // console.log("PostLayout:", post);
 
   const { userId, account, authenticated } = useOusider();
   const [info, setInfo] = useState(null);
@@ -93,14 +86,9 @@ const PostLayout = ({ post, handleChat, handlePostOperation }) => {
     formState: { errors }
   } = useForm();
 
-  // useEffect(() => {
-  //   setInfo(post);
-  //   console.log(post);
-  // }, []);
-
   useEffect(() => {
     setMe(post.author._id === userId);
-    console.log("My post:", post.author.name, post.author._id === userId);
+    // console.log("My post:", post.author.name, post.author._id === userId);
   }, [])
 
   const ShowDeletePostModal = () => {
@@ -110,12 +98,7 @@ const PostLayout = ({ post, handleChat, handlePostOperation }) => {
       content: '',
       onOk() {
         console.log('OK');
-        deletePost().then((value) => {
-          console.log(value)
-          handlePostOperation(post._id, 'delete');
-        }).catch((e) => {
-          console.log(e);
-        });
+        handleDeletePost(post);
       },
       onCancel() {
         console.log('Cancel');
@@ -123,21 +106,13 @@ const PostLayout = ({ post, handleChat, handlePostOperation }) => {
     });
   };
 
-  const EditPost = () => {
-    handlePostOperation(post._id, 'edit');
-  }
-
-  const SavePost = () => {
-    savePost().then((value) => {
-      console.log(value)
-      handlePostOperation(post._id, 'delete');
-    }).catch((e) => {
-      console.log(e);
-    });
-  }
+  const EditPost = async () => { await handleEditPost(post); }
+  const SavePost = async () => { await handleSavePost(post); }
 
   return (
-    <PostCard sx={{ minWidth: 400 }}>
+    <PostCard
+      sx={{ minWidth: 600, maxWidth: 800 }}
+    >
       <CardContent>
         <div className="cardHeader">
           <Typography
@@ -158,24 +133,30 @@ const PostLayout = ({ post, handleChat, handlePostOperation }) => {
                 {
                   me ? (
                     <>
-                      <MyIconButton
-                        aria-label="delete"
-                        onClick={ShowDeletePostModal}
-                      >
-                        <DeleteIcon />
-                      </MyIconButton>
-                      <MyIconButton
-                        aria-label="edit"
-                        onClick={EditPost}
-                      >
-                        <EditIcon />
-                      </MyIconButton>
+                      <Tooltip title="delete" placement="top" arrow>
+                        <MyIconButton
+                          aria-label="delete"
+                          onClick={ShowDeletePostModal}
+                        >
+                          <DeleteIcon />
+                        </MyIconButton>
+                      </Tooltip>
+                      <Tooltip title="edit" placement="top" arrow>
+                        <MyIconButton
+                          aria-label="edit"
+                          onClick={EditPost}
+                        >
+                          <EditIcon />
+                        </MyIconButton>
+                      </Tooltip>
                     </>
                   ) : null
                 }
-                <MyIconButton aria-label="save" onClick={SavePost}>
-                  <DataSaverOnIcon />
-                </MyIconButton>
+                <Tooltip title="follow / unfollow" placement="top" arrow>
+                  <MyIconButton aria-label="save" onClick={SavePost}>
+                    <DataSaverOnIcon />
+                  </MyIconButton>
+                </Tooltip>
               </ToolBox>
             ) : null
           }
@@ -220,29 +201,5 @@ const PostLayout = ({ post, handleChat, handlePostOperation }) => {
     </PostCard>
   )
 }
-
-
-
-
-// const PostLayout1 = ({ postAuthor, postTitle, teacherName, tags }) => {
-
-//   return (
-//     <div className="postContainer">
-
-//       <div className="postAuthorBlock">postTitle</div>
-//       <div className="postTitleBlock">postTitle</div>
-//       <div className="teacherNameBlock">teacherName</div>
-//       {
-//         tags.map((tag) => (
-//           <div className="tagsBlock">
-
-
-//           </div>
-//         ))
-
-//       }
-//     </div>
-//   )
-// }
 
 export default PostLayout;

@@ -17,7 +17,7 @@ const queryTypes = [
   { value: 'tag',         label: 'tag', },
 ]
 
-const SearchBox = ({ handleConditionedSearch }) => {
+const SearchBox = ({ handleQueryPost }) => {
   const { displayStatus } = useOusider();
   const [queryType, setQueryType] = useState("select");
   const [queryString, setQueryString] = useState("");
@@ -69,11 +69,7 @@ const SearchBox = ({ handleConditionedSearch }) => {
               return;
             }
 
-            handleConditionedSearch({
-              type: queryType,
-              queryString: queryString
-            })
-        
+            handleQueryPost(queryType, queryString)
             setQueryString("");
           }}
         ></Input.Search>

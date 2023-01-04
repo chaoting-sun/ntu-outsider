@@ -8,8 +8,8 @@ import '../css/navigationBar.css'
 
 
 const NavBar = () => {
-  const { authenticated, postInfo,
-    displayStatus } = useOusider();
+  const { authenticated, displayStatus,
+    handleQueryPost, handleQueryPostCollection } = useOusider();
   const navigate = useNavigate();
 
   const handleOnClickMail = () => {
@@ -38,16 +38,9 @@ const NavBar = () => {
     }
   }
 
-  const handleConditionedSearch = ({ type, queryString }) => {
-    navigate("/searchPostPage", {
-      state: {
-        type: type,
-        queryString: queryString
-      }
-    })
-  }
+  const handleMenuOperation = (key) => {
+    console.log('menu operation:', key);
 
-  const handleMenuNavigate = (page) => {
     if (!authenticated) {
       displayStatus({
         type: 'error',
@@ -55,17 +48,18 @@ const NavBar = () => {
       })
       navigate("/logIn")
       return;
-    }
-
-    if (page === 'editPostPage') {
-      navigate(`/${page}`, {
+    } 
+    
+    if (key === 'editPost') {
+      navigate(`/editPostPage`, {
         state: {
           action: 'createPost',
           post: null
         }
-      });
+      })
     } else {
-      navigate(`/${page}`);
+      // key = savedPost, followedPost, myPost, all
+      handleQueryPostCollection(key);
     }
   }
 
@@ -77,8 +71,8 @@ const NavBar = () => {
         handleOnClickLogInOut={handleOnClickLogInOut}
       />
       <MenuBar
-        handleConditionedSearch={handleConditionedSearch}
-        handleMenuNavigate={handleMenuNavigate}
+        handleQueryPost={handleQueryPost}
+        handleMenuOperation={handleMenuOperation}
       />
       <Outlet />
     </>
