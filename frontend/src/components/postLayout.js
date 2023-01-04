@@ -81,6 +81,9 @@ const savePost = async () => {
 }
 
 const PostLayout = ({ post, handlePostOperation }) => {
+  console.log('PostLayout:');
+  console.log(post);
+
   const { account, authenticated } = useOusider();
   const [info, setInfo] = useState(null);
   const [me, setMe] = useState(false);
@@ -92,14 +95,14 @@ const PostLayout = ({ post, handlePostOperation }) => {
     formState: { errors }
   } = useForm();
 
-  useEffect(() => {
-    setInfo(post);
-    console.log(post);
-  }, []);
+  // useEffect(() => {
+  //   setInfo(post);
+  //   console.log(post);
+  // }, []);
 
-  useEffect(() => {
-    if (info) setMe(info.author.account === account);
-  }, [info])
+  // useEffect(() => {
+  //   if (info) setMe(info.author.account === account);
+  // }, [info])
 
   const ShowDeletePostModal = () => {
     confirm({
@@ -110,7 +113,7 @@ const PostLayout = ({ post, handlePostOperation }) => {
         console.log('OK');
         deletePost().then((value) => {
           console.log(value)
-          handlePostOperation(info._id, 'delete');
+          handlePostOperation(post._id, 'delete');
         }).catch((e) => {
           console.log(e);
         });
@@ -122,20 +125,19 @@ const PostLayout = ({ post, handlePostOperation }) => {
   };
 
   const EditPost = () => {
-    handlePostOperation(info._id, 'edit');
+    handlePostOperation(post._id, 'edit');
   }
 
   const SavePost = () => {
     savePost().then((value) => {
       console.log(value)
-      handlePostOperation(info._id, 'delete');
+      handlePostOperation(post._id, 'delete');
     }).catch((e) => {
       console.log(e);
     });
   }
 
   return (
-    // <div className='editPostPageContainer'>
     <PostCard sx={{ minWidth: 400 }}>
       <ButtonBase
       // className={props.classes.cardAction}
@@ -153,7 +155,7 @@ const PostLayout = ({ post, handlePostOperation }) => {
               }}
               gutterBottom
             >
-              {info.title}
+              {post.title}
             </Typography>
             {
               authenticated ? (
@@ -184,26 +186,26 @@ const PostLayout = ({ post, handlePostOperation }) => {
             }
           </div>
           <Divider />
-          <NameButton>{info.author.info}</NameButton>
+          <NameButton>{post.author.name}</NameButton>
           <InformationBox item xs container direction="column" spacing={1}>
             <Grid item xs>
               <InformationItem variant="subtitle1">
-                {info.className}
+                {post.className}
               </InformationItem>
               <InformationItem variant="body2" color="text.secondary">
-                授課老師： {info.teacherName}
+                授課老師： {post.teacherName}
               </InformationItem>
               <InformationItem variant="body2" color="text.secondary">
-                流水號： {info.classNo}
+                流水號： {post.classNo}
               </InformationItem>
               <InformationItem variant="body2" color="text.secondary">
-                截止時間： {info.deadline}
+                截止時間： {post.deadline}
               </InformationItem>
               <InformationItem variant="body2" color="text.secondary">
-                剩餘徵求名額： {info.condition}
+                剩餘徵求名額： {post.condition}
               </InformationItem>
               <div className='tags'>
-                {info.tags.map(e => (
+                {post.tag.map(e => (
                   <Tag key={e} color="processing"> {e} </Tag>
                 ))}
 
@@ -211,7 +213,7 @@ const PostLayout = ({ post, handlePostOperation }) => {
             </Grid>
             <Grid item>
               <Typography paragraph className='content' align="left">
-                {info.content}
+                {post.content}
               </Typography>
             </Grid>
           </InformationBox>
