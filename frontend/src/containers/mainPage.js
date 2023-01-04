@@ -36,10 +36,15 @@ const MainPage = () => {
         <PostContainer key={post._id}>
           <PostLayout
             post={post}
+            handleChat={handleChat}
             handlePostOperation={handlePostOperation}
           />
         </PostContainer>
     }))
+  }
+
+  const handleChat = (author) => {
+    navigate('/mailPage', { state: author });
   }
 
   const handleQueryPost = async () => {
