@@ -12,7 +12,7 @@ const ACCOUNT_KEY = "save-account";
 const AUTHENTICATED_KEY = "save-autheticated"
 
 const OusiderContext = createContext({
-  userId: "",
+  userId: null,
   username: "",
   passWord: "",
   authenticated: false,
@@ -47,8 +47,8 @@ const OutsiderProvider = (props) => {
   useEffect(() => {
     if (authenticated) {
       localStorage.setItem(USERID_KEY, userId);
-      localStorage.setItem(USERNAME_KEY, account);
-      localStorage.setItem(ACCOUNT_KEY, username);
+      localStorage.setItem(ACCOUNT_KEY, account);
+      localStorage.setItem(USERNAME_KEY, username);
       localStorage.setItem(AUTHENTICATED_KEY, authenticated);
     }
   }, [authenticated])
