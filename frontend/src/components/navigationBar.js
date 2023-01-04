@@ -22,13 +22,13 @@ const NavBar = () => {
 
     switch (action) {
       case "logIn":
-        navigate("/logIn")
+        navigate("/logIn", { state: { signUp: false}});
         break;
       case "logOut":
-        navigate("/logIn");
+        navigate("/logIn", { state: { signUp: false}});
         break;
       case "signUp":
-        navigate("/logIn", { state: 'signUp' });
+        navigate("/logIn", { state: { signUp: true}});
         break;
       case "editProfile":
         navigate("/myProfilePage");

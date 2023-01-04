@@ -70,20 +70,19 @@ const NameButton = styled(Button)`
 // }
 
 const EditPostPage = () => {
-  const { username, userId, displayStatus } = useOusider();
+  const { username, userId, displayStatus, authenticated } = useOusider();
   const [action, setAction] = useState('');
   const [updatedPost, setUpdatedPost] = useState(null);
   const [sentPost, setSentPost] = useState(false);
   const [postId, setPostId] = useState(null);
   const [post, setPost] = useState(null);
   const [tags, setTags] = useState([]);
+  const [content, setContent] = useState("");
 
   const location = useLocation();
   const navigate = useNavigate();
   const [createPost] = useMutation(CREATE_POST_MUTATION);
   const [updatePost] = useMutation(UPDATE_POST_MUTATION);
-
-  console.log("username:", username);
 
   const {
     register,
@@ -98,50 +97,57 @@ const EditPostPage = () => {
       setPost(post);
       setTags(post ? post.tag : []);
       setPostId(location.state._id);
+      setContent(post ? post.content : "");
     }
   }, [location])
 
 
   const onSubmit = async (data) => {
+    console.log("onSubmit:");
     console.log(data);
     console.log(tags);
+    console.log(userId);
+
+    let outData = null;
 
     if (action === 'createPost') {
-      const updatedPost = await createPost({
-        variables: {
-          userId: userId,
-          title: data.title,
-          classNo: data.classNo,
-          className: data.className,
-          teacherName: data.teacherName,
-          content: data.content,
-          condition: data.condition,
-          deadline: data.dealine,
-          tag: tags
-        }
-      })
+      const vars = {
+        userId: userId,
+        title: data.title,
+        classNo: data.classNo,
+        className: data.className,
+        teacherName: data.teacherName,
+        content: content,
+        condition: Number(data.condition),
+        deadline: `${data.endDate} ${data.endTime}`,
+        tag: tags
+      }
+      console.log('vars:', vars);
+      outData = await createPost({ variables: vars })
     } else if (action === 'editPost') {
-      const updatedPost = await updatePost({
+      outData = await updatePost({
         variables: {
           postId: postId,
           title: data.title,
           classNo: data.classNo,
           className: data.className,
           teacherName: data.teacherName,
-          content: data.content,
-          condition: data.condition,
-          deadline: data.dealine,
+          content: content,
+          condition: Number(data.condition),
+          deadline: `${data.endDate} ${data.endTime}`,
           tag: tags
         }
       })
     }
 
-    if (updatedPost) {
+    console.log('updatedPost:', outData.data.createPost);
+
+    if (outData) {
       displayStatus({
-        'type': 'sucess',
+        'type': 'success',
         'msg': 'successful to save post!',
       })
-      setUpdatedPost(updatedPost);
+      setUpdatedPost(outData.data.createPost);
       setSentPost(true);
     } else {
       displayStatus({
@@ -173,6 +179,7 @@ const EditPostPage = () => {
 
 
   return (
+    !authenticated ? null :
     <div className="editPostPageContainer">
       <StylesProvider injectFirst>
         {console.log('post:', post)}
@@ -194,7 +201,7 @@ const EditPostPage = () => {
                 <input
                   defaultValue={post ? post.className : null}
                   className="detailInput"
-                  {...register("class", { required: "Class name is required" })}
+                  {...register("className", { required: "Class name is required" })}
                 />
               </div>
               {/* errors will return when field validation fails  */}
@@ -204,7 +211,7 @@ const EditPostPage = () => {
                 <input
                   defaultValue={post ? post.teacherName : null}
                   className="detailInput"
-                  {...register("teacher", { required: "Teacher name is required" })}
+                  {...register("teacherName", { required: "Teacher name is required" })}
                 />
               </div>
               {/* errors will return when field validation fails  */}
@@ -225,7 +232,7 @@ const EditPostPage = () => {
                   type="number"
                   min="0"
                   className="detailInput"
-                  {...register("remainder")}
+                  {...register("condition")}
                 />
               </div>
               <div className='inputItem'>
@@ -244,8 +251,10 @@ const EditPostPage = () => {
                 />
               </div>
               <Content
+                value={content}
                 defaultValue={post ? post.content : null}
                 rows={12}
+                onChange={(e) => setContent(e.target.value)}
               />
               <Tag tags={tags} setTags={setTags} />
               <input type="submit" />
