@@ -6,7 +6,7 @@ import {useState, useEffect, useRef} from 'react'
 import ChatList from '../components/chatList' 
 import { Typography, Divider, IconButton } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import {CHATBOXES_QUERY} from './graphql/index';
+import {CHATBOXES_QUERY, CHATBOX_SUBSCRIPTION} from './graphql/index';
 import { useQuery} from '@apollo/react-hooks';
 
 const ChatBoxWrapper = styled.div`
@@ -41,35 +41,55 @@ const me = {
 //test end
 
 const MailPage =  () => {
+    const [messages, setMessages] = useState([]);
+    const [chatBoxes, setChatBoxes] = useState([]);
+    const [myMsg, setMyMsg] = useState("");
     const msgFooter = useRef();
     const scrollToBottom = () => {
         msgFooter.current?.scrollIntoView({ behavior: 'smooth', block: 'start'})
     }
 
-    const { loading, error, data, subscribeToMore } = useQuery(CHATBOXES_QUERY, {
-        variables: {userId: me._id}, 
-        fetchPolicy: 'network-only'
-     });
+    const OpenChatBox = (box) => {
+        console.log("open");
+        console.log(box);
+        setMessages(box.messages);
+    }
 
-    /*useEffect(() => {
-        try {
-        console.log("subscribe");
+    const HandleSend = () => {
+        setMyMsg("");
+    }
+
+    const { loading, error, data: boxesData, subscribeToMore} = useQuery(CHATBOXES_QUERY, {
+        variables: {userId: me._id}, 
+     });
+    //console.log(error);
+
+    useEffect(() => {
+        
         subscribeToMore({
-            document: POSTS_SUBSCRIPTION,
+            document: CHATBOX_SUBSCRIPTION,
+            variables: { id: me._id },
             updateQuery: (prev, { subscriptionData }) => {
             if (!subscriptionData.data) return prev;
-            const newPost = subscriptionData.data.post;
-
+            console.log(subscriptionData.data.subscribeChatBox);
+            const newBox = subscriptionData.data.subscribeChatBox;
+            
+            console.log({ ...prev.queryChatBoxes})
             return {
-                ...prev,
-                posts: [newPost, ...prev.posts],
+                queryChatBoxes: [
+                    ...prev.queryChatBoxes, newBox
+                ]  
             };
             },
         });
-        } catch (e) {}
-    }, [subscribeToMore]);*/
-    console.log(data);
-
+    }, [subscribeToMore]);
+    useEffect(() => {
+        if(boxesData !== undefined)
+            setChatBoxes(boxesData.queryChatBoxes)
+    }, [boxesData])
+    console.log(chatBoxes);
+    console.log(boxesData);
+    //console.log(messages);
     return (
         <div className='mailPageContainer'>
             <div className='chatbar'>
@@ -78,7 +98,7 @@ const MailPage =  () => {
                 </div>
                 <Divider />
                 <div className='scrollbar'>
-                    <ChatList chats = {users}/> 
+                    <ChatList chats = {chatBoxes} OpenChatBox = {OpenChatBox}/> 
                 </div>
             </div>
             <div className='chatBox'>
@@ -88,16 +108,16 @@ const MailPage =  () => {
                 <Divider />
                 <ChatBoxWrapper>
                     {
-                        message.map(({me, msg}, i) => (
-                            <Message isMe = {me} message = {msg} key = {i} />
+                        messages.map(({sender, body}, i) => (
+                            <Message isMe = {me._id === sender} message = {body} key = {i} />
                         ))
                     }
                     <Footer ref = {msgFooter}></Footer>
                 </ChatBoxWrapper>
                 <div className='sendContainer'>
-                    <input className='messageInput'/>
+                    <input className='messageInput' value={myMsg} onChange = {(e) => {setMyMsg(e.target.value)}}/>
                     <SendButton>
-                        <SendIcon />        
+                        <SendIcon onClick = {HandleSend}/>        
                     </SendButton>
                 </div>
             </div>

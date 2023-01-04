@@ -70,8 +70,10 @@ const Mutation = {
     { UserModel },
     info
   ) => {
-    let accountUsed = await findOne({account: account});
-    if(accountUsed){return null;}
+    let accountUsed = await findOne({ account: account });
+    if (accountUsed) {
+      return null;
+    }
     let updatedUser = await UserModel.findOneAndUpdate(
       { _id: userId },
       { name: name, account: account },
@@ -176,10 +178,10 @@ const Mutation = {
     }
     pubsub.publish(`chatBox ${name}`, {
       subscribeChatBox: chatBox,
-    })
+    });
     pubsub.publish(`chatBox ${to}}`, {
       subscribeChatBox: chatBox,
-    })
+    });
     return chatBox;
   },
   createMessage: async (
@@ -197,9 +199,9 @@ const Mutation = {
     chatBox.messages.push(newMsg);
     await chatBox.save();
     pubsub.publish(`message ${name}`, {
-      subscribeMessage: {chatBoxName: chatBoxName, message: newMsg},
-    })
-    return {...newMsg};
+      subscribeMessage: { chatBoxName: chatBoxName, message: newMsg },
+    });
+    return { ...newMsg };
   },
 };
 
