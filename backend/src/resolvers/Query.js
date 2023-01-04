@@ -101,6 +101,7 @@ const Query = {
     { UserModel, ChatBoxModel },
     info
   ) => {
+    //console.log("query chatboxes");
     let user = await UserModel.findOne({ _id: userId });
     let chatBoxes = await user.chatboxes;
     if (!chatBoxes) {
@@ -112,6 +113,7 @@ const Query = {
         await ChatBoxModel.findOne({ _id: boxId.toHexString() })
       );
     }
+    //console.log(chatBoxesArray);
     return chatBoxesArray;
   },
 };

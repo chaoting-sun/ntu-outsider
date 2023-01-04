@@ -4,10 +4,12 @@ export const CHATBOX_QUERY = gql`
   query queryChatBox($name1: ID!, $name2: ID!) {
     queryChatBox(name1: $name1, name2: $name2) {
       name
+      namesOfTalkers
       messages {
         sender
         body
       }
+      namesOfTalkers
     }
   }
 `;
@@ -17,8 +19,9 @@ export const CHATBOXES_QUERY = gql`
       name
       messages {
         sender
-        body
+        body    
       }
+      namesOfTalkers
     }
   }
 `;

@@ -1,5 +1,3 @@
-import bcrypt from 'bcrypt';
-
 const Mutation = {
   // 資料存在之後，應該有更好的寫法 send error
 
@@ -9,19 +7,18 @@ const Mutation = {
     { UserModel },
     info
   ) => {
-    let userExisting = await UserModel.findOne({ account: account });
-    if (userExisting) {
+    let userExisitng = await UserModel.findOne({ account: account });
+    if (userExisitng) {
       console.log(
         "This account exists, please choose another account or log in your account."
       );
       return null;
     } else {
-      const newUser = await new UserModel({
+      let newUser = await new UserModel({
         account: account,
         name: name,
         password: password,
       }).save();
-      console.log('newUser:', newUser);
       return newUser;
     }
   },
@@ -159,6 +156,7 @@ const Mutation = {
     { ChatBoxModel, UserModel, pubsub },
     info
   ) => {
+    console.log("create chatBox")
     let chatBoxName = [name, to].sort().join("_");
     let chatBox = await ChatBoxModel.findOne({ name: chatBoxName });
     if (!chatBox) {
@@ -172,10 +170,12 @@ const Mutation = {
         { $push: { chatboxes: chatBox._id } }
       );
     }
+    //console.log(`chatBox ${name}`)
+    //console.log(`chatBox ${to}}`)
     pubsub.publish(`chatBox ${name}`, {
       subscribeChatBox: chatBox,
-    });
-    pubsub.publish(`chatBox ${to}}`, {
+    })
+    pubsub.publish(`chatBox ${to}`, {
       subscribeChatBox: chatBox,
     });
     return chatBox;
@@ -186,6 +186,7 @@ const Mutation = {
     { ChatBoxModel, pubsub },
     info
   ) => {
+    console.log("create message")
     const chatBoxName = [name, to].sort().join("_");
     const chatBox = await ChatBoxModel.findOne({ name: chatBoxName });
     if (!chatBox) {
@@ -195,9 +196,12 @@ const Mutation = {
     chatBox.messages.push(newMsg);
     await chatBox.save();
     pubsub.publish(`message ${name}`, {
-      subscribeMessage: { chatBoxName: chatBoxName, message: newMsg },
-    });
-    return { ...newMsg };
+      subscribeMessage: {chatBoxName: chatBoxName, message: newMsg},
+    })
+    pubsub.publish(`message ${to}`, {
+      subscribeMessage: {chatBoxName: chatBoxName, message: newMsg},
+    })
+    return {...newMsg};
   },
 };
 

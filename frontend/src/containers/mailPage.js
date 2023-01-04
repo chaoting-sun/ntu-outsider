@@ -3,11 +3,17 @@ import '../css/mailPage.css'
 import styled from "styled-components"
 import Message from '../components/Message'
 import {useState, useEffect, useRef} from 'react'
-import ChatList from '../components/chatList' 
+//import ChatList from '../components/chatList' 
 import { Typography, Divider, IconButton } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import {CHATBOXES_QUERY, CHATBOX_SUBSCRIPTION} from './graphql/index';
-import { useQuery} from '@apollo/react-hooks';
+import {CHATBOXES_QUERY, CHATBOX_SUBSCRIPTION, CREATE_MESSAGE_MUTATION, MESSAGE_SUBSCRIPTION, CREATE_CHATBOX_MUTATION} from './graphql/index';
+import { useQuery, useMutation} from '@apollo/react-hooks';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import { ListItemButton } from '@mui/material';
 
 const ChatBoxWrapper = styled.div`
     min-height: 80%;
@@ -35,29 +41,55 @@ const users = ["Amy", "Ric", "Bob", "mom", "dad", "Amy", "Ric", "Bob", "mom", "d
 
 //Test subscription
 //take me from useOutsider
-const me = {
-    _id: "63b3e2ce1478daad8f55bcdd",
-}
+
 //test end
 
 const MailPage =  () => {
+    const me = {
+        _id: "63b54740fb8d79ecc3f215f9",
+        name: "AAAA"
+    }
     const [messages, setMessages] = useState([]);
     const [chatBoxes, setChatBoxes] = useState([]);
     const [myMsg, setMyMsg] = useState("");
+    const [friendId, setFriendId] = useState("");
+    const [friendName, setFriendName] = useState("");
     const msgFooter = useRef();
     const scrollToBottom = () => {
         msgFooter.current?.scrollIntoView({ behavior: 'smooth', block: 'start'})
     }
-
+    const [sendMessage] = useMutation(CREATE_MESSAGE_MUTATION);
+    const [createChatBox] = useMutation(CREATE_CHATBOX_MUTATION);
     const OpenChatBox = (box) => {
-        console.log("open");
-        console.log(box);
+        //console.log("open");
+        //console.log(box);
+        let name = "";
+            for(let i = 0; i < 2; i += 1) {
+                if(box.namesOfTalkers[i] !== me.name)
+                    name = box.namesOfTalkers[i]
+            }
+            if(name === "")
+                name = me.name;
+        setFriendName(name);
+        let ids = box.name.split("_");
+        for (let i = 0; i < 2; i += 1) {
+            if(ids[i] !== me._id)
+                setFriendId(ids[i]);
+        }
         setMessages(box.messages);
     }
 
-    const HandleSend = () => {
+    const HandleSend = async() => {
+        console.log(me._id, friendId, myMsg);
+        let a = await sendMessage({variables: {
+            name: me._id,
+            to: friendId,
+            message: myMsg
+        }})
         setMyMsg("");
     }
+
+
 
     const { loading, error, data: boxesData, subscribeToMore} = useQuery(CHATBOXES_QUERY, {
         variables: {userId: me._id}, 
@@ -65,16 +97,49 @@ const MailPage =  () => {
     //console.log(error);
 
     useEffect(() => {
-        
+        scrollToBottom();
+    }, messages)
+
+    useEffect(() => { 
+        subscribeToMore({
+            document: MESSAGE_SUBSCRIPTION,
+            variables: { id: me._id },
+            updateQuery: (prev, { subscriptionData }) => {
+            console.log(subscriptionData);
+            if (!subscriptionData.data) return prev;
+            //console.log(subscriptionData.data.subscribeChatBox);
+            const newMessage = subscriptionData.data.subscribeMessage.message;
+            const boxToPut = subscriptionData.data.subscribeMessage.chatBoxName;
+            console.log(prev.queryChatBoxes)
+            return {
+                queryChatBoxes: 
+                    prev.queryChatBoxes.map(box => {
+                        if(box.name === boxToPut) {
+                            const newBox = { ...box, messages: [...box.messages, newMessage] };
+                            setMessages([...box.messages, newMessage])
+                            console.log(newBox);
+                            return(newBox);
+                        }
+                        else {
+                            return box;
+                        }
+                    })
+            };
+            },
+        });
+    }, [subscribeToMore]); 
+
+    useEffect(() => {
+        //console.log("subscribe");
         subscribeToMore({
             document: CHATBOX_SUBSCRIPTION,
             variables: { id: me._id },
             updateQuery: (prev, { subscriptionData }) => {
             if (!subscriptionData.data) return prev;
-            console.log(subscriptionData.data.subscribeChatBox);
+            //console.log(subscriptionData.data.subscribeChatBox);
             const newBox = subscriptionData.data.subscribeChatBox;
             
-            console.log({ ...prev.queryChatBoxes})
+            //console.log({ ...prev.queryChatBoxes})
             return {
                 queryChatBoxes: [
                     ...prev.queryChatBoxes, newBox
@@ -83,13 +148,18 @@ const MailPage =  () => {
             },
         });
     }, [subscribeToMore]);
+
     useEffect(() => {
         if(boxesData !== undefined)
             setChatBoxes(boxesData.queryChatBoxes)
+
     }, [boxesData])
+
+    
     console.log(chatBoxes);
     console.log(boxesData);
-    //console.log(messages);
+    
+    console.log(messages);
     return (
         <div className='mailPageContainer'>
             <div className='chatbar'>
@@ -98,12 +168,33 @@ const MailPage =  () => {
                 </div>
                 <Divider />
                 <div className='scrollbar'>
-                    <ChatList chats = {chatBoxes} OpenChatBox = {OpenChatBox}/> 
+                    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+                        {chatBoxes.map( (e) => {
+                            let name = "";
+                            for(let i = 0; i < 2; i += 1) {
+                                if(e.namesOfTalkers[i] !== me.name)
+                                    name = e.namesOfTalkers[i]
+                            }
+                            if(name === "")
+                                name = me;
+                            return(
+                                <>
+                                    <ListItemButton>
+                                        <ListItem alignItems="flex-start" onClick={() => OpenChatBox(e)}>
+                                            <ListItemText primary= {name}/>  
+                                        </ListItem>
+                                    </ListItemButton>
+                                    <Divider/>
+                                </>
+                            )
+                            
+                        })}
+                    </List> 
                 </div>
             </div>
             <div className='chatBox'>
                 <div className='titleContainer'>
-                    <p className="messageTitle">Name</p>
+                    <p className="messageTitle">{friendName ? friendName: null}</p>
                 </div>
                 <Divider />
                 <ChatBoxWrapper>
