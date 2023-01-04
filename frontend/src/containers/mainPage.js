@@ -29,27 +29,47 @@ const MainPage = () => {
   const navigate = useNavigate();
   const [queryPost, { data }] = useLazyQuery(POST_QUERY);
 
+  const createPostDOM = (posts) => {
+    return posts.map((post) => ({
+      id: post._id,
+      dom:
+        <PostContainer key={post._id}>
+          <PostLayout
+            post={post}
+            handleChat={handleChat}
+            handlePostOperation={handlePostOperation}
+          />
+        </PostContainer>
+    }))
+  }
+
+  const handleChat = (author) => {
+    navigate('/mailPage', { state: author });
+  }
+
   const handleQueryPost = async () => {
-    const fetchedPost = await queryPost({
+    await queryPost({
       variables: {
         type: "all",
         queryString: ""
       }
-    });
-    setPost(fetchedPost);
-    return fetchedPost;
+    }).then((data) => {
+      setPost(data.data.queryPost);
+      console.log('save post:', data.data.queryPost);
+    }).catch((e) => {
+      console.log('error:', e);
+    })
   }
 
   useEffect(() => {
-    handleQueryPost()
-      .then((data) => {
-        const fetchedPost = data.data.queryPost;
-        console.log("fetchedPost:", fetchedPost);
-        // const fetchedPostDOM = createPostDOM(fetchedPost);
-        // setPostDom(fetchedPostDOM);
-      })
-      .catch(console.error);
-  }, [])
+    // save post
+    handleQueryPost();
+  }, []);
+
+  useEffect(() => {
+    // save postDom
+    if (post) setPostDom(createPostDOM(post))
+  }, [post]);
 
   const handleDeletePost = (deletedPostId) => {
     setPost(post.filter(({ id }) => (id !== deletedPostId)))
@@ -62,30 +82,18 @@ const MainPage = () => {
         handleDeletePost(targetPostId);
         break;
       case 'edit':
-        navigate('/editPostPage', {state: {
-          action: 'editPost',
-          info: post
-        }});
+        navigate('/editPostPage', {
+          state: {
+            action: 'editPost',
+            info: post
+          }
+        });
         break;
       default:
         console.log("only support edit and delete post!");
     }
   }
 
-  const createPostDOM = (posts) => {
-
-    
-    return posts.map((post) => ({
-      id: post._id,
-      dom:
-        <PostContainer key={post._id}>
-          <PostLayout
-            post={post}
-            handlePostOperation={handlePostOperation}
-          />
-        </PostContainer>
-    }))
-  }
 
   // useEffect(() => {
   //   // create react DOM of post
@@ -96,7 +104,10 @@ const MainPage = () => {
 
   return (
     <div className='mainPageContainer'>
-      {/* {postDom.map(({ dom }) => dom)} */}
+      <div className='postContainer'>
+        {console.log('postDOM:', postDom)}
+        {postDom.map(({ dom }) => dom)}
+      </div>
     </div>
   )
 }
