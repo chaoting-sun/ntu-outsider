@@ -60,6 +60,7 @@ const NavBar = () => {
     } else {
       // key = savedPost, followedPost, myPost, all
       handleQueryPostCollection(key);
+      navigate("/");
     }
   }
 
