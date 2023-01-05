@@ -44,14 +44,30 @@ const OutsiderProvider = (props) => {
   const [doingQueryPost, setDoingQueryPost] = useState(false);
   const [doingQueryPostCollection, setDoingQueryPostCollection] = useState(false);
   
+
   useEffect(() => {
     if (authenticated) {
       localStorage.setItem(USERID_KEY, userId);
       localStorage.setItem(ACCOUNT_KEY, account);
       localStorage.setItem(USERNAME_KEY, username);
       localStorage.setItem(AUTHENTICATED_KEY, authenticated);
+    } else {
+      setUserId(null);
+      setUsername("");
+      setAccount("");
+      setAccount("");
+      setAuthenticated(false);
+      
+      localStorage.setItem(USERID_KEY, userId);
+      localStorage.setItem(ACCOUNT_KEY, account);
+      localStorage.setItem(USERNAME_KEY, username);
+      localStorage.setItem(AUTHENTICATED_KEY, authenticated);
     }
   }, [authenticated])
+
+  const storeInLocalStorage = () => {
+    
+  }
 
   const autheticateAccount = (user) => {
     setAuthenticated(true);
@@ -62,6 +78,7 @@ const OutsiderProvider = (props) => {
   }
 
   const handleQueryPost = async (type, queryString) => {
+    console.log(type, queryString);
     // type = classNo, title, className, teacherName, tag, all
     setDoingQueryPost(true);
     const { data } = await queryPost({
