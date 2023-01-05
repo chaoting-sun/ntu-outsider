@@ -4,29 +4,29 @@ import LogIn from "../components/logIn";
 import SignUp from "../components/signUp";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-
 import { useNavigate, useLocation } from "react-router-dom";
 import { hashPassword } from "../utils/hash"
 import { useEffect, useState } from "react";
 import { USER_QUERY } from "./graphql/query";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { CREATE_ACCOUNT_MUTATION } from "./graphql/mutation";
+import { getStatusClassNames } from "antd/es/_util/statusUtils";
 
 
 const useStyles = makeStyles({
-  text: {
-    
+  signInFormHeader: {
     color: "#1A202C",
     fontWeight: "bold",
     borderBottom: "none",
     userSelect: "none",
     // textAlign: "left",
+    marginBottom: '20px',
   }
 });
 
 
 const SignInPage = () => {
-  const titleStyles = useStyles();
+  const StylesClasses = useStyles();
   const { setAccount, setUsername,
     authenticated, setAuthenticated,
     displayStatus, setUserId,
@@ -119,7 +119,13 @@ const SignInPage = () => {
           {
             signUp ? (
               <>
-                <div className="SignUpHeader">Sign Up</div>
+                <Typography
+                  variant="h2"
+                  className={StylesClasses.signInFormHeader}
+                >
+                  Sign Up
+                </Typography>
+                {/* <div className="SignUpHeader">Sign Up</div> */}
                 <SignUp handleSignUp={handleSignUp} />
                 <div className='signUpRemind'>Have an account?
                   <span onClick={() => setSignUp(false)}>Log in</span>
@@ -127,7 +133,13 @@ const SignInPage = () => {
               </>
             ) : (
               <>
-                <div className="logInHeader">Log In</div>
+                <Typography
+                  variant="h2"
+                  className={StylesClasses.signInFormHeader}
+                >
+                  Log In
+                </Typography>
+                {/* <div className="logInHeader">Log In</div> */}
                 <LogIn handleLogIn={handleLogIn} />
                 <div className='signUpRemind'>Do not have an account?
                   <span onClick={() => setSignUp(true)}>Sign up</span>

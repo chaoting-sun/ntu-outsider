@@ -3,13 +3,23 @@ import { useState } from 'react';
 import '../css/signIn.css';
 import { useOusider } from '../containers/hooks/useOusider';
 // import Button from '@material-ui/core/Button';
+import { makeStyles } from "@material-ui/core/styles";
 import styled from 'styled-components';
+import Typography from "@material-ui/core/Typography";
 
 
 // antd - Space
 // ref: https://ant.design/components/space
 
+const useStyles = makeStyles({
+  signInFormButton: {
+    color: "white",
+    userSelect: "none",
+  }
+});
+
 const LogIn = ({ handleLogIn }) => {
+  const StylesClasses = useStyles();
   const { displayStatus } = useOusider();
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
@@ -39,7 +49,7 @@ const LogIn = ({ handleLogIn }) => {
           fontSize: '1.3em',
         }}
       />
-
+      <div style={{width: '20px', height: '15px'}}></div>
       <Button
         type="primary"
         className="signInInput"
@@ -69,7 +79,12 @@ const LogIn = ({ handleLogIn }) => {
           setPassword("");
         }}
       >
-        Log In
+        <Typography
+          variant="h4"
+          className={StylesClasses.signInFormButton}
+        >
+          Log In
+        </Typography>
       </Button>
     </>
   )
