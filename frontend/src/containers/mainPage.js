@@ -129,7 +129,7 @@ const MainPage = () => {
     <div className='mainPageContainer'>
       <div className='postContainer'>
         {/* {console.log('postDOM:', postDom)} */}
-        {postDom.map(({ dom }) => dom)}
+        {postDom.map(({ dom }) => dom).reverse()}
       </div>
     </div>
   )
