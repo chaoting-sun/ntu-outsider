@@ -18,7 +18,7 @@ const SignInPage = () => {
     displayStatus, setUserId,
     autheticateAccount } = useOusider();
   const [signUp, setSignUp] = useState(false);
-  const [queryUser, { data }] = useLazyQuery(USER_QUERY);
+  const [queryUser] = useLazyQuery(USER_QUERY, { fetchPolicy: 'network-only' });
   const [createAccount] = useMutation(CREATE_ACCOUNT_MUTATION);
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,20 +45,21 @@ const SignInPage = () => {
         password: inPassword
       }
     })
+    console.log("info:", data);
+
     if (data.queryUser !== null) {
       autheticateAccount(data.queryUser);
       displayStatus({
         type: "success",
         msg: "log in successfully",
       })  
+      navigate('/') // HomePage
     } else {
       displayStatus({
         type: "error",
         msg: "Account or password is incorrect!",
       })
     }
-
-    navigate('/') // HomePage
   }
 
   const handleSignUp = async ({ inAccount, inUserName, inPassword }) => {

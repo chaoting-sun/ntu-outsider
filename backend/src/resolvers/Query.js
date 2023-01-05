@@ -118,7 +118,7 @@ const Query = {
         await ChatBoxModel.findOne({ _id: boxId.toHexString() })
       );
     }
-    //console.log(chatBoxesArray);
+    console.log(chatBoxesArray);
     return chatBoxesArray;
   },
 };

@@ -22,6 +22,9 @@ const { TextArea } = Input;
 
 //reference: https://codesandbox.io/s/react-hook-form-get-started-j5wxo?file=/src/index.js:0-1102
 
+// set default value of the form for useFrom
+// ref: https://stackoverflow.com/questions/70663158/set-default-values-in-react-hook-form
+
 const PostCard = styled(Card)`
   position: relative;
   top: -15vh;
@@ -88,11 +91,14 @@ const EditPostPage = () => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors }
   } = useForm();
 
   useEffect(() => {
     if (location.state !== null) {
+      console.log('info:', location.state);
+
       const postInfo = location.state.post;
 
       setAction(location.state.action);
@@ -100,6 +106,12 @@ const EditPostPage = () => {
       setTags(postInfo ? postInfo.tag : []);
       setPostId(location.state._id);
       setContent(postInfo ? postInfo.content : "");
+      
+      let defaultValues = {
+        title: postInfo ? postInfo.title : "", 
+      }
+      reset({...defaultValues});
+
     }
   }, [location])
 
@@ -107,8 +119,6 @@ const EditPostPage = () => {
   const onSubmit = async (data) => {
     console.log("onSubmit:");
     console.log(data);
-    console.log(tags);
-    console.log(userId);
 
     let outData = null;
 
@@ -124,11 +134,11 @@ const EditPostPage = () => {
         deadline: `${data.endDate} ${data.endTime}`,
         tag: tags
       }
-      console.log('vars:', vars);
+      console.log('createPost - vars:', vars);
       outData = await createPost({ variables: vars });
     } else if (action === 'editPost') {
       const vars = {
-        postId: postId,
+        postId: post._id,
         title: data.title,
         classNo: data.classNo,
         className: data.className,
@@ -138,6 +148,7 @@ const EditPostPage = () => {
         deadline: `${data.endDate} ${data.endTime}`,
         tag: tags
       }
+      console.log('updatePost - vars:', vars);
       outData = await updatePost({ variables: vars });
     }
 
@@ -173,11 +184,11 @@ const EditPostPage = () => {
   //console.log(watch("example")); // you can watch individual input by pass the name of the input
 
 
+
   return (
     !authenticated ? null :
       <div className="editPostPageContainer">
         <StylesProvider injectFirst>
-          {console.log('post:', post)}
           <PostCard sx={{ minWidth: 500 }}>
             <CardContent>
               <NameButton>{username}</NameButton>
@@ -201,6 +212,7 @@ const EditPostPage = () => {
                 </div>
                 {/* errors will return when field validation fails  */}
                 {errors.class ? <p className='error'>{errors.class.message}</p> : null}
+
                 <div className='inputItem'>
                   <label>授課老師 </label>
                   <input
@@ -211,6 +223,7 @@ const EditPostPage = () => {
                 </div>
                 {/* errors will return when field validation fails  */}
                 {errors.teacher ? <p className='error'>{errors.teacher.message}</p> : null}
+
                 <div className='inputItem'>
                   <label>課程流水號 </label>
                   <input
@@ -219,6 +232,7 @@ const EditPostPage = () => {
                     {...register("classNo", { required: "Class number is required" })}
                   />
                 </div>
+
                 {errors.classNo ? <p className='error'>{errors.classNo.message}</p> : null}
                 <div className='inputItem'>
                   <label>尚須徵求人數 </label>
@@ -233,13 +247,15 @@ const EditPostPage = () => {
                 <div className='inputItem'>
                   <label> 截止時間 </label>
                   <input
-                    value={post ? post.deadline.split(" ")[0] : ""}
+                    // value={}
+                    defaultValue={post ? post.deadline.split(" ")[0] : ""}
                     type="date"
                     className="timeInput"
                     {...register("endDate")}
                   /> &nbsp;
                   <input
-                    value={post ? post.deadline.split(" ")[1] : ""}
+                    // value={}
+                    defaultValue={post ? post.deadline.split(" ")[1] : ""}
                     type="time"
                     className="timeInput"
                     {...register("endTime")}
@@ -252,7 +268,10 @@ const EditPostPage = () => {
                   onChange={(e) => setContent(e.target.value)}
                 />
                 <Tag tags={tags} setTags={setTags} />
-                <input type="submit" />
+                <input 
+                  className="formInput"
+                  type="submit" 
+                />
               </form>
             </CardContent>
 
