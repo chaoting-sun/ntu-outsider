@@ -13,9 +13,12 @@ const NavBar = () => {
   const navigate = useNavigate();
 
   const handleOnClickMail = () => {
-    navigate("/mailPage")
+    if (authenticated) {
+      navigate("/mailPage");
+    } else {
+      navigate("/logIn");
+    }
   }
-
   const handleOnClickLogInOut = (action) => {
     // logIn or logOut
     console.log("action:", action);
