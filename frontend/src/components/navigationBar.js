@@ -8,7 +8,7 @@ import '../css/navigationBar.css'
 
 
 const NavBar = () => {
-  const { authenticated, displayStatus,
+  const { authenticated, displayStatus, setAuthenticated,
     handleQueryPost, handleQueryPostCollection } = useOusider();
   const navigate = useNavigate();
 
@@ -25,6 +25,7 @@ const NavBar = () => {
         navigate("/logIn", { state: { signUp: false}});
         break;
       case "logOut":
+        setAuthenticated(false);
         navigate("/logIn", { state: { signUp: false}});
         break;
       case "signUp":
@@ -34,7 +35,7 @@ const NavBar = () => {
         navigate("/myProfilePage");
         break;
       default:
-        console.log("only logIn | logOut | editProfile:", action);
+        console.log("wrong option");
     }
   }
 

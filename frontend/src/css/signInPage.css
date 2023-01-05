@@ -8,31 +8,41 @@
   background-color: rgb(250, 250, 250);
   height: 100vh;
   width: 60%;
-  padding: 20px;
+  /* padding: 20px; */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  /* align-items: flex-start; */
   color: #20B2AA;
   font-weight: 500;
 }
 
 .brandName1 {
   width: 100%;
-  height: 120px;
-  font-size: 100px;
-  text-align: left;
-  margin-left: 10vw;
-  /*margin-bottom: vh;*/
+  height: 400px;
+  margin-left: 6vw;
 }
 
 .brandName2 {
   width: 100%;
   height: 120px;
   font-size: 100px;
-  margin-left: 10vw;
+  margin-left: 6vw;
   margin-bottom: 10vh;
 }
+
+.brandName1 > span {
+    font-size: 120px;
+    display: block;
+    width: 500px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.brandName1 > span:hover {
+    color: #1a8e88;
+}
+
 
 .rightMainContainer {
   /* display: inline-block; */

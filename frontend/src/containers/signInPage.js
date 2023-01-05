@@ -92,6 +92,8 @@ const SignInPage = () => {
     }
   }
 
+  const onClickToMainPage = () => { navigate('/'); }
+
   return (
     <div className="mainContainer">
       <div className="leftMainContainer">
@@ -110,8 +112,7 @@ const SignInPage = () => {
           OUTSIDER
         </Typography> */}
 
-        <a>
-          {/* <button
+        {/* <button
             className="brandName1"
             style={{
               fontWeight: '500',
@@ -131,15 +132,11 @@ const SignInPage = () => {
               color: "#20b2aa"
             }}
           >OUTSIDER</button> */}
-          {/* <span onClick={}>NTU</span> */}
+        {/* <span onClick={}>NTU</span> */}
 
-          <div className="brandName1">
-            NTU
-          </div>
-          <div className="brandName2">
-            OUTSIDER
-          </div>
-        </a>
+        <div className="brandName1">
+          <span onClick={() => navigate('/') }>NTU<br></br>OUTSIDER</span>
+        </div>
       </div>
       <div className="rightMainContainer">
         <div className="Form">
