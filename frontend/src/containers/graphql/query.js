@@ -17,6 +17,7 @@ export const CHATBOXES_QUERY = gql`
   query queryChatBoxes($userId: ID!) {
     queryChatBoxes(userId: $userId) {
       name
+      namesOfTalkers
       messages {
         sender
         body    

@@ -20,6 +20,8 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
 import { useOusider } from '../containers/hooks/useOusider';
 import Tooltip from '@mui/material/Tooltip';
+import { CREATE_CHATBOX_MUTATION } from '../containers/graphql';
+import { useQuery, useMutation} from '@apollo/react-hooks';
 
 // ref: viewPostPage.js
 
@@ -72,13 +74,14 @@ const NameButton = styled(Buttonm)`
   display: flex !important;
 `
 
-const PostLayout = ({ post, handleChat, handleSavePost, handleEditPost, handleDeletePost }) => {
+const PostLayout = ({ post, handleSavePost, handleEditPost, handleDeletePost }) => {
   // console.log("PostLayout:", post);
 
   const { userId, account, authenticated } = useOusider();
   const [info, setInfo] = useState(null);
   const [me, setMe] = useState(false);
   const navigate = useNavigate();
+  const [createChatBox] = useMutation(CREATE_CHATBOX_MUTATION);
   const {
     register,
     handleSubmit,
@@ -105,6 +108,21 @@ const PostLayout = ({ post, handleChat, handleSavePost, handleEditPost, handleDe
       },
     });
   };
+
+  const handleChat = async() => {
+    const box = await createChatBox({variables: {
+      name: userId,
+      to: post.author._id 
+    }})
+    //console.log(post);
+    //console.log(userId, post.author._id );
+    //console.log(box.data.createChatBox);
+    console.log("layout");
+    navigate('/mailPage', {state: {
+      PosterId: post.author._id,
+      Box: box.data.createChatBox
+    }})
+  }
 
   const EditPost = async () => { await handleEditPost(post); }
   const SavePost = async () => { await handleSavePost(post); }
@@ -163,7 +181,7 @@ const PostLayout = ({ post, handleChat, handleSavePost, handleEditPost, handleDe
         </div>
         <Divider />
         <NameButton
-          onClick={() => handleChat(post.author)}
+          onClick={() => handleChat()}
         >
           {post.author.name}
         </NameButton>

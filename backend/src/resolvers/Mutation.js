@@ -173,15 +173,16 @@ const Mutation = {
         { _id: to },
         { $push: { chatboxes: chatBox._id } }
       );
+      console.log("publish");
+      pubsub.publish(`chatBox ${name}`, {
+        subscribeChatBox: chatBox,
+      })
+      pubsub.publish(`chatBox ${to}`, {
+        subscribeChatBox: chatBox,
+      });
     }
     //console.log(`chatBox ${name}`)
     //console.log(`chatBox ${to}}`)
-    pubsub.publish(`chatBox ${name}`, {
-      subscribeChatBox: chatBox,
-    })
-    pubsub.publish(`chatBox ${to}`, {
-      subscribeChatBox: chatBox,
-    });
     return chatBox;
   },
   createMessage: async (

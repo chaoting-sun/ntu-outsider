@@ -14,7 +14,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import { ListItemButton } from '@mui/material';
-import { useOusider } from './hooks/useOusider'
+import { useOusider } from './hooks/useOusider';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const ChatBoxWrapper = styled.div`
     min-height: 80%;
@@ -34,6 +35,8 @@ const SendButton = styled(IconButton)`
    width: 50px !important; 
 `
 
+
+
 //For test
 //const message = [{me:false, msg: "hollow"}, {me:true, msg: "heyyyyyyyyyheyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"}, {me:true, msg: "heyyyyyyyyy"},
 //{me:false, msg: "hollow"}, {me:false, msg: "hollow"}, {me:false, msg: "hollow"}, {me:false, msg: "hollow"}, ]
@@ -46,25 +49,33 @@ const SendButton = styled(IconButton)`
 //test end
 
 const MailPage =  () => {
-    /*const me = {
-        _id: "63b54740fb8d79ecc3f215f9",
-        name: "AAAA"
-    }*/
+    const { state } = useLocation();
+    const location = useLocation();
     const [messages, setMessages] = useState([]);
     const [chatBoxes, setChatBoxes] = useState([]);
     const [myMsg, setMyMsg] = useState("");
     const [friendId, setFriendId] = useState("");
     const [friendName, setFriendName] = useState("");
+    const [boxId, setBoxId] = useState("");
     const {userId, username} = useOusider();
+    const [openChatBox, setOpenChatBox] = useState(false);
     const msgFooter = useRef();
     const scrollToBottom = () => {
         msgFooter.current?.scrollIntoView({ behavior: 'smooth', block: 'start'})
     }
     const [sendMessage] = useMutation(CREATE_MESSAGE_MUTATION);
     const [createChatBox] = useMutation(CREATE_CHATBOX_MUTATION);
+
+    const { loading, error, data: boxesData, subscribeToMore} = useQuery(CHATBOXES_QUERY, {
+        variables: {userId}, 
+        fetchPolicy: 'network-only'
+      });
+    
+
     const OpenChatBox = (box) => {
         //console.log("open");
         //console.log(box);
+        setOpenChatBox(true);
         let name = "";
             for(let i = 0; i < 2; i += 1) {
                 if(box.namesOfTalkers[i] !== username)
@@ -79,7 +90,18 @@ const MailPage =  () => {
                 setFriendId(ids[i]);
         }
         setMessages(box.messages);
+        setBoxId(box._id);
     }
+
+    useEffect(() => {
+        console.log("loaction");
+        if(state) {
+            setOpenChatBox(true);
+            console.log(state.Box);
+            OpenChatBox(state.Box);
+            console.log(state.PosterId);
+        }
+    }, [location])
 
     const HandleSend = async() => {
         //console.log(me._id, friendId, myMsg);
@@ -91,34 +113,48 @@ const MailPage =  () => {
         setMyMsg("");
     }
 
-
-
-    const { loading, error, data: boxesData, subscribeToMore} = useQuery(CHATBOXES_QUERY, {
-        variables: {userId}, 
-     });
     //console.log(error);
 
     useEffect(() => {
         scrollToBottom();
     }, messages)
 
+    /*const resetMessages = async() => {
+        const box = await createChatBox({variables: {
+            name: userId,
+            to: friendId
+          }})
+        //console.log(box.data.createChatBox.messages);
+        setMessages(box.data.createChatBox.messages);
+    }
+
+    useEffect(() => {
+        resetMessages();
+        console.log(chatBoxes);
+    }, chatBoxes)*/
+
+    console.log(chatBoxes);
+
     useEffect(() => { 
-        subscribeToMore({
+        console.log("subscribe")
+        let unsubscribe;
+        unsubscribe = subscribeToMore({
             document: MESSAGE_SUBSCRIPTION,
             variables: { id: userId },
             updateQuery: (prev, { subscriptionData }) => {
             console.log(subscriptionData);
             if (!subscriptionData.data) return prev;
-            //console.log(subscriptionData.data.subscribeChatBox);
+            console.log(subscriptionData.data.subscribeChatBox);
             const newMessage = subscriptionData.data.subscribeMessage.message;
             const boxToPut = subscriptionData.data.subscribeMessage.chatBoxName;
-            console.log(prev.queryChatBoxes)
+            //console.log(prev.queryChatBoxes)
             return {
                 queryChatBoxes: 
                     prev.queryChatBoxes.map(box => {
                         if(box.name === boxToPut) {
-                            const newBox = { ...box, messages: [newMessage, ...box.messages] };
-                            setMessages([newMessage, ...box.messages])
+                            const newBox = { ...box, messages: [...box.messages, newMessage] };
+                            if(box._id === newBox._id)
+                                setMessages([...box.messages, newMessage, ])
                             console.log(newBox);
                             return(newBox);
                         }
@@ -129,39 +165,52 @@ const MailPage =  () => {
             };
             },
         });
-    }, [subscribeToMore]); 
-
-    useEffect(() => {
-        //console.log("subscribe");
-        subscribeToMore({
-            document: CHATBOX_SUBSCRIPTION,
-            variables: { id: userId },
-            updateQuery: (prev, { subscriptionData }) => {
-            if (!subscriptionData.data) return prev;
-            //console.log(subscriptionData.data.subscribeChatBox);
-            const newBox = subscriptionData.data.subscribeChatBox;
-            
-            //console.log({ ...prev.queryChatBoxes})
-            return {
-                queryChatBoxes: [
-                    ...prev.queryChatBoxes, newBox
-                ]  
-            };
-            },
-        });
-    }, [subscribeToMore]);
-
-    useEffect(() => {
+        if (unsubscribe) return () => unsubscribe()
+      }, [subscribeToMore]); 
+    
+      useEffect(() => {
+          //console.log("subscribe");
+          let unsubscribe;
+          unsubscribe = subscribeToMore({
+              document: CHATBOX_SUBSCRIPTION,
+              variables: { id: userId },
+              updateQuery: (prev, { subscriptionData }) => {
+              if (!subscriptionData.data) return prev;
+              //console.log(subscriptionData.data.subscribeChatBox);
+              const newBox = subscriptionData.data.subscribeChatBox;
+              //console.log(boxesData);
+              const add = true;
+              prev.queryChatBoxes.forEach(e => {
+                if(e.name === newBox.name) {
+                  add = false;
+                }
+              });
+              if(add) {
+                return {
+                  queryChatBoxes: [
+                    newBox, ...prev.queryChatBoxes
+                  ]  
+                };
+              }
+              else return(prev);
+              
+              },
+          });
+          if (unsubscribe) return () => unsubscribe()
+      }, [subscribeToMore]);
+    
+      useEffect(() => {
+        //console.log(boxesData);
         if(boxesData !== undefined)
             setChatBoxes(boxesData.queryChatBoxes)
+      }, [boxesData])
 
-    }, [boxesData])
 
     
-    console.log(chatBoxes);
-    console.log(boxesData);
+    //console.log(boxesData.queryChatBoxes);
+    //console.log(chatBoxes);
     
-    console.log(messages);
+    //console.log(messages);
     return (
         <div className='mailPageContainer'>
             <div className='chatbar'>
@@ -194,26 +243,30 @@ const MailPage =  () => {
                     </List> 
                 </div>
             </div>
-            <div className='chatBox'>
-                <div className='titleContainer'>
-                    <p className="messageTitle">{friendName ? friendName: null}</p>
-                </div>
-                <Divider />
-                <ChatBoxWrapper>
-                    {
-                        messages.map(({sender, body}, i) => (
-                            <Message isMe = {userId === sender} message = {body} key = {i} />
-                        ))
-                    }
-                    <Footer ref = {msgFooter}></Footer>
-                </ChatBoxWrapper>
-                <div className='sendContainer'>
-                    <input className='messageInput' value={myMsg} onChange = {(e) => {setMyMsg(e.target.value)}}/>
-                    <SendButton>
-                        <SendIcon onClick = {HandleSend}/>        
-                    </SendButton>
-                </div>
-            </div>
+            {
+                openChatBox  ?
+                <div className='chatBox'>
+                    <div className='titleContainer'>
+                        <p className="messageTitle">{friendName ? friendName: null}</p>
+                    </div>
+                    <Divider />
+                    <ChatBoxWrapper>
+                        {
+                            messages.map(({sender, body}, i) => (
+                                <Message isMe = {userId === sender} message = {body} key = {i} />
+                            ))
+                        }
+                        <Footer ref = {msgFooter}></Footer>
+                    </ChatBoxWrapper>
+                    <div className='sendContainer'>
+                        <input className='messageInput' value={myMsg} onChange = {(e) => {setMyMsg(e.target.value)}}/>
+                        <SendButton>
+                            <SendIcon onClick = {HandleSend}/>        
+                        </SendButton>
+                    </div>
+                </div>: null
+            }
+            
         </div>
     )
 }
