@@ -102,7 +102,7 @@ export const UPDATE_POST_MUTATION = gql`
     $deadline: String!
     $tag: [String]
   ) {
-    updatedPost(
+    updatePost(
       postId: $postId
       title: $title
       classNo: $classNo
@@ -173,23 +173,21 @@ export const CREATE_CHATBOX_MUTATION = gql`
   mutation createChatBox($name: ID!, $to: ID!) {
     createChatBox(name: $name, to: $to) {
       name
-      namesOfTalkers
       messages {
         sender
         body
       }
-      namesOfTalkers
     }
   }
 `;
 
 export const CREATE_MESSAGE_MUTATION = gql`
-  mutation createMessage($message: String!, $name: ID!, $to: ID!) {
-    createMessage(message: $message, name: $name, to: $to) {
-      
+  mutation createMessage($name: ID!, $to: ID!, $message: String!) {
+    createMessage(name: $name, to: $to, message: $message) {
+      messages {
         sender
         body
-      
+      }
     }
   }
 `;
