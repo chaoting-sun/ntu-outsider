@@ -56,7 +56,7 @@ const MailPage =  () => {
     const [myMsg, setMyMsg] = useState("");
     const [friendId, setFriendId] = useState("");
     const [friendName, setFriendName] = useState("");
-    const [boxId, setBoxId] = useState("");
+    const [boxName, setBoxName] = useState("");
     const {userId, username} = useOusider();
     const [openChatBox, setOpenChatBox] = useState(false);
     const msgFooter = useRef();
@@ -90,11 +90,11 @@ const MailPage =  () => {
                 setFriendId(ids[i]);
         }
         setMessages(box.messages);
-        setBoxId(box._id);
+        setBoxName(box.name);
     }
 
     useEffect(() => {
-        console.log("loaction");
+        //console.log("loaction");
         if(state) {
             setOpenChatBox(true);
             console.log(state.Box);
@@ -111,6 +111,17 @@ const MailPage =  () => {
             message: myMsg
         }})
         setMyMsg("");
+    }
+
+    const KeySend = async(event) => {
+        if(event.key === "Enter"){
+            let a = await sendMessage({variables: {
+                name: userId,
+                to: friendId,
+                message: myMsg
+            }})
+            setMyMsg("");
+        }
     }
 
     //console.log(error);
@@ -228,10 +239,11 @@ const MailPage =  () => {
                             }
                             if(name === "")
                                 name = username;
+                            //console.log(e.name, boxName);
                             return(
                                 <>
-                                    <ListItemButton>
-                                        <ListItem alignItems="flex-start" onClick={() => OpenChatBox(e)}>
+                                    <ListItemButton style = {boxName === e.name ? {backgroundColor: "#F0F1F5"}: {backgroundColor: "white"}}>
+                                        <ListItem alignItems="flex-start" onClick={() => OpenChatBox(e)} >
                                             <ListItemText primary= {name}/>  
                                         </ListItem>
                                     </ListItemButton>
@@ -259,7 +271,7 @@ const MailPage =  () => {
                         <Footer ref = {msgFooter}></Footer>
                     </ChatBoxWrapper>
                     <div className='sendContainer'>
-                        <input className='messageInput' value={myMsg} onChange = {(e) => {setMyMsg(e.target.value)}}/>
+                        <input className='messageInput' value={myMsg} onChange = {(e) => {setMyMsg(e.target.value)}} onKeyDown = {KeySend}/>
                         <SendButton>
                             <SendIcon onClick = {HandleSend}/>        
                         </SendButton>
