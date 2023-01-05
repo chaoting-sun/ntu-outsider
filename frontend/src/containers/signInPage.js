@@ -110,9 +110,36 @@ const SignInPage = () => {
           OUTSIDER
         </Typography> */}
 
+        <a>
+          {/* <button
+            className="brandName1"
+            style={{
+              fontWeight: '500',
+              background: 'none',
+              border: 'none',
+              fontSize: 150,
+              color: "#20b2aa"
+            }}
+          >NTU</button>
+          <button
+            className="brandName1"
+            style={{
+              fontWeight: '500',
+              background: 'none',
+              border: 'none',
+              fontSize: 130,
+              color: "#20b2aa"
+            }}
+          >OUTSIDER</button> */}
+          {/* <span onClick={}>NTU</span> */}
 
-        <div className="brandName1">NTU</div>
-        <div className="brandName2">OUTSIDER</div>
+          <div className="brandName1">
+            NTU
+          </div>
+          <div className="brandName2">
+            OUTSIDER
+          </div>
+        </a>
       </div>
       <div className="rightMainContainer">
         <div className="Form">

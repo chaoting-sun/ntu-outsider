@@ -11,7 +11,7 @@ import '../css/searchBox.css'
 const queryTypes = [
   { value: 'select',      label: '請選擇', },
   { value: 'classNo',     label: '流水號', },
-  { value: 'postTitle',   label: '貼文標題', },
+  { value: 'title',   label: '貼文標題', },
   { value: 'className',   label: '課程名稱', },
   { value: 'teacherName', label: '老師名稱', },
   { value: 'tag',         label: 'tag', },

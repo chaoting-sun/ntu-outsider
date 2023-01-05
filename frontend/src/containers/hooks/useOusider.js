@@ -62,7 +62,8 @@ const OutsiderProvider = (props) => {
   }
 
   const handleQueryPost = async (type, queryString) => {
-    // type = classNo, postTitle, className, teacherName, tag, all
+    console.log(type, queryString);
+    // type = classNo, title, className, teacherName, tag, all
     setDoingQueryPost(true);
     const { data } = await queryPost({
       variables: {
