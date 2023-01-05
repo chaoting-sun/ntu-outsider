@@ -18,16 +18,34 @@ import { createClient } from 'graphql-ws';
 
 import reportWebVitals from './reportWebVitals';
 
-// Create an http link:
-const httpLink = new HttpLink({
-  uri: 'http://localhost:4000/graphql',
-});
 
-// Create a WebSocket link:
-const wsLink = new GraphQLWsLink(createClient({
-  url: 'ws://localhost:4000/graphql',
-  options: { reconnect: true },
-}));
+/*if(process.env.NODE_ENV === "developement") {
+  // Create an http link:
+  const httpLink = new HttpLink({
+    uri: 'http://localhost:4000/graphql',
+  });
+
+  // Create a WebSocket link:
+  const wsLink = new GraphQLWsLink(createClient({
+    url: 'ws://localhost:4000/graphql',
+    options: { reconnect: true },
+  }));
+}*/
+
+//else {
+  const url = new URL("/graphql", window.location.href);
+  // Create an http link:
+  const httpLink = new HttpLink({
+    url: url.href,
+  });
+
+  // Create a WebSocket link:
+  const wsLink = new GraphQLWsLink(createClient({
+    url: url.href.replace("http", "ws"),
+    options: { lazy: true },
+  }));
+//}
+
 
 // using the ability to split links, you can send data to each link
 // depending on what kind of operation is being sent

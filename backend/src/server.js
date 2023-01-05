@@ -11,8 +11,24 @@ import Mutation from "./resolvers/Mutation";
 import Subscription from "./resolvers/Subscription";
 import ChatBox from "./resolvers/ChatBox";
 import Post from "./resolvers/Post";
+import path from "path";
+import express from "express";
+import cors from "cors";
 
 const pubsub = createPubSub();
+
+const app = express();
+if (process.env.NODE_ENV === "development") {
+  app.use(cors());
+}
+
+if (process.env.NODE_ENV === "production") {
+  const __dirname = path.resolve();
+  app.use(express.static(path.join(__dirname, "../frontend", "build")));
+  app.get("/*", function (req, res) {
+    res.sendFile(path.join(__dirname, "../frontend", "build", "index.html"));
+  });
+}
 
 const yoga = new createYoga({
   schema: createSchema({
@@ -35,8 +51,8 @@ const yoga = new createYoga({
     subscriptionsProtocol: "WS",
   },
 });
-
-const httpServer = createServer(yoga);
+app.use('/graphql', yoga);
+const httpServer = createServer(app);
 const wsServer = new WebSocketServer({
   server: httpServer,
   path: yoga.graphqlEndpoint,
