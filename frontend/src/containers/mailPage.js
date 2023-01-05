@@ -94,7 +94,7 @@ const MailPage =  () => {
     }
 
     useEffect(() => {
-        console.log("loaction");
+        //console.log("loaction");
         if(state) {
             setOpenChatBox(true);
             console.log(state.Box);
