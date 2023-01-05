@@ -55,7 +55,7 @@ const MailPage =  () => {
     const [myMsg, setMyMsg] = useState("");
     const [friendId, setFriendId] = useState("");
     const [friendName, setFriendName] = useState("");
-    const {userId, userName} = useOusider();
+    const {userId, username} = useOusider();
     const msgFooter = useRef();
     const scrollToBottom = () => {
         msgFooter.current?.scrollIntoView({ behavior: 'smooth', block: 'start'})
@@ -67,11 +67,11 @@ const MailPage =  () => {
         //console.log(box);
         let name = "";
             for(let i = 0; i < 2; i += 1) {
-                if(box.namesOfTalkers[i] !== userName)
+                if(box.namesOfTalkers[i] !== username)
                     name = box.namesOfTalkers[i]
             }
             if(name === "")
-                name = userName;
+                name = username;
         setFriendName(name);
         let ids = box.name.split("_");
         for (let i = 0; i < 2; i += 1) {
@@ -174,11 +174,11 @@ const MailPage =  () => {
                         {chatBoxes.map( (e) => {
                             let name = "";
                             for(let i = 0; i < 2; i += 1) {
-                                if(e.namesOfTalkers[i] !== userName)
+                                if(e.namesOfTalkers[i] !== username)
                                     name = e.namesOfTalkers[i]
                             }
                             if(name === "")
-                                name = userName;
+                                name = username;
                             return(
                                 <>
                                     <ListItemButton>
