@@ -18,6 +18,9 @@ import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import { Button, Modal, Space, Tag } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import { useOusider } from './hooks/useOusider';
+import { CREATE_CHATBOX_MUTATION } from './graphql';
+import { useQuery, useMutation} from '@apollo/react-hooks';
 
 const { confirm } = Modal;
 const { TextArea } = Input;
@@ -73,12 +76,14 @@ const tags = ["網服", "Ric"]
 
 const ViewPostPage = () => {
   const navigate = useNavigate();
+  const [createChatBox] = useMutation(CREATE_CHATBOX_MUTATION);
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors }
   } = useForm();
+  const {userId} = useOusider();
   /*const onSubmit = (data) => {
     console.log(data);
     navigate("/viewPostPage"); //use mutation; 傳入該篇文章資料
@@ -105,6 +110,8 @@ const ViewPostPage = () => {
   const EditPost = () => {
     navigate("/editPostPage");
   }
+
+  
 
   return (
       <div className='editPostPageContainer'>

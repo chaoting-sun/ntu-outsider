@@ -1,7 +1,7 @@
 import { message } from 'antd'
-import { createContext, useContext, useState, useEffect } from "react";
-import { POST_QUERY, POST_COLLECTION_QUERY } from '../graphql';
-import { useLazyQuery } from "@apollo/client";
+import { createContext, useContext, useState, useEffect} from "react";
+import { POST_QUERY, POST_COLLECTION_QUERY, CHATBOXES_QUERY, CHATBOX_SUBSCRIPTION, MESSAGE_SUBSCRIPTION  } from '../graphql';
+import { useLazyQuery, useQuery } from "@apollo/client";
 
 
 // How to Persist a Logged-in User in React
@@ -43,6 +43,11 @@ const OutsiderProvider = (props) => {
   const [queryPostCollection] = useLazyQuery(POST_COLLECTION_QUERY, { fetchPolicy: 'network-only' });
   const [doingQueryPost, setDoingQueryPost] = useState(false);
   const [doingQueryPostCollection, setDoingQueryPostCollection] = useState(false);
+  
+
+  //console.log(userId);
+
+  
 
   useEffect(() => {
     if (authenticated) {
@@ -107,6 +112,7 @@ const OutsiderProvider = (props) => {
       }
     }
   }
+  
 
   return (
     <OusiderContext.Provider
@@ -129,7 +135,7 @@ const OutsiderProvider = (props) => {
         doingQueryPost,
         setDoingQueryPost,
         doingQueryPostCollection,
-        setDoingQueryPostCollection
+        setDoingQueryPostCollection,
       }}
       {...props}
     />
