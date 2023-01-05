@@ -12,6 +12,7 @@ const Query = {
   },
   queryUser: async (parent, { account, password }, { UserModel }, info) => {
     let userExisitng = await UserModel.findOne({ account: account });
+    console.log("validate user:", userExisitng);
     const varifyPassword = (password, hashedPassword) => {
       return bcrypt.compareSync(password, hashedPassword);
     };
