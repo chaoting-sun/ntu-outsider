@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import styled from 'styled-components';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 
 
@@ -117,7 +118,7 @@ const MenuItems = ({ handleClose, authenticated }) => {
 
 const HeaderBar = ({ authenticated, handleOnClickMail, handleOnClickLogInOut }) => {
   const items = authenticated ? logInItems : unLogInItems;
-
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -135,7 +136,7 @@ const HeaderBar = ({ authenticated, handleOnClickMail, handleOnClickLogInOut }) 
       <div className='brandContainer'>
         <div className='logoContainer'>
           {/* <img alt='logo' src={logo} /> */}
-          <div className="brandNameContainer">
+          <div className="brandNameContainer" onClick={() => {navigate("/")}}>
             <div>NTU</div>
             <div>OUTSIDER</div>
           </div>
