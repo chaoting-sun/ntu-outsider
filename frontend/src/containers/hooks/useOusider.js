@@ -44,11 +44,6 @@ const OutsiderProvider = (props) => {
   const [doingQueryPost, setDoingQueryPost] = useState(false);
   const [doingQueryPostCollection, setDoingQueryPostCollection] = useState(false);
   
-
-  //console.log(userId);
-
-  
-
   useEffect(() => {
     if (authenticated) {
       localStorage.setItem(USERID_KEY, userId);
@@ -75,8 +70,6 @@ const OutsiderProvider = (props) => {
         queryString: queryString
       }
     })
-    console.log('handleQueryPost:', type, queryString);
-    console.log('fetched post:', data);
     setCurrentPost(data.queryPost);
     return data.queryPost;
   }
@@ -90,8 +83,6 @@ const OutsiderProvider = (props) => {
         type: type
       }
     })
-    console.log('handleQueryPostCollection:', type);
-    console.log('fetched post:', data);
     setCurrentPost(data.queryPostCollection);
     return data.queryPostCollection;
   }
@@ -99,7 +90,7 @@ const OutsiderProvider = (props) => {
   const displayStatus = (s) => {
     if (s.msg) {
       const { type, msg } = s;
-      const content = { content: msg, duration: 0.5 }
+      const content = { content: msg, duration: 1 }
 
       switch (type) {
         case 'success':

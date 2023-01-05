@@ -121,7 +121,7 @@ const MyProfilePage = () => {
   
   //更改name, account
   const onSubmit1 = async (data) => {
-    console.log('data:', data);
+    // console.log('data:', data);
     const user = await updateUser({variables: {
       userId,
       name: data.username,
