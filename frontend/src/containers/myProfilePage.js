@@ -1,23 +1,17 @@
 import React from 'react'
 import '../css/myProfilePage.css'
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import styled from 'styled-components';
 import { useForm } from "react-hook-form";
-import TextField from '@mui/material/TextField';
-import { Input, Tooltip } from 'antd';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Input } from 'antd';
+import {  useNavigate } from 'react-router-dom';
 import { StylesProvider } from "@material-ui/core/styles";
 import { useState, useEffect } from "react";
-import Tag from "../components/tag";
 import { useOusider } from "./hooks/useOusider";
-import { userExamples } from './db'
 import '../css/mainPage.css'
-import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
+import { useMutation, useLazyQuery } from "@apollo/client";
 import { hashPassword } from '../utils/hash';
 import {
   UPDATE_PASSWORD_MUTATION,
@@ -64,7 +58,8 @@ const SendButton = styled(Button)`
     padding: 5px !important; 
     /*bottom: 5vh !important;*/
     left: 50% !important;
-    width: 15% !important;
+    width: 25% !important;
+    min-width: 20px !important;
     height: 40px !important;
     position:relative;
     border-radius: 15px !important;
@@ -80,7 +75,7 @@ const SendButton2 = styled(Button)`
     padding: 5px !important; 
     /*bottom: 5vh !important;*/
     left: 35% !important;
-    width: 15% !important;
+    width: 20% !important;
     height: 40px !important;
     position:relative;
     border-radius: 15px !important;
@@ -112,22 +107,13 @@ const SecretTitle = styled.div`
 const MyProfilePage = () => {
   const { userId, username, account, setUsername,
     setAccount, displayStatus, authenticated } = useOusider();
-  
-  const [validated, setValidated] = useState(false);
-  const navigate = useNavigate();
-
-  const [queryUser, { data: UserByQuery, loading }] = useLazyQuery(USER_QUERY);
+  const [queryUser] = useLazyQuery(USER_QUERY, { fetchPolicy: 'network-only' });
   const [updateUser] = useMutation(UPDATE_USER_MUTATION);
   const [updatePassword] = useMutation(UPDATE_PASSWORD_MUTATION);
-  //console.log(account);
-  //console.log(username);
+  const navigate = useNavigate();
+
   const form1 = useForm()
   const form2 = useForm()
-
-  console.log(UserByQuery);
-
-
-  //const form1 = useForm({ name: 'form1' });
 
   useEffect(() => {
     if (!authenticated) navigate('/logIn');
@@ -162,69 +148,49 @@ const MyProfilePage = () => {
   const onError = () => {
   }; // your form submit function which will invoke after successful validation
 
-  const handleValidatePassword = async (data) => {
-    if (form2.watch('password') === "") {
-      displayStatus({
-        "type": "fail",
-        "msg": "Please enter password!"
-      })
-    } else {
-      //const hashedPassword = hashPassword(data.password);
-      //console.log(hashedPassword);
-      queryUser({
-        variables: {password: data.password, account}, 
-      });
-    }
-    //console.log(UserByQuery);
+  const onSubmit2 = async(input) => {
+    const { data: userData } = await queryUser({
+      variables: {
+        account: account,
+        password: input.password
+      }
+    })
 
+    console.log('userData:', userData);
     
-  }
-  const onSubmit2 = async(data) => {
-    //console.log(data);
-    handleValidatePassword(data);
-    //handleInputNewPassword(data)
-  }
-  useEffect(() => {
-    if (UserByQuery === undefined) return;
-    if (UserByQuery !== null) {
-      setValidated(true);
-      displayStatus({
-        "type": "success",
-        "msg": "Validated password!"
-      })
-    } else {
-      displayStatus({
-        "type": "success",
-        "msg": "Validation failed!"
-      })
-    }
-  }, [UserByQuery])
-
-  const handleInputNewPassword = async () => {
-    if (form2.watch('newPassword') === "") {
+    if (!userData.queryUser) {
+      // wrong password
       displayStatus({
         "type": "fail",
-        "msg": "Please enter new password"
+        "msg": "Wrong password!"
       })
     } else {
-      const hashedPassword = hashPassword(form2.watch("password"));
-      const hashedNewPassword = hashPassword(form2.watch("newPassword"));
+      // correct password
+      console.log('userId:', userId);
+      console.log('password:', userData.queryUser.password)
+      console.log('hashPassword:', hashPassword(input.newPassword))
 
-      const res = await updatePassword(userId, hashedPassword, hashedNewPassword);
-      if (res) {
+      const { data } = await updatePassword({
+        variables: {
+          userId: userId,
+          oldPassword: userData.queryUser.password,
+          newPassword: hashPassword(input.newPassword),
+        }
+      })
+      if (data.updatePassword) {
         displayStatus({
           "type": "success",
-          "msg": "Update password successfully!"
-        })
+          "msg": "successfully update password!"
+        })  
       } else {
         displayStatus({
           "type": "fail",
-          "msg": "Fail to update password!"
+          "msg": "fail to update password!"
         })
       }
     }
   }
-  console.log(form1.errors);
+  
   return (
     <>
       <StylesProvider injectFirst>
@@ -256,18 +222,7 @@ const MyProfilePage = () => {
                   </div>
                   {/* errors will return when field validation fails  */}
                   {form1.errors ? <p className='error'>{form1.errors.userAccount.message}</p> : null}
-                  {/*
-                  {
-                    validated ?
-                      <div className='inputItem'>
-                        <label>使用者密碼 </label>
-                        <input {...register("newPassword")}
-                          type="password"
-                          className="detailInput"
-                        />
-                        <ValidateButton onClick={handleInputNewPassword}>輸入新密碼</ValidateButton>
-                      </div> : null
-                  }*/}
+                
                 </ProfileForm>
                 {/*<div className='profileSubmit'>
                   <input type="submit" />
@@ -286,9 +241,10 @@ const MyProfilePage = () => {
                   }}
                   onClick={(e) => form1.handleSubmit(onSubmit1, onError)(e)}
                 >
-                  Save
+                  更新資料
                 </SendButton>
               </FormContainer>
+
               <PasswordForm>
                 <SecretTitle>修改密碼</SecretTitle>
                 <div className='inputItem'>
@@ -312,6 +268,8 @@ const MyProfilePage = () => {
                 </div>
                 {form2.errors ? <p className='error'>{form2.errors.password.message}</p> : null}
               </PasswordForm>
+
+
               <SendButton2
                   variant="contained"
                   sx={{
@@ -326,8 +284,9 @@ const MyProfilePage = () => {
                   }}
                   onClick={(e) => form2.handleSubmit(onSubmit2, onError)(e)}
                 >
-                  確認
+                  更換密碼
                 </SendButton2>
+
             </CardContent>
           </PostCard>
         </div>

@@ -30,12 +30,12 @@ export const UPDATE_USER_MUTATION = gql`
 export const UPDATE_PASSWORD_MUTATION = gql`
   mutation updatePassword(
     $userId: ID!
-    $oldpassword: String!
+    $oldPassword: String!
     $newPassword: String!
   ) {
     updatePassword(
       userId: $userId
-      oldpassword: $oldpassword
+      oldPassword: $oldPassword
       newPassword: $newPassword
     ) {
       _id
@@ -177,6 +177,7 @@ export const CREATE_CHATBOX_MUTATION = gql`
         sender
         body
       }
+      namesOfTalkers
     }
   }
 `;
@@ -184,10 +185,8 @@ export const CREATE_CHATBOX_MUTATION = gql`
 export const CREATE_MESSAGE_MUTATION = gql`
   mutation createMessage($name: ID!, $to: ID!, $message: String!) {
     createMessage(name: $name, to: $to, message: $message) {
-      messages {
         sender
         body
-      }
     }
   }
 `;

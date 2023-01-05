@@ -81,7 +81,7 @@ const Mutation = {
     { UserModel },
     info
   ) => {
-    let password = await UserModel.findOne({ _id: userId }).password;
+    let password = (await UserModel.findOne({ _id: userId })).password;
     if (password === oldPassword) {
       return await UserModel.findOneAndUpdate(
         { _id: userId },
@@ -180,9 +180,9 @@ const Mutation = {
       pubsub.publish(`chatBox ${to}`, {
         subscribeChatBox: chatBox,
       });
+      console.log(`chatBox ${name}`)
+      console.log(`chatBox ${to}`)
     }
-    //console.log(`chatBox ${name}`)
-    //console.log(`chatBox ${to}}`)
     return chatBox;
   },
   createMessage: async (

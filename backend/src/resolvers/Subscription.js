@@ -1,6 +1,7 @@
 const Subscription = {
     subscribeChatBox: {
         subscribe: (parent, {id}, { pubsub }) => {
+            console.log("pubsub");
             console.log(`chatBox ${id}`);
             return pubsub.subscribe(`chatBox ${id}`);
         }
