@@ -31,7 +31,7 @@ const MenuBar = ({ handleQueryPost, handleMenuOperation }) => {
               width: 256,
               border: 'none'
             }}
-            defaultSelectedKeys={['1']}
+            defaultSelectedKeys={['allPost']}
             defaultOpenKeys={['sub1']}
             mode="inline"
             items={items}
