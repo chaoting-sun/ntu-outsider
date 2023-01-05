@@ -15,7 +15,6 @@ const Query = {
     const varifyPassword = (password, hashedPassword) => {
       return bcrypt.compareSync(password, hashedPassword);
     };
-    console.log('verify user:', varifyPassword(password, userExisitng.password));
     if (userExisitng) {
       if (varifyPassword(password, userExisitng.password)) return userExisitng;
       else {
