@@ -1,18 +1,32 @@
-import { useOusider } from "./hooks/useOusider";
-import { Button, Checkbox, Form, Input } from 'antd';
 import "../css/signInPage.css";
+import { useOusider } from "./hooks/useOusider";
 import LogIn from "../components/logIn";
 import SignUp from "../components/signUp";
-// import Title from "../components/Title"
-import { useNavigate, Link, useLocation } from "react-router-dom";
-import { hashPassword, verifyPassword } from "../utils/hash"
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+
+import { useNavigate, useLocation } from "react-router-dom";
+import { hashPassword } from "../utils/hash"
 import { useEffect, useState } from "react";
 import { USER_QUERY } from "./graphql/query";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { CREATE_ACCOUNT_MUTATION } from "./graphql/mutation";
 
 
+const useStyles = makeStyles({
+  text: {
+    
+    color: "#1A202C",
+    fontWeight: "bold",
+    borderBottom: "none",
+    userSelect: "none",
+    // textAlign: "left",
+  }
+});
+
+
 const SignInPage = () => {
+  const titleStyles = useStyles();
   const { setAccount, setUsername,
     authenticated, setAuthenticated,
     displayStatus, setUserId,
@@ -39,20 +53,20 @@ const SignInPage = () => {
   // }
 
   const handleLogIn = async ({ inAccount, inPassword }) => {
+    console.log(inAccount, inPassword);
     const { data } = await queryUser({
       variables: {
         account: inAccount,
         password: inPassword
       }
     })
-    console.log("info:", data);
 
     if (data.queryUser !== null) {
       autheticateAccount(data.queryUser);
       displayStatus({
         type: "success",
         msg: "log in successfully",
-      })  
+      })
       navigate('/') // HomePage
     } else {
       displayStatus({
@@ -90,6 +104,22 @@ const SignInPage = () => {
   return (
     <div className="mainContainer">
       <div className="leftMainContainer">
+        {/* <Typography
+          variant="h1"
+          className={titleStyles.text}
+          align="left"
+        >
+          NTU
+        </Typography>
+        <Typography
+          variant="h1"
+          className={titleStyles.text}
+          align="left"
+        >
+          OUTSIDER
+        </Typography> */}
+
+
         <div className="brandName1">NTU</div>
         <div className="brandName2">OUTSIDER</div>
       </div>
@@ -101,7 +131,7 @@ const SignInPage = () => {
                 <div className="SignUpHeader">Sign Up</div>
                 <SignUp handleSignUp={handleSignUp} />
                 <div className='signUpRemind'>Have an account?
-                  <span onClick={() => setSignUp(false)}>Sign in</span>
+                  <span onClick={() => setSignUp(false)}>Log in</span>
                 </div>
               </>
             ) : (

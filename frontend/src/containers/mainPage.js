@@ -6,9 +6,10 @@ import { useMutation } from "@apollo/client";
 import styled from 'styled-components'
 import PostLayout from '../components/postLayout'
 // import NavBar from '../components/navigationBar'
-import { DELETE_POST_MUTATION, 
+import {
+  DELETE_POST_MUTATION,
   UPDATE_POST_COLLECTION_MUTATION,
- } from './graphql'
+} from './graphql'
 
 
 const PostContainer = styled.div`
@@ -18,33 +19,20 @@ const PostContainer = styled.div`
 `
 
 const MainPage = () => {
-  const { userId, currentPost, 
-    authenticated, displayStatus,
-    doingQueryPost, setDoingQueryPost,
-    doingQueryPostCollection, 
-    setDoingQueryPostCollection,
-    handleQueryPost } = useOusider();
+  const { userId, currentPost, displayStatus, doingQueryPost, setDoingQueryPost,
+    doingQueryPostCollection, setDoingQueryPostCollection, handleQueryPost } = useOusider();
   const [post, setPost] = useState([]);
   const [postDom, setPostDom] = useState([]);
-  const [editPostId, setEditPostId] = useState("");
 
   const [updatePostCollection] = useMutation(UPDATE_POST_COLLECTION_MUTATION);
   const [deletePost] = useMutation(DELETE_POST_MUTATION);
-
-  const location = useLocation(); // edit / create a post
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (location.state !== null) {
-
-  //   }
-  // }, [location])
-  
   useEffect(() => {
     handleQueryPost("all", "") // default queryPost
       .then((fetchedPost) => {
         setPost(fetchedPost);
-        console.log('fetchedPost:', fetchedPost);
+        // console.log('fetchedPost:', fetchedPost);
       })
   }, []);
 
@@ -69,20 +57,6 @@ const MainPage = () => {
       navigate('/mailPage', { state: author });
     }
   }
-
-  // const handleQueryPost = async () => {
-  //   await queryPost({
-  //     variables: {
-  //       type: "all",
-  //       queryString: ""
-  //     }
-  //   }).then((data) => {
-  //     setPost(data.data.queryPost);
-  //     console.log('save post:', data.data.queryPost);
-  //   }).catch((e) => {
-  //     console.log('error:', e);
-  //   })
-  // }
 
   useEffect(() => {
     // save postDom
@@ -150,13 +124,6 @@ const MainPage = () => {
         </PostContainer>
     }))
   }
-
-  // useEffect(() => {
-  //   // create react DOM of post
-  //   if (post.length) {
-  //     setPostDom(createPostDOM(post));
-  //   }
-  // }, [post])
 
   return (
     <div className='mainPageContainer'>
