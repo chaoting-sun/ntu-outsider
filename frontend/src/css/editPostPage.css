@@ -199,3 +199,8 @@ label {
     padding: 5px;
 }
 
+.formInput {
+    position: relative !important;
+    bottom: 0 !important;
+    left: 0 !important;
+}
