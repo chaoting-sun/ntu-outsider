@@ -14,12 +14,11 @@ import { CREATE_ACCOUNT_MUTATION } from "./graphql/mutation";
 
 
 const useStyles = makeStyles({
-  text: {
-    
+  formHeader: {
     color: "#1A202C",
-    fontWeight: "bold",
-    borderBottom: "none",
-    userSelect: "none",
+    fontWeight: '600',
+    paddingBottom: '20px',
+    userSelect: "none", 
     // textAlign: "left",
   }
 });
@@ -119,7 +118,13 @@ const SignInPage = () => {
           {
             signUp ? (
               <>
-                <div className="SignUpHeader">Sign Up</div>
+                {/* <div className="SignUpHeader">Sign Up</div> */}
+                <Typography
+                  variant="h2"
+                  className={titleStyles.formHeader}
+                >
+                  Sign Up
+                </Typography>
                 <SignUp handleSignUp={handleSignUp} />
                 <div className='signUpRemind'>Have an account?
                   <span onClick={() => setSignUp(false)}>Log in</span>
@@ -127,7 +132,13 @@ const SignInPage = () => {
               </>
             ) : (
               <>
-                <div className="logInHeader">Log In</div>
+                {/* <div className="logInHeader">Log In</div> */}
+                <Typography
+                  variant="h2"
+                  className={titleStyles.formHeader}
+                >
+                  Log In
+                </Typography>
                 <LogIn handleLogIn={handleLogIn} />
                 <div className='signUpRemind'>Do not have an account?
                   <span onClick={() => setSignUp(true)}>Sign up</span>
