@@ -97,7 +97,7 @@ const EditPostPage = () => {
 
   useEffect(() => {
     if (location.state !== null) {
-      console.log('info:', location.state);
+      // console.log('info:', location.state);
 
       const postInfo = location.state.post;
 
@@ -117,8 +117,8 @@ const EditPostPage = () => {
 
 
   const onSubmit = async (data) => {
-    console.log("onSubmit:");
-    console.log(data);
+    // console.log("onSubmit:");
+    // console.log(data);
 
     let outData = null;
 
@@ -134,7 +134,7 @@ const EditPostPage = () => {
         deadline: `${data.endDate} ${data.endTime}`,
         tag: tags
       }
-      console.log('createPost - vars:', vars);
+      // console.log('createPost - vars:', vars);
       outData = await createPost({ variables: vars });
     } else if (action === 'editPost') {
       const vars = {
@@ -148,11 +148,11 @@ const EditPostPage = () => {
         deadline: `${data.endDate} ${data.endTime}`,
         tag: tags
       }
-      console.log('updatePost - vars:', vars);
+      // console.log('updatePost - vars:', vars);
       outData = await updatePost({ variables: vars });
     }
 
-    console.log('updatedPost:', outData.data.createPost);
+    // console.log('updatedPost:', outData.data.createPost);
 
     if (outData) {
       displayStatus({

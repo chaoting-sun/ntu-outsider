@@ -94,12 +94,12 @@ const MailPage =  () => {
     }
 
     useEffect(() => {
-        console.log("loaction");
+        // console.log("loaction");
         if(state) {
             setOpenChatBox(true);
-            console.log(state.Box);
+            // console.log(state.Box);
             OpenChatBox(state.Box);
-            console.log(state.PosterId);
+            // console.log(state.PosterId);
         }
     }, [location])
 
@@ -133,7 +133,7 @@ const MailPage =  () => {
         console.log(chatBoxes);
     }, chatBoxes)*/
 
-    console.log(chatBoxes);
+    // console.log(chatBoxes);
 
     useEffect(() => { 
         //console.log("subscribe")
@@ -142,9 +142,9 @@ const MailPage =  () => {
             document: MESSAGE_SUBSCRIPTION,
             variables: { id: userId },
             updateQuery: (prev, { subscriptionData }) => {
-            console.log(subscriptionData);
+            // console.log(subscriptionData);
             if (!subscriptionData.data) return prev;
-            console.log(subscriptionData.data.subscribeChatBox);
+            // console.log(subscriptionData.data.subscribeChatBox);
             const newMessage = subscriptionData.data.subscribeMessage.message;
             const boxToPut = subscriptionData.data.subscribeMessage.chatBoxName;
             //console.log(prev.queryChatBoxes)
@@ -169,7 +169,7 @@ const MailPage =  () => {
       }, [subscribeToMore]); 
     
       useEffect(() => {
-          console.log("subscribe");
+          // console.log("subscribe");
           let unsubscribe;
           unsubscribe = subscribeToMore({
               document: CHATBOX_SUBSCRIPTION,
@@ -206,7 +206,7 @@ const MailPage =  () => {
       }, [boxesData])
 
 
-      console.log(boxesData);
+      // console.log(boxesData);
     //console.log(boxesData.queryChatBoxes);
     //console.log(chatBoxes);
     

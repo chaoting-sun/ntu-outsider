@@ -127,7 +127,7 @@ const MyProfilePage = () => {
       name: data.username,
       account: data.userAccount
     }});
-    console.log(user);
+    // console.log(user);
 
     if (user) {
       setUsername(form1.watch("username"));
@@ -156,8 +156,6 @@ const MyProfilePage = () => {
       }
     })
 
-    console.log('userData:', userData);
-    
     if (!userData.queryUser) {
       // wrong password
       displayStatus({
@@ -166,10 +164,6 @@ const MyProfilePage = () => {
       })
     } else {
       // correct password
-      console.log('userId:', userId);
-      console.log('password:', userData.queryUser.password)
-      console.log('hashPassword:', hashPassword(input.newPassword))
-
       const { data } = await updatePassword({
         variables: {
           userId: userId,

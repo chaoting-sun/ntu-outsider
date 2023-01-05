@@ -44,7 +44,7 @@ const SignInPage = () => {
   }, [location]);
 
   const handleLogIn = async ({ inAccount, inPassword }) => {
-    console.log(inAccount, inPassword);
+    // console.log(inAccount, inPassword);
     const { data } = await queryUser({
       variables: {
         account: inAccount,
@@ -77,7 +77,7 @@ const SignInPage = () => {
         password: hashedPassword
       }
     })
-    console.log('sign up result:', data.createAccount)
+    // console.log('sign up result:', data.createAccount)
     if (data.createAccount !== null) {
       displayStatus({
         type: "success",

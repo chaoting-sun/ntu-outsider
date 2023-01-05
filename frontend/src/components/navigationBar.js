@@ -42,7 +42,7 @@ const NavBar = () => {
   }
 
   const handleMenuOperation = (key) => {
-    console.log('menu operation:', key);
+    // console.log('menu operation:', key);
 
     if (!authenticated) {
       displayStatus({
