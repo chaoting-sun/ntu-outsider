@@ -4,28 +4,12 @@ import styled from 'styled-components'
 import React, { useState } from 'react'
 import '../css/signIn.css'
 import { useOusider } from '../containers/hooks/useOusider';
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-
-
-const useStyles = makeStyles({
-  formButton: {
-    color: "white",
-    fontWeight: '600',
-    userSelect: "none",
-    display: "flex",
-    justifyContent: "center",
-    justifyItems: "center",
-    textAlign: "center",
-  }
-});
 
 
 // antd - Space
 // ref: https://ant.design/components/space
 
 const SignUp = ({ handleSignUp }) => {
-  const titleStyles = useStyles();
   const { displayStatus } = useOusider();
   const [userName, setUserName] = useState("");
   const [account, setAccount] = useState("");
@@ -67,7 +51,6 @@ const SignUp = ({ handleSignUp }) => {
           height: '49px',
         }}
       />
-      <div style={{height: '15px', width: '20px'}}></div>
       <Button
         type="primary"
         className='signInInput'
@@ -75,7 +58,7 @@ const SignUp = ({ handleSignUp }) => {
           backgroundColor: '#787b7d',
           fontSize: '1.6em',
           width: '80%',
-          height: '60px'
+          height: '50px'
         }}
         onClick={async () => {
           if (userName === "") {
@@ -108,12 +91,7 @@ const SignUp = ({ handleSignUp }) => {
           setPassword("");
         }}
       >
-        <Typography
-          variant="h4"
-          className={titleStyles.formButton}
-        >
-          Sign Up
-        </Typography>
+        Sign Up
       </Button>
     </>
   )
