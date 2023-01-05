@@ -23,7 +23,7 @@
   font-size: 100px;
   text-align: left;
   margin-left: 10vw;
-  user-select:none;
+  /* user-select:none; */
   /*margin-bottom: vh;*/
 }
 
@@ -33,7 +33,7 @@
   font-size: 100px;
   margin-left: 10vw;
   margin-bottom: 10vh;
-  user-select:none;
+  /* user-select:none; */
 }
 
 .rightMainContainer {
