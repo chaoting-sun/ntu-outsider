@@ -81,7 +81,7 @@ const Mutation = {
     { UserModel },
     info
   ) => {
-    let password = await UserModel.findOne({ _id: userId }).password;
+    let password = (await UserModel.findOne({ _id: userId })).password;
     if (password === oldPassword) {
       return await UserModel.findOneAndUpdate(
         { _id: userId },

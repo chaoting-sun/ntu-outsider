@@ -47,7 +47,7 @@ type Message {
 type Mutation {
   createAccount(account: String!, name: String!, password: String!): User
   updateUser(userId: ID!, name: String!, account: String!): User!
-  updatePassword(userId: ID!, oldpassword: String!, newPassword: String!): User!
+  updatePassword(userId: ID!, oldPassword: String!, newPassword: String!): User
   deleteUser(userId: ID!): User!
 
   createPost(

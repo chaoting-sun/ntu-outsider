@@ -43,15 +43,6 @@ const SignInPage = () => {
     }
   }, [location]);
 
-  // const autheticateAccount = (user) => {
-  //   setAuthenticated(true);
-  //   localStorage.setItem("authenticated", true);
-  //   console.log('authenticate account:', user.account, user.name)
-  //   setUserId(user._id)
-  //   setAccount(user.account)
-  //   setUsername(user.name);
-  // }
-
   const handleLogIn = async ({ inAccount, inPassword }) => {
     console.log(inAccount, inPassword);
     const { data } = await queryUser({
@@ -92,13 +83,13 @@ const SignInPage = () => {
         type: "success",
         msg: "sign up successfully!"
       })
+      setSignUp(false);
     } else {
       displayStatus({
         type: "error",
         msg: "Account already exists!"
       })
     }
-    setSignUp(false);
   }
 
   return (
