@@ -124,7 +124,7 @@ const MyProfilePage = () => {
   const form1 = useForm()
   const form2 = useForm()
 
-  console.log(UserByQuery);
+  
 
 
   //const form1 = useForm({ name: 'form1' });
@@ -162,7 +162,7 @@ const MyProfilePage = () => {
   const onError = () => {
   }; // your form submit function which will invoke after successful validation
 
-  const handleValidatePassword = async (data) => {
+  const handleValidatePassword = (data) => {
     if (form2.watch('password') === "") {
       displayStatus({
         "type": "fail",
@@ -175,13 +175,14 @@ const MyProfilePage = () => {
         variables: {password: data.password, account}, 
       });
     }
-    //console.log(UserByQuery);
 
     
   }
+  console.log(UserByQuery);
   const onSubmit2 = async(data) => {
     //console.log(data);
     handleValidatePassword(data);
+    
     //handleInputNewPassword(data)
   }
   useEffect(() => {

@@ -136,7 +136,7 @@ const MailPage =  () => {
     console.log(chatBoxes);
 
     useEffect(() => { 
-        console.log("subscribe")
+        //console.log("subscribe")
         let unsubscribe;
         unsubscribe = subscribeToMore({
             document: MESSAGE_SUBSCRIPTION,
@@ -155,7 +155,7 @@ const MailPage =  () => {
                             const newBox = { ...box, messages: [...box.messages, newMessage] };
                             if(box._id === newBox._id)
                                 setMessages([...box.messages, newMessage, ])
-                            console.log(newBox);
+                            //console.log(newBox);
                             return(newBox);
                         }
                         else {
@@ -169,7 +169,7 @@ const MailPage =  () => {
       }, [subscribeToMore]); 
     
       useEffect(() => {
-          //console.log("subscribe");
+          console.log("subscribe");
           let unsubscribe;
           unsubscribe = subscribeToMore({
               document: CHATBOX_SUBSCRIPTION,
@@ -206,7 +206,7 @@ const MailPage =  () => {
       }, [boxesData])
 
 
-    
+      console.log(boxesData);
     //console.log(boxesData.queryChatBoxes);
     //console.log(chatBoxes);
     
