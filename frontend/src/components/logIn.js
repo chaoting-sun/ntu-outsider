@@ -1,11 +1,13 @@
 import { Space, Button, Input } from 'antd';
 import { useState } from 'react';
 import '../css/signIn.css';
+import { useOusider } from '../containers/hooks/useOusider';
 
 // antd - Space
 // ref: https://ant.design/components/space
 
 const LogIn = ({ handleLogIn }) => {
+  const { displayStatus } = useOusider();
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
 
@@ -43,6 +45,14 @@ const LogIn = ({ handleLogIn }) => {
             height: '60px'
           }}
           onClick={async () => {
+            if (account === "" || password === "") {
+              displayStatus({
+                'type': 'fail',
+                'msg': 'Please enter complete information!'
+              })
+              return;
+            }
+
             await handleLogIn({ inAccount: account, inPassword: password })
             setAccount("");
             setPassword("");
