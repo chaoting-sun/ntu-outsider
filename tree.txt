@@ -1,0 +1,78 @@
+.
+├── Dockerfile
+├── README.md
+├── backend
+│   ├── comment.json
+│   ├── data.json
+│   ├── package.json
+│   ├── src
+│   │   ├── index.js
+│   │   ├── models
+│   │   │   ├── chatbox.js
+│   │   │   ├── index.js
+│   │   │   ├── post.js
+│   │   │   └── user.js
+│   │   ├── mongo.js
+│   │   ├── resolvers
+│   │   │   ├── ChatBox.js
+│   │   │   ├── Mutation.js
+│   │   │   ├── Post.js
+│   │   │   ├── Query.js
+│   │   │   └── Subscription.js
+│   │   ├── routes
+│   │   │   ├── comment.js
+│   │   │   ├── index.js
+│   │   │   └── info.js
+│   │   ├── schema.graphql
+│   │   ├── server.js
+│   │   └── upload.js
+│   └── yarn.lock
+├── frontend
+│   ├── README.md
+│   ├── package.json
+│   ├── public
+│   │   ├── favicon.ico
+│   │   ├── index.html
+│   │   ├── logo192.png
+│   │   ├── logo512.png
+│   │   ├── manifest.json
+│   │   └── robots.txt
+│   ├── src
+│   │   ├── App.css
+│   │   ├── App.js
+│   │   ├── App.test.js
+│   │   ├── components
+│   │   │   ├── Message.js
+│   │   │   ├── chatList.js
+│   │   │   ├── headerBar.js
+│   │   │   ├── logIn.js
+│   │   │   ├── logo.png
+│   │   │   ├── menuBar.js
+│   │   │   ├── navigationBar.js
+│   │   │   ├── postLayout.js
+│   │   │   ├── searchBox.js
+│   │   │   ├── signUp.js
+│   │   │   └── tag.js
+│   │   ├── containers
+│   │   │   ├── editPostPage.js
+│   │   │   ├── graphql
+│   │   │   ├── hooks
+│   │   │   ├── mailPage.js
+│   │   │   ├── mainPage.js
+│   │   │   ├── myProfilePage.js
+│   │   │   ├── signInPage.js
+│   │   │   └── viewPostPage.js
+│   │   ├── index.css
+│   │   ├── index.js
+│   │   ├── logo.svg
+│   │   ├── reportWebVitals.js
+│   │   ├── setupTests.js
+│   │   └── utils
+│   │       └── hash.js
+│   └── yarn.lock
+├── functions.txt
+├── package.json
+├── tree.txt
+└── yarn.lock
+
+14 directories, 62 files
