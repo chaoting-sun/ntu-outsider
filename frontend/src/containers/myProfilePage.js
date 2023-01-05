@@ -115,8 +115,6 @@ const MyProfilePage = () => {
   const form1 = useForm()
   const form2 = useForm()
 
-  //const form1 = useForm({ name: 'form1' });
-
   useEffect(() => {
     if (!authenticated) navigate('/logIn');
   }, [])

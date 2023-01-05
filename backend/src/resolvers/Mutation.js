@@ -180,9 +180,9 @@ const Mutation = {
       pubsub.publish(`chatBox ${to}`, {
         subscribeChatBox: chatBox,
       });
+      console.log(`chatBox ${name}`)
+      console.log(`chatBox ${to}`)
     }
-    //console.log(`chatBox ${name}`)
-    //console.log(`chatBox ${to}}`)
     return chatBox;
   },
   createMessage: async (

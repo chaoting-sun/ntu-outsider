@@ -1,6 +1,7 @@
 .mainContainer {
   display: flex;
   /* display: inline-block; */
+  width: 100%;
 }
 
 .leftMainContainer {
@@ -12,22 +13,24 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  color: #20B2AA;
+  font-weight: 500;
 }
 
 .brandName1 {
   width: 100%;
   height: 120px;
-  font-size: 9.4em;
+  font-size: 100px;
   text-align: left;
-  margin-left: 15vw;
-  margin-bottom: 10vh;
+  margin-left: 10vw;
+  /*margin-bottom: vh;*/
 }
 
 .brandName2 {
   width: 100%;
   height: 120px;
-  font-size: 9.4em;
-  margin-left: 15vw;
+  font-size: 100px;
+  margin-left: 10vw;
   margin-bottom: 10vh;
 }
 
@@ -35,7 +38,7 @@
   /* display: inline-block; */
   background-color: rgb(250, 250, 250);
   height: 100vh;
-  width: calc(100vw - 60%);
+  width: 40%;
   display: flex;
   justify-content: left;
   align-items: center;

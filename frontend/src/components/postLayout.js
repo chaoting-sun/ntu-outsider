@@ -114,7 +114,7 @@ const PostLayout = ({ post, handleSavePost, handleEditPost, handleDeletePost }) 
       name: userId,
       to: post.author._id 
     }})
-    //console.log(post);
+    console.log(box);
     //console.log(userId, post.author._id );
     //console.log(box.data.createChatBox);
     console.log("layout");
