@@ -110,18 +110,23 @@ const PostLayout = ({ post, handleSavePost, handleEditPost, handleDeletePost }) 
   };
 
   const handleChat = async() => {
-    const box = await createChatBox({variables: {
-      name: userId,
-      to: post.author._id 
-    }})
-    console.log(box);
-    //console.log(userId, post.author._id );
-    //console.log(box.data.createChatBox);
-    console.log("layout");
-    navigate('/mailPage', {state: {
-      PosterId: post.author._id,
-      Box: box.data.createChatBox
-    }})
+    if(post.author._id === userId) {
+      navigate("/myProfilePage");
+    }
+    else {
+      const box = await createChatBox({variables: {
+        name: userId,
+        to: post.author._id 
+      }})
+      console.log(box);
+      //console.log(userId, post.author._id );
+      //console.log(box.data.createChatBox);
+      console.log("layout");
+      navigate('/mailPage', {state: {
+        PosterId: post.author._id,
+        Box: box.data.createChatBox
+      }})
+    }
   }
 
   const EditPost = async () => { await handleEditPost(post); }
