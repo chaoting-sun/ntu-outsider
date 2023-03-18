@@ -1,9 +1,7 @@
 # NTU-wp1111 Project: NTU-Outsider
----
 NTU OUTSIDER 是一個幫助學生尋找組員的平台，使用者可以透過發文找到適合的組員。平台提供註冊後的使用者更多功能，包括發布文章、傳送訊息、追蹤貼文等，並可以透過搜尋 tag、標題、授課教師、課程名稱等方式尋找貼文。使用者可以直接點擊貼文者的名字傳訊息給發文者，開啟聊天室進一步聯繫，也能在側邊欄找到曾經發過的貼文，方便進行內文的更新。這個平台旨在提高媒合效率、加速確認彼此需求。
 
 # 開始使用
----
 1. 確保已經安裝Node.js
 
 2. clone 此專案到本地：
@@ -13,9 +11,9 @@ git clone git@github.com:chaoting-sun/ntu-outsider.git
 
 3. 進入 frontend/backend 目錄並安裝依賴：
 ```js
-cd backend/;npm install
+cd backend;npm install
 cd ..
-cd frontend/;npm install
+cd frontend;npm install
 ```
 
 4. 在 backend 目錄底下創建 `.env` ，並在其中添加你的 MongoDB 的 URL：
@@ -30,13 +28,11 @@ npm server // start backend in another terminal
 ```
 
 ## 使用框架
----
 - frontend: React、Apollo GraphQL client
 - backend: GraphQL
 - DB: MongoDB
 
 ## 功能
----
 - 可以註冊、編輯個人資訊。
 - 可以新增貼文，並觀看全部貼文、追蹤貼文和我的貼文。
 - 可以透過關鍵字查尋貼文。
