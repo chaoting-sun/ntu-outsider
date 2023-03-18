@@ -30,12 +30,17 @@ npm server // start backend in another terminal
 6. 在瀏覽器訪問 http://localhost:3000。
 
 ## 使用框架
-- frontend: React、Apollo GraphQL client
-- backend: GraphQL
-- DB: MongoDB
+- 前端：React、Apollo GraphQL client
+- 後端：GraphQL
+- 資料庫：MongoDB
 
 ## 功能
 - 可以註冊、編輯個人資訊。
 - 可以新增貼文，並觀看全部貼文、追蹤貼文和我的貼文。
 - 可以透過關鍵字查尋貼文。
 - 可以私下一對一聊天媒合組員。
+
+## 作者
+- 孫肇廷：前端、部分後端
+- 呂蓁蓁：前端、UI 設計
+- 林哲暐：後端
