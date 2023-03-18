@@ -70,6 +70,8 @@ const SignInPage = () => {
   const handleSignUp = async ({ inAccount, inUserName, inPassword }) => {
     const hashedPassword = hashPassword(inPassword);
 
+    console.log('create account...');
+
     const { data } = await createAccount({
       variables: {
         account: inAccount,
@@ -77,6 +79,9 @@ const SignInPage = () => {
         password: hashedPassword
       }
     })
+
+    console.log('get data from backend:', data);
+
     // console.log('sign up result:', data.createAccount)
     if (data.createAccount !== null) {
       displayStatus({
@@ -135,7 +140,7 @@ const SignInPage = () => {
         {/* <span onClick={}>NTU</span> */}
 
         <div className="brandName1">
-          <span onClick={() => navigate('/') }>NTU<br></br>OUTSIDER</span>
+          <span onClick={() => navigate('/')}>NTU<br></br>OUTSIDER</span>
         </div>
       </div>
       <div className="rightMainContainer">

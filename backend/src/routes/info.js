@@ -18,7 +18,7 @@ exports.GetSearch = async (req, res) => {
   const sortBy = req.query.sortBy
   /****************************************/
 
-  // NOTE Hint: 
+  // NOTE Hint:
   // use `db.collection.find({condition}).exec(err, data) {...}`
   // When success, 
   //   do `res.status(200).send({ message: 'success', contents: ... })`

@@ -7,7 +7,6 @@ import MainPage from './containers/mainPage';
 import SignInPage from './containers/signInPage';
 import Navbar from './components/navigationBar';
 import EditPostPage from './containers/editPostPage';
-import ViewPostPage from './containers/viewPostPage';
 import MailPage from './containers/mailPage';
 import MyProfilePage from './containers/myProfilePage';
 
@@ -33,7 +32,6 @@ function App() {
             <Route path='/' element={<Navbar />}>
               <Route index element={<MainPage />} />
               <Route path="/editPostPage" element={<EditPostPage />} />
-              <Route path="/viewPostPage" element={<ViewPostPage />} /> {/*包含看自己貼文與別人貼文*/}
               <Route path="/mailPage" element={<MailPage />} />
               <Route path="/myProfilePage" element={<MyProfilePage />} />
             </Route>
