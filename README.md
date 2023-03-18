@@ -27,6 +27,8 @@ npm start // start frontend
 npm server // start backend in another terminal
 ```
 
+6. 在瀏覽器訪問 http://localhost:3000。
+
 ## 使用框架
 - frontend: React、Apollo GraphQL client
 - backend: GraphQL
