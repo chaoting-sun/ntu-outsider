@@ -4,6 +4,7 @@
 ├── backend
 │   ├── comment.json
 │   ├── data.json
+│   ├── package-lock.json
 │   ├── package.json
 │   ├── src
 │   │   ├── index.js
@@ -19,10 +20,6 @@
 │   │   │   ├── Post.js
 │   │   │   ├── Query.js
 │   │   │   └── Subscription.js
-│   │   ├── routes
-│   │   │   ├── comment.js
-│   │   │   ├── index.js
-│   │   │   └── info.js
 │   │   ├── schema.graphql
 │   │   ├── server.js
 │   │   └── upload.js
@@ -56,12 +53,38 @@
 │   │   ├── containers
 │   │   │   ├── editPostPage.js
 │   │   │   ├── graphql
+│   │   │   │   ├── index.js
+│   │   │   │   ├── mutation.js
+│   │   │   │   ├── query.js
+│   │   │   │   └── subscription.js
 │   │   │   ├── hooks
+│   │   │   │   └── useOusider.js
 │   │   │   ├── mailPage.js
 │   │   │   ├── mainPage.js
 │   │   │   ├── myProfilePage.js
 │   │   │   ├── signInPage.js
 │   │   │   └── viewPostPage.js
+│   │   ├── css
+│   │   │   ├── App.css
+│   │   │   ├── PostLayout.css
+│   │   │   ├── editPostPage.css
+│   │   │   ├── headerBar.css
+│   │   │   ├── homePage.css
+│   │   │   ├── index.css
+│   │   │   ├── mailPage.css
+│   │   │   ├── mainLayout.css
+│   │   │   ├── mainPage.css
+│   │   │   ├── menuBar.css
+│   │   │   ├── myProfilePage.css
+│   │   │   ├── navigationBar.css
+│   │   │   ├── restaurantPage.css
+│   │   │   ├── searchBox.css
+│   │   │   ├── searchPage.css
+│   │   │   ├── signIn.css
+│   │   │   ├── signInPage.css
+│   │   │   ├── stars.css
+│   │   │   └── viewPostPage.css
+│   │   ├── images
 │   │   ├── index.css
 │   │   ├── index.js
 │   │   ├── logo.svg
@@ -69,10 +92,10 @@
 │   │   ├── setupTests.js
 │   │   └── utils
 │   │       └── hash.js
+│   ├── yarn-error.log
 │   └── yarn.lock
-├── functions.txt
 ├── package.json
 ├── tree.txt
 └── yarn.lock
 
-14 directories, 62 files
+14 directories, 84 files
