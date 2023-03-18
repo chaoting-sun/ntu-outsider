@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { USER_QUERY } from "./graphql/query";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { CREATE_ACCOUNT_MUTATION } from "./graphql/mutation";
-import { getStatusClassNames } from "antd/es/_util/statusUtils";
 
 
 const useStyles = makeStyles({
@@ -19,7 +18,6 @@ const useStyles = makeStyles({
     fontWeight: "bold",
     borderBottom: "none",
     userSelect: "none",
-    // textAlign: "left",
     marginBottom: '20px',
   }
 });
@@ -27,10 +25,7 @@ const useStyles = makeStyles({
 
 const SignInPage = () => {
   const StylesClasses = useStyles();
-  const { setAccount, setUsername,
-    authenticated, setAuthenticated,
-    displayStatus, setUserId,
-    autheticateAccount } = useOusider();
+  const { displayStatus, autheticateAccount } = useOusider();
   const [signUp, setSignUp] = useState(false);
   const [queryUser] = useLazyQuery(USER_QUERY, { fetchPolicy: 'network-only' });
   const [createAccount] = useMutation(CREATE_ACCOUNT_MUTATION);
@@ -41,10 +36,9 @@ const SignInPage = () => {
     if (location.state != null) {
       setSignUp(location.state.signUp);
     }
-  }, [location]);
+  }, [location.state]);
 
   const handleLogIn = async ({ inAccount, inPassword }) => {
-    // console.log(inAccount, inPassword);
     const { data } = await queryUser({
       variables: {
         account: inAccount,
@@ -80,9 +74,6 @@ const SignInPage = () => {
       }
     })
 
-    console.log('get data from backend:', data);
-
-    // console.log('sign up result:', data.createAccount)
     if (data.createAccount !== null) {
       displayStatus({
         type: "success",
@@ -96,49 +87,10 @@ const SignInPage = () => {
       })
     }
   }
-
-  const onClickToMainPage = () => { navigate('/'); }
-
+  
   return (
     <div className="mainContainer">
       <div className="leftMainContainer">
-        {/* <Typography
-          variant="h1"
-          className={titleStyles.text}
-          align="left"
-        >
-          NTU
-        </Typography>
-        <Typography
-          variant="h1"
-          className={titleStyles.text}
-          align="left"
-        >
-          OUTSIDER
-        </Typography> */}
-
-        {/* <button
-            className="brandName1"
-            style={{
-              fontWeight: '500',
-              background: 'none',
-              border: 'none',
-              fontSize: 150,
-              color: "#20b2aa"
-            }}
-          >NTU</button>
-          <button
-            className="brandName1"
-            style={{
-              fontWeight: '500',
-              background: 'none',
-              border: 'none',
-              fontSize: 130,
-              color: "#20b2aa"
-            }}
-          >OUTSIDER</button> */}
-        {/* <span onClick={}>NTU</span> */}
-
         <div className="brandName1">
           <span onClick={() => navigate('/')}>NTU<br></br>OUTSIDER</span>
         </div>
@@ -154,7 +106,6 @@ const SignInPage = () => {
                 >
                   Sign Up
                 </Typography>
-                {/* <div className="SignUpHeader">Sign Up</div> */}
                 <SignUp handleSignUp={handleSignUp} />
                 <div className='signUpRemind'>Have an account?
                   <span onClick={() => setSignUp(false)}>Log in</span>
@@ -168,7 +119,6 @@ const SignInPage = () => {
                 >
                   Log In
                 </Typography>
-                {/* <div className="logInHeader">Log In</div> */}
                 <LogIn handleLogIn={handleLogIn} />
                 <div className='signUpRemind'>Do not have an account?
                   <span onClick={() => setSignUp(true)}>Sign up</span>

@@ -24,27 +24,21 @@ const OusiderContext = createContext({
 
 // Define the provider component
 const OutsiderProvider = (props) => {
+  // get local storages
+  const savedUserId = localStorage.getItem(USERID_KEY);
+  const savedUsername = localStorage.getItem(USERNAME_KEY);
+  const savedAccount = localStorage.getItem(ACCOUNT_KEY);
+  const savedAuthenticated = localStorage.getItem(AUTHENTICATED_KEY);
+
   // Initialize state variables
-  const [userId, setUserId] = useState(null);
-  const [username, setUsername] = useState("");
-  const [account, setAccount] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
+  const [userId, setUserId] = useState(savedUserId || null);
+  const [username, setUsername] = useState(savedUsername || "");
+  const [account, setAccount] = useState(savedAccount || "");
+  const [authenticated, setAuthenticated] = useState(savedAuthenticated || false);
   const [preferTags, setPreferTags] = useState([]);
   const [currentPost, setCurrentPost] = useState([]);
   const [doingQueryPost, setDoingQueryPost] = useState(false);
   const [doingQueryPostCollection, setDoingQueryPostCollection] = useState(false);
-
-  // Load data from local storage
-  useEffect(() => {
-    const savedUserId = localStorage.getItem(USERID_KEY);
-    const savedUsername = localStorage.getItem(USERNAME_KEY);
-    const savedAccount = localStorage.getItem(ACCOUNT_KEY);
-    const savedAuthenticated = localStorage.getItem(AUTHENTICATED_KEY);
-    setUserId(savedUserId || null);
-    setUsername(savedUsername || "");
-    setAccount(savedAccount || "");
-    setAuthenticated(savedAuthenticated || false);
-  }, []);
 
   // Save data to local storage
   useEffect(() => {

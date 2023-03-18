@@ -14,13 +14,6 @@ import { ThemeProvider, createTheme, responsiveFontSizes } from "@material-ui/co
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
 
-// SignIn & Home implementation
-// ref: https://blog.shahednasser.com/react-context-tutorial-for-beginners/
-
-// separate router
-// ref: https://stackoverflow.com/questions/34607841/react-router-nav-bar-example
-// ref: https://blog.webdevsimplified.com/2022-07/react-router/
-
 function App() {
   return (
     <OutsiderProvider>
@@ -28,14 +21,12 @@ function App() {
         <Router>
           <Routes>
             <Route path="/logIn" element={<SignInPage />} />
-
             <Route path='/' element={<Navbar />}>
               <Route index element={<MainPage />} />
               <Route path="/editPostPage" element={<EditPostPage />} />
               <Route path="/mailPage" element={<MailPage />} />
               <Route path="/myProfilePage" element={<MyProfilePage />} />
             </Route>
-
           </Routes>
         </Router>
       </ThemeProvider>

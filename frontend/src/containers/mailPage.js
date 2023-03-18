@@ -4,15 +4,15 @@ import styled from "styled-components"
 import Message from '../components/Message'
 import {useState, useEffect, useRef} from 'react'
 //import ChatList from '../components/chatList' 
-import { Typography, Divider, IconButton } from '@mui/material';
+import { Divider, IconButton } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import {CHATBOXES_QUERY, CHATBOX_SUBSCRIPTION, CREATE_MESSAGE_MUTATION, MESSAGE_SUBSCRIPTION, CREATE_CHATBOX_MUTATION} from './graphql/index';
 import { useQuery, useMutation} from '@apollo/react-hooks';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
+// import ListItemAvatar from '@mui/material/ListItemAvatar';
+// import Avatar from '@mui/material/Avatar';
 import { ListItemButton } from '@mui/material';
 import { useOusider } from './hooks/useOusider';
 import { useNavigate, useLocation } from 'react-router-dom';
