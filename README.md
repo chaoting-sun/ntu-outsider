@@ -40,6 +40,9 @@ npm/yarn server // start backend in another terminal
 - 可以透過關鍵字查尋貼文。
 - 可以私下一對一聊天媒合組員。
 
+## 封面
+<img src='./photo/ntu-outsider.png'>
+
 ## 作者
 - 孫肇廷：前端、部分後端
 - 呂蓁蓁：前端、UI 設計
