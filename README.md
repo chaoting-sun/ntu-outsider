@@ -23,8 +23,8 @@ MONGO_URL=your_mongo_url
 
 5. 在 ntu-outsider 底下啟動應用：
 ```js
-npm start // start frontend 
-npm server // start backend in another terminal
+npm/yarn start // start frontend 
+npm/yarn server // start backend in another terminal
 ```
 
 6. 在瀏覽器訪問 http://localhost:3000。
@@ -33,6 +33,7 @@ npm server // start backend in another terminal
 - 前端：React、Apollo GraphQL client
 - 後端：GraphQL
 - 資料庫：MongoDB
+- 
 
 ## 功能
 - 可以註冊、編輯個人資訊。
