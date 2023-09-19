@@ -33,7 +33,6 @@ npm/yarn server // start backend in another terminal
 - 前端：React、Apollo GraphQL client
 - 後端：GraphQL
 - 資料庫：MongoDB
-- 
 
 ## 功能
 - 可以註冊、編輯個人資訊。
