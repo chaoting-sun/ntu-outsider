@@ -9,8 +9,8 @@ import Navbar from './components/navigationBar';
 import EditPostPage from './containers/editPostPage';
 import MailPage from './containers/mailPage';
 import MyProfilePage from './containers/myProfilePage';
+import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 
-import { ThemeProvider, createTheme, responsiveFontSizes } from "@material-ui/core/styles";
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
 

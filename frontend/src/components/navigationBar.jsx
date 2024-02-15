@@ -2,8 +2,8 @@ import React from 'react'
 import { useState, useEffect } from "react";
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useOusider } from '../containers/hooks/useOusider';
-import HeaderBar from '../components/headerBar'
-import MenuBar from '../components/menuBar'
+import HeaderBar from './headerBar'
+import MenuBar from './menuBar'
 import '../css/navigationBar.css'
 
 
