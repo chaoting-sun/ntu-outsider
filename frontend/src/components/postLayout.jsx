@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import "../css/viewPostPage.css";
-import "../css/PostLayout.css";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { Input } from "antd";
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { Button, Modal, Space, Tag } from "antd";
-import { CREATE_CHATBOX_MUTATION } from "../containers/graphql";
 import { useQuery, useMutation } from "@apollo/client";
 
 import Card from "@mui/material/Card";
@@ -22,6 +19,11 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import DataSaverOnIcon from "@mui/icons-material/DataSaverOn";
 import { useOusider } from "../containers/hooks/useOusider";
 import Tooltip from "@mui/material/Tooltip";
+
+import PathConstants from "../routes/pathConstants";
+import { CREATE_CHATBOX_MUTATION } from "../containers/graphql";
+import "../css/viewPostPage.css";
+import "../css/PostLayout.css";
 
 // ref: viewPostPage.js
 
@@ -115,7 +117,7 @@ const PostLayout = ({
 
   const handleChat = async () => {
     if (post.author._id === userId) {
-      navigate("/myProfilePage");
+      navigate(PathConstants.MY_PROFILE);
     } else {
       const box = await createChatBox({
         variables: {
@@ -127,7 +129,7 @@ const PostLayout = ({
       //console.log(userId, post.author._id );
       //console.log(box.data.createChatBox);
       console.log("layout");
-      navigate("/mailPage", {
+      navigate(PathConstants.MAIL, {
         state: {
           PosterId: post.author._id,
           Box: box.data.createChatBox,

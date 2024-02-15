@@ -1,15 +1,17 @@
-import "../css/signInPage.css";
-import { useOusider } from "./hooks/useOusider";
-import LogIn from "../components/logIn";
-import SignUp from "../components/signUp";
 import Typography from "@mui/material/Typography";
 // import { makeStyles } from "@material-ui/core/styles";
 import { useNavigate, useLocation } from "react-router-dom";
+
+import PathConstants from "../routes/pathConstants";
+import { useOusider } from "./hooks/useOusider";
+import LogIn from "../components/logIn";
+import SignUp from "../components/signUp";
 import { hashPassword } from "../utils/hash";
 import { useEffect, useState } from "react";
 import { USER_QUERY } from "./graphql/query";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { CREATE_ACCOUNT_MUTATION } from "./graphql/mutation";
+import "../css/signInPage.css";
 
 // const useStyles = makeStyles({
 //   signInFormHeader: {
@@ -50,7 +52,7 @@ const SignInPage = () => {
         type: "success",
         msg: "log in successfully",
       });
-      navigate("/"); // HomePage
+      navigate(PathConstants.MAIN); // HomePage
     } else {
       displayStatus({
         type: "error",
@@ -90,7 +92,7 @@ const SignInPage = () => {
     <div className="mainContainer">
       <div className="leftMainContainer">
         <div className="brandName1">
-          <span onClick={() => navigate("/")}>
+          <span onClick={() => navigate(PathConstants.MAIN)}>
             NTU<br></br>OUTSIDER
           </span>
         </div>

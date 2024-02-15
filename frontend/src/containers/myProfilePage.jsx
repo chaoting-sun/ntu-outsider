@@ -3,19 +3,19 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import styled from 'styled-components';
-// import { StylesProvider } from '@material-ui/core/styles';
 // import { InputLabel, InputField, SubmitButton } from './common/Form';
 import { useOusider } from './hooks/useOusider';
-import { USER_QUERY, UPDATE_USER_MUTATION, UPDATE_PASSWORD_MUTATION } from './graphql/index';
-import { hashPassword } from '../utils/hash';
 
-import '../css/myProfilePage.css';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import { Input } from 'antd';
 
+import PathConstants from '../routes/pathConstants';
+import { USER_QUERY, UPDATE_USER_MUTATION, UPDATE_PASSWORD_MUTATION } from './graphql/index';
+import { hashPassword } from '../utils/hash';
 import '../css/mainPage.css'
+import '../css/myProfilePage.css';
 
 
 const { TextArea } = Input;
@@ -111,7 +111,7 @@ const MyProfilePage = () => {
   const form2 = useForm()
 
   useEffect(() => {
-    if (!authenticated) navigate('/logIn');
+    if (!authenticated) navigate(PathConstants.LOGIN);
   }, [authenticated])
 
   //更改name, account

@@ -1,31 +1,46 @@
-import React, { useState } from 'react';
-import '../css/headerBar.css'
-import logo from './logo.png';
-import { DownOutlined, SmileOutlined, MailOutlined, LoginOutlined, LogoutOutlined, EditOutlined } from '@ant-design/icons'
+import React, { useState } from "react";
+import "../css/headerBar.css";
+import logo from "./logo.png";
+import {
+  DownOutlined,
+  SmileOutlined,
+  MailOutlined,
+  LoginOutlined,
+  LogoutOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 // import 'antd/dist/antd.css';
 // import { Space, Dropdown, Menu } from 'antd';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import styled from 'styled-components';
-import { Outlet, useNavigate } from 'react-router-dom';
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import styled from "styled-components";
+import { Outlet, useNavigate } from "react-router-dom";
 
-
+import PathConstants from "../routes/pathConstants";
 
 // dropdown
 const dropdowItems = [
   {
-    key: '1',
+    key: "1",
     label: (
-      <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.antgroup.com"
+      >
         1st menu item
       </a>
     ),
   },
   {
-    key: '2',
+    key: "2",
     label: (
-      <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.aliyun.com"
+      >
         2nd menu item (disabled)
       </a>
     ),
@@ -33,18 +48,22 @@ const dropdowItems = [
     disabled: true,
   },
   {
-    key: '3',
+    key: "3",
     label: (
-      <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.luohanacademy.com"
+      >
         3rd menu item (disabled)
       </a>
     ),
     disabled: true,
   },
   {
-    key: '4',
+    key: "4",
     danger: true,
-    label: 'a danger item',
+    label: "a danger item",
   },
 ];
 
@@ -68,55 +87,59 @@ const DropdownButton = styled(Button)`
     text-decoration: none;
     background-color: #5d6260 !important;
   }
-`
-
-
+`;
 
 const unLogInItems = [
   {
-    label: 'log in',
-    key: 'logIn',
-    icon: <LoginOutlined />
+    label: "log in",
+    key: "logIn",
+    icon: <LoginOutlined />,
   },
   {
-    label: 'sign up',
-    key: 'signUp',
-    icon: <EditOutlined />
-  }
-]
+    label: "sign up",
+    key: "signUp",
+    icon: <EditOutlined />,
+  },
+];
 
 const logInItems = [
   {
-    label: 'log out',
-    key: 'logOut',
-    icon: <LogoutOutlined />
+    label: "log out",
+    key: "logOut",
+    icon: <LogoutOutlined />,
   },
   {
-    label: 'edit my profile',
-    key: 'editProfile',
-    icon: <EditOutlined />
-  }
-]
+    label: "edit my profile",
+    key: "editProfile",
+    icon: <EditOutlined />,
+  },
+];
 
 const MenuItems = ({ handleClose, authenticated }) => {
   if (authenticated) {
     return (
       <>
-        <MenuItem onClick={() => handleClose('logOut')}>log out</MenuItem>
-        <MenuItem onClick={() => handleClose('editProfile')}>edit my profile</MenuItem>
+        <MenuItem onClick={() => handleClose("logOut")}>log out</MenuItem>
+        <MenuItem onClick={() => handleClose("editProfile")}>
+          edit my profile
+        </MenuItem>
       </>
-    )
+    );
   } else {
     return (
       <>
-        <MenuItem onClick={() => handleClose('logIn')}>log in</MenuItem>
-        <MenuItem onClick={() => handleClose('signUp')}>sign up</MenuItem>
+        <MenuItem onClick={() => handleClose("logIn")}>log in</MenuItem>
+        <MenuItem onClick={() => handleClose("signUp")}>sign up</MenuItem>
       </>
-    )
+    );
   }
-}
+};
 
-const HeaderBar = ({ authenticated, handleOnClickMail, handleOnClickLogInOut }) => {
+const HeaderBar = ({
+  authenticated,
+  handleOnClickMail,
+  handleOnClickLogInOut,
+}) => {
   const items = authenticated ? logInItems : unLogInItems;
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -125,43 +148,42 @@ const HeaderBar = ({ authenticated, handleOnClickMail, handleOnClickLogInOut }) 
     setAnchorEl(event.currentTarget);
   };
   const handleClose = (action) => {
-    console.log('action:', action);
+    console.log("action:", action);
     setAnchorEl(null);
-    handleOnClickLogInOut(action)
+    handleOnClickLogInOut(action);
   };
 
-
   return (
-    <header className='headerBarContainer'>
-      <div className='brandContainer'>
-        <div className='logoContainer'>
+    <header className="headerBarContainer">
+      <div className="brandContainer">
+        <div className="logoContainer">
           {/* <img alt='logo' src={logo} /> */}
-          <div className="brandNameContainer" onClick={() => {navigate("/")}}>
+          <div
+            className="brandNameContainer"
+            onClick={() => {
+              navigate(PathConstants.MAIN);
+            }}
+          >
             <div>NTU</div>
             <div>OUTSIDER</div>
           </div>
         </div>
       </div>
 
-      <div className='toolBarContainer'>
-        <div className='tools'>
-          <div className='mail'>
-            <MailOutlined
-              className='toolsMail'
-              onClick={handleOnClickMail}
-            />
+      <div className="toolBarContainer">
+        <div className="tools">
+          <div className="mail">
+            <MailOutlined className="toolsMail" onClick={handleOnClickMail} />
           </div>
-          <div className='logIn'>
+          <div className="logIn">
             {/* <div className='logInButton'> */}
             <DropdownButton
               // className="toolsMenu"
-              aria-controls={open ? 'demo-positioned-menu' : undefined}
+              aria-controls={open ? "demo-positioned-menu" : undefined}
               aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
+              aria-expanded={open ? "true" : undefined}
               onClick={handleClick}
-            >
-
-            </DropdownButton>
+            ></DropdownButton>
             <Menu
               id="demo-positioned-menu"
               aria-labelledby="demo-positioned-button"
@@ -169,130 +191,25 @@ const HeaderBar = ({ authenticated, handleOnClickMail, handleOnClickLogInOut }) 
               open={open}
               onClose={handleClose}
               anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+                vertical: "bottom",
+                horizontal: "left",
               }}
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
+                vertical: "top",
+                horizontal: "center",
               }}
             >
-              <MenuItems 
+              <MenuItems
                 handleClose={handleClose}
                 authenticated={authenticated}
               />
-              {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem> */}
             </Menu>
-
-
             {/* </div> */}
           </div>
         </div>
       </div>
     </header>
-  )
-
-  return (
-    <div>
-      <Button
-        id="demo-positioned-button"
-        aria-controls={open ? 'demo-positioned-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
-      >
-        Dashboard
-      </Button>
-      <Menu
-        id="demo-positioned-menu"
-        aria-labelledby="demo-positioned-button"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-      >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
-      </Menu>
-    </div>
   );
-}
-
-// const HeaderBar = ({ authenticated, handleOnClickMail, handleOnClickLogInOut }) => {
-//   const items = authenticated ? logInItems : unLogInItems;
-//   // const items = testItems;
-//   const [current, setCurrent] = useState("");
-
-//   // const onClick = (key) => {
-//   //   setCurrent(key);
-//   //   handleOnClickLogInOut(key);
-//   // }
-
-//   const dropdownOnClick = (e) => {
-//     console.log('onClick:', e);
-//     setCurrent(e.taget.value);
-//     handleOnClickLogInOut(e.taget.value);
-//   }
-
-//   return (
-//     <header className='headerBarContainer'>
-//       <div className='brandContainer'>
-//         <div className='logoContainer'>
-//           {/* <img alt='logo' src={logo} /> */}
-//           <div className="brandNameContainer">
-//             <div>NTU</div>
-//             <div>OUTSIDER</div>
-//           </div>
-//         </div>
-//       </div>
-
-//       <div className='toolBarContainer'>
-//         <div className='tools'>
-//           <div className='mail'>
-//             <MailOutlined
-//               className='toolsMail'
-//               onClick={handleOnClickMail}
-//             />
-//           </div>
-//           <div className='logIn'>
-
-
-//             {/* <Menu
-//               className='toolsMenu'
-//               onClick={(e) => onClick(e.key)}
-//               // selectedKeys={[current]}
-//               mode="horizontal"
-//               items={items}
-//             /> */}
-
-//             <Dropdown
-//               className='toolsMenu'
-//               onClick={(e) => dropdownOnClick(e)}
-//               menu={{
-//                 items,
-//               }}
-//             >
-//               <a onClick={(e) => e.preventDefault()}>
-//               </a>
-//               </Dropdown>
-
-
-
-//           </div>
-//         </div>
-//       </div>
-//     </header>
-//   )
-// }
+};
 
 export default HeaderBar;

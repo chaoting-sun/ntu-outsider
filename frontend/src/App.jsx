@@ -13,6 +13,7 @@ import Navbar from "./components/navigationBar";
 import EditPostPage from "./containers/editPostPage";
 import MailPage from "./containers/mailPage";
 import MyProfilePage from "./containers/myProfilePage";
+import PathConstants from "./routes/pathConstants";
 import "./css/App.css";
 
 let theme = createTheme();
@@ -20,27 +21,27 @@ theme = responsiveFontSizes(theme);
 
 const router = createBrowserRouter([
   {
-    path: "/logIn",
+    path: PathConstants.LOGIN,
     element: <SignInPage />,
   },
   {
     element: <Navbar />,
     children: [
       {
-        path: "/",
+        path: PathConstants.MAIN,
         element: <MainPage />,
         index: true,
       },
       {
-        path: "/editPostPage",
+        path: PathConstants.EDIT_POST,
         element: <EditPostPage />,
       },
       {
-        path: "/mailPage",
+        path: PathConstants.MAIL,
         element: <MailPage />,
       },
       {
-        path: "/myProfilePage",
+        path: PathConstants.MY_PROFILE,
         element: <MyProfilePage />,
       },
     ],
