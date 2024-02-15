@@ -1,20 +1,19 @@
-import "./css/App.css";
-
 import { React } from "react";
-import { OutsiderProvider } from "./containers/hooks/useOusider";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
   ThemeProvider,
   createTheme,
   responsiveFontSizes,
 } from "@mui/material/styles";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+import { OutsiderProvider } from "./containers/hooks/useOusider";
 import MainPage from "./containers/mainPage";
 import SignInPage from "./containers/signInPage";
 import Navbar from "./components/navigationBar";
 import EditPostPage from "./containers/editPostPage";
 import MailPage from "./containers/mailPage";
 import MyProfilePage from "./containers/myProfilePage";
+import "./css/App.css";
 
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
