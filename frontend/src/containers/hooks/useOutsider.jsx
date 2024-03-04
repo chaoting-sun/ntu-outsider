@@ -28,13 +28,13 @@ const OutsiderProvider = (props) => {
   const savedUserId = localStorage.getItem(USERID_KEY);
   const savedUsername = localStorage.getItem(USERNAME_KEY);
   const savedAccount = localStorage.getItem(ACCOUNT_KEY);
-  const savedAuthenticated = localStorage.getItem(AUTHENTICATED_KEY);
-
+  const savedAuthenticated = JSON.parse(localStorage.getItem(AUTHENTICATED_KEY));
+  
   // Initialize state variables
   const [userId, setUserId] = useState(savedUserId || null);
   const [username, setUsername] = useState(savedUsername || "");
   const [account, setAccount] = useState(savedAccount || "");
-  const [authenticated, setAuthenticated] = useState(savedAuthenticated || false);
+  const [authenticated, setAuthenticated] = useState(savedAuthenticated || true); // TODO: change to default: false
   const [preferTags, setPreferTags] = useState([]);
   const [currentPost, setCurrentPost] = useState([]);
   const [doingQueryPost, setDoingQueryPost] = useState(false);
@@ -132,6 +132,6 @@ const OutsiderProvider = (props) => {
 }
 
 // Define context consumer
-const useOusider = () => useContext(OusiderContext);
+const useOutsider = () => useContext(OusiderContext);
 
-export { OutsiderProvider, useOusider };
+export { OutsiderProvider, useOutsider };

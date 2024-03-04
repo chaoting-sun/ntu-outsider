@@ -19,7 +19,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { ListItemButton } from "@mui/material";
 
-import { useOusider } from "./hooks/useOusider";
+import { useOutsider } from "./hooks/useOutsider";
 import Message from "../components/Message";
 import "../css/mailPage.css";
 
@@ -61,7 +61,7 @@ const MailPage = () => {
   const [friendId, setFriendId] = useState("");
   const [friendName, setFriendName] = useState("");
   const [boxName, setBoxName] = useState("");
-  const { userId, username } = useOusider();
+  const { userId, username } = useOutsider();
   const [openChatBox, setOpenChatBox] = useState(false);
   const msgFooter = useRef();
   const scrollToBottom = () => {
@@ -69,6 +69,8 @@ const MailPage = () => {
   };
   const [sendMessage] = useMutation(CREATE_MESSAGE_MUTATION);
   const [createChatBox] = useMutation(CREATE_CHATBOX_MUTATION);
+
+  console.log("I am mailPage!")
 
   const {
     loading,

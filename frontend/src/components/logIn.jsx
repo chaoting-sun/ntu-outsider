@@ -1,7 +1,7 @@
 import { Button, Space, Input } from "antd";
 import { useState } from "react";
 import "../css/signIn.css";
-import { useOusider } from "../containers/hooks/useOusider";
+import { useOutsider } from "../containers/hooks/useOutsider";
 // import Button from '@material-ui/core/Button';
 // import { makeStyles } from "@material-ui/core/styles";
 // import styled from 'styled-components';
@@ -19,7 +19,7 @@ import Typography from '@mui/material/Typography';
 
 const LogIn = ({ handleLogIn }) => {
   // const StylesClasses = useStyles();
-  const { displayStatus } = useOusider();
+  const { displayStatus } = useOutsider();
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
 

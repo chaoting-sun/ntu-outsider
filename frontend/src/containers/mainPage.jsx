@@ -1,23 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import styled from "styled-components";
-
-import { useOusider } from "./hooks/useOusider";
+import { useOutsider } from "./hooks/useOutsider";
 import PostLayout from "../components/postLayout";
 import PathConstants from "../routes/pathConstants";
-import "../css/mainPage.css";
+
+import styles from "../css/mainPage.module.css"
 
 import {
   DELETE_POST_MUTATION,
   UPDATE_POST_COLLECTION_MUTATION,
 } from "./graphql";
-
-const PostContainer = styled.div`
-  width: 100% !important;
-  margin-top: 20px;
-  margin-bottom: 20px;
-`;
 
 const MainPage = () => {
   const {
@@ -29,13 +22,15 @@ const MainPage = () => {
     doingQueryPostCollection,
     setDoingQueryPostCollection,
     handleQueryPost,
-  } = useOusider();
+  } = useOutsider();
   const [post, setPost] = useState([]);
   const [postDom, setPostDom] = useState([]);
 
   const [updatePostCollection] = useMutation(UPDATE_POST_COLLECTION_MUTATION);
   const [deletePost] = useMutation(DELETE_POST_MUTATION);
   const navigate = useNavigate();
+
+  console.log("I am mainpage!")
 
   useEffect(() => {
     handleQueryPost("all", "") // default queryPost
@@ -123,7 +118,7 @@ const MainPage = () => {
     return posts.map((post) => ({
       id: post._id,
       dom: (
-        <PostContainer key={post._id}>
+        <div className={styles.posts} key={post._id}>
           <PostLayout
             post={post}
             handleChat={handleChat}
@@ -131,13 +126,13 @@ const MainPage = () => {
             handleEditPost={handleEditPost}
             handleDeletePost={handleDeletePost}
           />
-        </PostContainer>
+        </div>
       ),
     }));
   };
 
   return (
-    <div className="mainPageContainer">
+    <div className={styles.container}>
       <div className="postContainer">
         {/* {console.log('postDOM:', postDom)} */}
         {postDom.map(({ dom }) => dom).reverse()}

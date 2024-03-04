@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import PathConstants from "../routes/pathConstants";
-import { useOusider } from "./hooks/useOusider";
+import { useOutsider } from "./hooks/useOutsider";
 import LogIn from "../components/logIn";
 import SignUp from "../components/signUp";
 import { hashPassword } from "../utils/hash";
@@ -13,19 +13,8 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { CREATE_ACCOUNT_MUTATION } from "./graphql/mutation";
 import "../css/signInPage.css";
 
-// const useStyles = makeStyles({
-//   signInFormHeader: {
-//     color: "#1A202C",
-//     fontWeight: "bold",
-//     borderBottom: "none",
-//     userSelect: "none",
-//     marginBottom: '20px',
-//   }
-// });
-
 const SignInPage = () => {
-  // const StylesClasses = useStyles();
-  const { displayStatus, autheticateAccount } = useOusider();
+  const { displayStatus, autheticateAccount } = useOutsider();
   const [signUp, setSignUp] = useState(false);
   const [queryUser] = useLazyQuery(USER_QUERY, { fetchPolicy: "network-only" });
   const [createAccount] = useMutation(CREATE_ACCOUNT_MUTATION);
@@ -37,6 +26,9 @@ const SignInPage = () => {
       setSignUp(location.state.signUp);
     }
   }, [location.state]);
+
+  console.log("I am signin page!")
+
 
   const handleLogIn = async ({ inAccount, inPassword }) => {
     const { data } = await queryUser({

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import styled from 'styled-components';
 // import { InputLabel, InputField, SubmitButton } from './common/Form';
-import { useOusider } from './hooks/useOusider';
+import { useOutsider } from './hooks/useOutsider';
 
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -14,7 +14,6 @@ import { Input } from 'antd';
 import PathConstants from '../routes/pathConstants';
 import { USER_QUERY, UPDATE_USER_MUTATION, UPDATE_PASSWORD_MUTATION } from './graphql/index';
 import { hashPassword } from '../utils/hash';
-import '../css/mainPage.css'
 import '../css/myProfilePage.css';
 
 
@@ -55,7 +54,7 @@ const SendButton = styled(Button)`{
     /*bottom: 5vh !important;*/
     left: 50% !important;
     width: 25% !important;
-    min-width: 20px !important;
+    // min-width: 20px !important;
     height: 40px !important;
     position:relative;
     border-radius: 15px !important;
@@ -101,7 +100,7 @@ const SecretTitle = styled.div`
 
 const MyProfilePage = () => {
   const { userId, username, account, setUsername,
-    setAccount, displayStatus, authenticated } = useOusider();
+    setAccount, displayStatus, authenticated } = useOutsider();
   const [queryUser] = useLazyQuery(USER_QUERY, { fetchPolicy: 'network-only' });
   const [updateUser] = useMutation(UPDATE_USER_MUTATION);
   const [updatePassword] = useMutation(UPDATE_PASSWORD_MUTATION);
@@ -109,6 +108,8 @@ const MyProfilePage = () => {
 
   const form1 = useForm()
   const form2 = useForm()
+
+  console.log("I am myprofilepage!")
 
   useEffect(() => {
     if (!authenticated) navigate(PathConstants.LOGIN);

@@ -17,7 +17,7 @@ import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import DataSaverOnIcon from "@mui/icons-material/DataSaverOn";
-import { useOusider } from "../containers/hooks/useOusider";
+import { useOutsider } from "../containers/hooks/useOutsider";
 import Tooltip from "@mui/material/Tooltip";
 
 import PathConstants from "../routes/pathConstants";
@@ -83,7 +83,7 @@ const PostLayout = ({
 }) => {
   // console.log("PostLayout:", post);
 
-  const { userId, account, authenticated } = useOusider();
+  const { userId, account, authenticated } = useOutsider();
   const [info, setInfo] = useState(null);
   const [me, setMe] = useState(false);
   const navigate = useNavigate();
@@ -147,7 +147,8 @@ const PostLayout = ({
 
   return (
     <PostCard sx={{ minWidth: 600, maxWidth: 800 }}>
-      <CardContent>
+    {/* <PostCard sx={{ maxWidth: 800 }}> */}
+    <CardContent>
         <div className="cardHeader">
           <Typography
             sx={{

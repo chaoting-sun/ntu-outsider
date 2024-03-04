@@ -6,10 +6,10 @@ import {
   responsiveFontSizes,
 } from "@mui/material/styles";
 
-import { OutsiderProvider } from "./containers/hooks/useOusider";
+import { OutsiderProvider } from "./containers/hooks/useOutsider";
 import MainPage from "./containers/mainPage";
 import SignInPage from "./containers/signInPage";
-import Navbar from "./components/navigationBar";
+import Navbar from "./components/navbar/navBar";
 import EditPostPage from "./containers/editPostPage";
 import MailPage from "./containers/mailPage";
 import MyProfilePage from "./containers/myProfilePage";

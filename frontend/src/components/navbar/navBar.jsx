@@ -1,11 +1,11 @@
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-import { useOusider } from "../containers/hooks/useOusider";
-import HeaderBar from "./headerBar";
-import MenuBar from "./menuBar";
-import PathConstants from "../routes/pathConstants";
-import "../css/navigationBar.css";
+import { useOutsider } from "../../containers/hooks/useOutsider";
+import HeaderBar from "../headerBar";
+import PathConstants from "../../routes/pathConstants";
+// import styles from "../css/navBar.module.css";
+import MiniDrawer from "./miniDrawer";
 
 const NavBar = () => {
   const {
@@ -14,7 +14,7 @@ const NavBar = () => {
     setAuthenticated,
     handleQueryPost,
     handleQueryPostCollection,
-  } = useOusider();
+  } = useOutsider();
   const navigate = useNavigate();
 
   const handleOnClickMail = () => {
@@ -74,16 +74,25 @@ const NavBar = () => {
 
   return (
     <>
-      <HeaderBar
+      {/* <HeaderBar
         authenticated={authenticated}
         handleOnClickMail={handleOnClickMail}
         handleOnClickLogInOut={handleOnClickLogInOut}
-      />
-      <MenuBar
-        handleQueryPost={handleQueryPost}
-        handleMenuOperation={handleMenuOperation}
-      />
-      <Outlet />
+      /> */}
+
+      {/* <HeaderBar authenticated={authenticated}>
+      </HeaderBar> */}
+
+
+
+      <MiniDrawer
+        authenticated={authenticated}
+        // handleQueryPost={handleQueryPost}
+        // handleMenuOperation={handleMenuOperation}
+      >
+        <Outlet />
+      </MiniDrawer>
+
     </>
   );
 };

@@ -10,7 +10,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 // import { StylesProvider } from "@material-ui/core/styles";
 import { useState, useEffect } from "react";
 import Tag from "../components/tag";
-import { useOusider } from "./hooks/useOusider";
+import { useOutsider } from "./hooks/useOutsider";
 import { CREATE_POST_MUTATION, UPDATE_POST_MUTATION } from "./graphql/mutation";
 import { useMutation } from "@apollo/client";
 
@@ -67,7 +67,7 @@ const NameButton = styled(Button)`
 // }
 
 const EditPostPage = () => {
-  const { username, userId, displayStatus, authenticated } = useOusider();
+  const { username, userId, displayStatus, authenticated } = useOutsider();
   const [action, setAction] = useState("");
   const [updatedPost, setUpdatedPost] = useState(null);
   const [finishEdit, setFinishEdit] = useState(false);
@@ -80,6 +80,8 @@ const EditPostPage = () => {
   const navigate = useNavigate();
   const [createPost] = useMutation(CREATE_POST_MUTATION);
   const [updatePost] = useMutation(UPDATE_POST_MUTATION);
+
+  console.log("I am EditPostPage!");
 
   const {
     register,
@@ -177,110 +179,108 @@ const EditPostPage = () => {
 
   return !authenticated ? null : (
     <div className="editPostPageContainer">
-      {/* <StylesProvider injectFirst> */}
-        <PostCard sx={{ minWidth: 500 }}>
-          <CardContent>
-            <NameButton>{username}</NameButton>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              {/* register your input into the hook by invoking the "register" function */}
+      <PostCard sx={{ minWidth: 500 }}>
+        <CardContent>
+          <NameButton>{username}</NameButton>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* register your input into the hook by invoking the "register" function */}
+            <input
+              defaultValue={post ? post.title : ""}
+              placeholder="Title"
+              className="titleInput"
+              {...register("title", { required: "Title is required" })}
+            />
+            {errors.title ? (
+              <p className="error">{errors.title.message}</p>
+            ) : null}
+            {/* include validation with required or other standard HTML validation rules */}
+            <div className="inputItem">
+              <label>課名 </label>
               <input
-                defaultValue={post ? post.title : ""}
-                placeholder="Title"
-                className="titleInput"
-                {...register("title", { required: "Title is required" })}
+                defaultValue={post ? post.className : ""}
+                className="detailInput"
+                {...register("className", {
+                  required: "Class name is required",
+                })}
               />
-              {errors.title ? (
-                <p className="error">{errors.title.message}</p>
-              ) : null}
-              {/* include validation with required or other standard HTML validation rules */}
-              <div className="inputItem">
-                <label>課名 </label>
-                <input
-                  defaultValue={post ? post.className : ""}
-                  className="detailInput"
-                  {...register("className", {
-                    required: "Class name is required",
-                  })}
-                />
-              </div>
-              {/* errors will return when field validation fails  */}
-              {errors.class ? (
-                <p className="error">{errors.class.message}</p>
-              ) : null}
+            </div>
+            {/* errors will return when field validation fails  */}
+            {errors.class ? (
+              <p className="error">{errors.class.message}</p>
+            ) : null}
 
-              <div className="inputItem">
-                <label>授課老師 </label>
-                <input
-                  defaultValue={post ? post.teacherName : ""}
-                  className="detailInput"
-                  {...register("teacherName", {
-                    required: "Teacher name is required",
-                  })}
-                />
-              </div>
-              {/* errors will return when field validation fails  */}
-              {errors.teacher ? (
-                <p className="error">{errors.teacher.message}</p>
-              ) : null}
-
-              <div className="inputItem">
-                <label>課程流水號 </label>
-                <input
-                  defaultValue={post ? post.classNo : ""}
-                  className="detailInput"
-                  {...register("classNo", {
-                    required: "Class number is required",
-                  })}
-                />
-              </div>
-
-              {errors.classNo ? (
-                <p className="error">{errors.classNo.message}</p>
-              ) : null}
-              <div className="inputItem">
-                <label>尚須徵求人數 </label>
-                <input
-                  defaultValue={post ? post.condition : ""}
-                  type="number"
-                  min="0"
-                  className="detailInput"
-                  {...register("condition")}
-                />
-              </div>
-              <div className="inputItem">
-                <label> 截止時間 </label>
-                <input
-                  // value={}
-                  defaultValue={post ? post.deadline.split(" ")[0] : ""}
-                  type="date"
-                  className="timeInput"
-                  {...register("endDate")}
-                />{" "}
-                &nbsp;
-                <input
-                  // value={}
-                  defaultValue={post ? post.deadline.split(" ")[1] : ""}
-                  type="time"
-                  className="timeInput"
-                  {...register("endTime")}
-                />
-              </div>
-              <Content
-                value={content}
-                defaultValue={post ? post.content : ""}
-                rows={12}
-                onChange={(e) => setContent(e.target.value)}
+            <div className="inputItem">
+              <label>授課老師 </label>
+              <input
+                defaultValue={post ? post.teacherName : ""}
+                className="detailInput"
+                {...register("teacherName", {
+                  required: "Teacher name is required",
+                })}
               />
-              <Tag tags={tags} setTags={setTags} />
-              <input className="formInput" type="submit" />
-            </form>
-          </CardContent>
+            </div>
+            {/* errors will return when field validation fails  */}
+            {errors.teacher ? (
+              <p className="error">{errors.teacher.message}</p>
+            ) : null}
 
-          {/*<CardActions>
+            <div className="inputItem">
+              <label>課程流水號 </label>
+              <input
+                defaultValue={post ? post.classNo : ""}
+                className="detailInput"
+                {...register("classNo", {
+                  required: "Class number is required",
+                })}
+              />
+            </div>
+
+            {errors.classNo ? (
+              <p className="error">{errors.classNo.message}</p>
+            ) : null}
+            <div className="inputItem">
+              <label>尚須徵求人數 </label>
+              <input
+                defaultValue={post ? post.condition : ""}
+                type="number"
+                min="0"
+                className="detailInput"
+                {...register("condition")}
+              />
+            </div>
+            <div className="inputItem">
+              <label> 截止時間 </label>
+              <input
+                // value={}
+                defaultValue={post ? post.deadline.split(" ")[0] : ""}
+                type="date"
+                className="timeInput"
+                {...register("endDate")}
+              />{" "}
+              &nbsp;
+              <input
+                // value={}
+                defaultValue={post ? post.deadline.split(" ")[1] : ""}
+                type="time"
+                className="timeInput"
+                {...register("endTime")}
+              />
+            </div>
+            <Content
+              value={content}
+              defaultValue={post ? post.content : ""}
+              rows={12}
+              onChange={(e) => setContent(e.target.value)}
+            />
+            <Tag tags={tags} setTags={setTags} />
+            <input className="formInput" type="submit" />
+          </form>
+        </CardContent>
+
+        {/*<CardActions>
                   <Button size="small">Learn More</Button>
                 </CardActions>*/}
-        </PostCard>
-      {/* </StylesProvider> */}
+      </PostCard>
     </div>
   );
 };

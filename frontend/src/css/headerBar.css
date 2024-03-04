@@ -57,7 +57,7 @@
   top: 0;
   left: 256px;
   width: calc(100vw - 256px);
-  min-width: 200px;
+  /* min-width: 200px; */
   height: 72px;
   display: flex;
   justify-content: end;

@@ -20,7 +20,7 @@
 // import Divider from '@mui/material/Divider';
 // import { Button, Modal, Space, Tag } from 'antd';
 // import { ExclamationCircleFilled } from '@ant-design/icons';
-// import { useOusider } from './hooks/useOusider';
+// import { useOutsider } from './hooks/useOutsider';
 // import { CREATE_CHATBOX_MUTATION } from './graphql';
 // import { useQuery, useMutation} from '@apollo/react-hooks';
 
@@ -85,7 +85,7 @@
 //     watch,
 //     formState: { errors }
 //   } = useForm();
-//   const {userId} = useOusider();
+//   const {userId} = useOutsider();
 //   /*const onSubmit = (data) => {
 //     console.log(data);
 //     navigate("/viewPostPage"); //use mutation; 傳入該篇文章資料

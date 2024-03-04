@@ -4,7 +4,7 @@
   left: 0;
   flex: 0 0 256px;
   max-width: 256px;
-  min-width: 256px;
+  /* min-width: 256px; */
   width: 256px;
   height: calc(100vh - 72px);
   /* z-index: 10; */
