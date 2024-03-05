@@ -110,7 +110,8 @@ export default function HeaderBar({ authenticated, children }) {
         </Drawer>
       </nav> */}
 
-      <Box component="main" sx={{ p: 3 }}>
+      <Box component="main" sx={{ p: "0" }}>
+
         {/* <Toolbar />
         <Typography>
           I am Chaoting!
@@ -118,7 +119,8 @@ export default function HeaderBar({ authenticated, children }) {
         <Typography>
           I am Chaoting!
         </Typography> */}
-        {children}
+
+        {/* {children} */}
       </Box>
     </Box>
   );

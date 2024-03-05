@@ -8,9 +8,9 @@ import {
 
 import { OutsiderProvider } from "./containers/hooks/useOutsider";
 import MainPage from "./containers/mainPage";
-import SignInPage from "./containers/signInPage";
+import SignInPage from "./containers/signIn/signInPage";
 import Navbar from "./components/navbar/navBar";
-import EditPostPage from "./containers/editPostPage";
+import AddPostPage from "./containers/addPost/addPostPage";
 import MailPage from "./containers/mailPage";
 import MyProfilePage from "./containers/myProfilePage";
 import PathConstants from "./routes/pathConstants";
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
       },
       {
         path: PathConstants.EDIT_POST,
-        element: <EditPostPage />,
+        element: <AddPostPage />,
       },
       {
         path: PathConstants.MAIL,

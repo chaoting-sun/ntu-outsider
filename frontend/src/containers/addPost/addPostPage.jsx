@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/editPostPage.css";
+// import "./addPostPage.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
@@ -9,9 +9,9 @@ import { Input } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 // import { StylesProvider } from "@material-ui/core/styles";
 import { useState, useEffect } from "react";
-import Tag from "../components/tag";
-import { useOutsider } from "./hooks/useOutsider";
-import { CREATE_POST_MUTATION, UPDATE_POST_MUTATION } from "./graphql/mutation";
+import Tag from "../../components/tag";
+import { useOutsider } from "../hooks/useOutsider";
+import { CREATE_POST_MUTATION, UPDATE_POST_MUTATION } from "../graphql/mutation";
 import { useMutation } from "@apollo/client";
 
 const { TextArea } = Input;
@@ -22,8 +22,8 @@ const { TextArea } = Input;
 // ref: https://stackoverflow.com/questions/70663158/set-default-values-in-react-hook-form
 
 const PostCard = styled(Card)`
-  position: relative;
-  top: -15vh;
+  // position: relative;
+  // top: -15vh;
 `;
 
 const Content = styled(TextArea)`
@@ -66,7 +66,7 @@ const NameButton = styled(Button)`
 //   return info;
 // }
 
-const EditPostPage = () => {
+const AddPostPage = () => {
   const { username, userId, displayStatus, authenticated } = useOutsider();
   const [action, setAction] = useState("");
   const [updatedPost, setUpdatedPost] = useState(null);
@@ -81,7 +81,7 @@ const EditPostPage = () => {
   const [createPost] = useMutation(CREATE_POST_MUTATION);
   const [updatePost] = useMutation(UPDATE_POST_MUTATION);
 
-  console.log("I am EditPostPage!");
+  console.log("I am AddPostPage!");
 
   const {
     register,
@@ -177,8 +177,21 @@ const EditPostPage = () => {
 
   //console.log(watch("example")); // you can watch individual input by pass the name of the input
 
-  return !authenticated ? null : (
-    <div className="editPostPageContainer">
+  // return (
+  //   <Card>
+  //     <CardContent>
+        
+
+  //     </CardContent>
+  //   </Card>
+  // )
+
+
+
+
+
+  // return !authenticated ? null : (
+  return (
       <PostCard sx={{ minWidth: 500 }}>
         <CardContent>
           <NameButton>{username}</NameButton>
@@ -276,12 +289,7 @@ const EditPostPage = () => {
             <input className="formInput" type="submit" />
           </form>
         </CardContent>
-
-        {/*<CardActions>
-                  <Button size="small">Learn More</Button>
-                </CardActions>*/}
       </PostCard>
-    </div>
   );
 };
-export default EditPostPage;
+export default AddPostPage;

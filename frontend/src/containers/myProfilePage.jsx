@@ -9,12 +9,14 @@ import { useOutsider } from './hooks/useOutsider';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import { Input } from 'antd';
 
 import PathConstants from '../routes/pathConstants';
 import { USER_QUERY, UPDATE_USER_MUTATION, UPDATE_PASSWORD_MUTATION } from './graphql/index';
 import { hashPassword } from '../utils/hash';
 import '../css/myProfilePage.css';
+import { Box } from '@mui/material';
 
 
 const { TextArea } = Input;
@@ -180,6 +182,26 @@ const MyProfilePage = () => {
       }
     }
   }
+
+  // return (
+  //   <Box>
+  //     <Card sx={{ mt: "100px", height: "600px", width: "800px", bgcolor: "#f0f0f0" }}>
+  //       <CardContent>
+  //         <Typography gutterBottom variant="h4" component="div" sx={{fontWeight: "bold"}}>
+  //         個人資料
+  //         </Typography>
+  //         <Box>
+  //           <Typography gutterBottom variant="h6" component="div" sx={{display:"inline"}}>
+  //           dwd
+  //           </Typography>
+  //           <Typography gutterBottom variant="h6" component="div" sx={{fontWeight: "bold"}}>
+  //           wdwd
+  //           </Typography>
+  //         </Box>
+  //       </CardContent>
+  //     </Card>
+  //   </Box>  
+  // )
 
   return (
     <>

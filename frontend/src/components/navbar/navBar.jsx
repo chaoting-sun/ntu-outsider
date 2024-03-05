@@ -92,7 +92,6 @@ const NavBar = () => {
       >
         <Outlet />
       </MiniDrawer>
-
     </>
   );
 };

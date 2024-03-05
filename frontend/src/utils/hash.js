@@ -4,14 +4,12 @@ import bcrypt from 'bcryptjs'
 // password hashing and verifying
 // ref: https://dev.to/silvenleaf/password-hashing-with-bcrypt-easiest-explanation-5gpg
 
-/* hash password */
-const hashPassword = (password) => {
-  // 前端的 function
-  // 前端傳加密過後的 password (hashedPassword) 到後端並儲存在 db
-  return bcrypt.hashSync(password, bcrypt.genSaltSync());
+const hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword; 
 }
 
-/* verify password */
 const verifyPassword = (password, hashedPassword) => {
   // 後端的 function
   // 後端收到前端傳來的 password 之後，將 password 和 db 中

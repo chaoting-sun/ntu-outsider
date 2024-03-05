@@ -47,4 +47,7 @@ button:focus {
     display: flex;
     flex-direction: column;
     padding-left: 15px;
+
+    color: #f0f0f0;
 }
+

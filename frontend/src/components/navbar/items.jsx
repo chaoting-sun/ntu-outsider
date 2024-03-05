@@ -12,19 +12,19 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
 export const postItems = [
   {
-    text: "All posts",
+    text: "所有貼文",
     key: "allPost",
     icon: <DonutSmallIcon />,
     href: PathConstants.MAIN_POST,
   },
   {
-    text: "My post",
+    text: "我的貼文",
     key: "uploadedPost",
     icon: <AccessibilityNewIcon />,
     href: PathConstants.MAIN_POST,
   },
   {
-    text: "Followed",
+    text: "追蹤貼文",
     key: "followedPost",
     icon: <StarHalfIcon />,
     href: PathConstants.EDIT_POST,
@@ -33,28 +33,28 @@ export const postItems = [
 
 export const accountItems = [
   {
-    text: "Log in",
+    text: "登入",
     key: "logIn",
     icon: <LoginIcon sx={{ fontSize: "2rem" }} />,
     loggedIn: false,
     href: PathConstants.LOGIN,
   },
   {
-    text: "Sign up",
+    text: "註冊",
     key: "signUp",
     icon: <AppRegistrationIcon sx={{ fontSize: "2rem" }} />,
     loggedIn: false,
     href: PathConstants.LOGIN,
   },
   {
-    text: "Log out",
+    text: "登出",
     key: "logOut",
     icon: <LogoutIcon sx={{ fontSize: "2rem" }} />,
     loggedIn: true,
-    href: PathConstants.MAIN,
+    href: PathConstants.LOGIN,
   },
   {
-    text: "Edit profile",
+    text: "編輯個人資料",
     key: "editProfile",
     icon: <AccountBoxIcon sx={{ fontSize: "2rem" }} />,
     loggedIn: true,

@@ -50,6 +50,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
+  backgroundColor: "var(--main-bg)",
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
@@ -105,6 +106,7 @@ export default function MiniDrawer({ authenticated, children }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
+
       <AppBar position="fixed" open={open}>
         <Toolbar
           sx={{
@@ -186,13 +188,15 @@ export default function MiniDrawer({ authenticated, children }) {
             )}
           </IconButton>
         </DrawerHeader>
-
         <Divider />
-
         <List>
           {postItems.map(({ text, icon, href }, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <Tooltip title={text} placement="right" disableHoverListener={open ? true : false} >
+              <Tooltip
+                title={text}
+                placement="right"
+                disableHoverListener={open ? true : false}
+              >
                 <ListItemButton
                   onClick={() => navigate(href)}
                   sx={{
@@ -216,10 +220,22 @@ export default function MiniDrawer({ authenticated, children }) {
             </ListItem>
           ))}
         </List>
-
         <Divider />
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          padding: "0",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          backgroundColor: "var(--main-bg)"
+        }}
+      >
+        <DrawerHeader />
         {children}
       </Box>
     </Box>
