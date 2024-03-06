@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-import { useOutsider } from "../../containers/hooks/useOutsider";
+import { useOutsider } from "../hooks/useOutsider";
 import PathConstants from "../../routes/pathConstants";
 import MiniDrawer from "./miniDrawer";
 

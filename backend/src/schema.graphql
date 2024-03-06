@@ -5,8 +5,7 @@ type Query {
   queryChatBoxes(userId: ID!): [ChatBox]
   queryUser(account: String!, password: String!): User
   queryPost(type: String!, queryString: String!): [Post]
-  queryPostCollection(userId: String!, type: String! ): [Post]
-  
+  queryPostCollection(userId: String!, type: String!): [Post]
 }
 
 type Post {
@@ -31,7 +30,6 @@ type User {
   postCollection: [ID]
   chatboxes: [ID]
 }
-
 
 type ChatBox {
   name: String!
@@ -89,4 +87,3 @@ type MessageSubscriptionPayload {
   chatBoxName: String!
   message: Message!
 }
-

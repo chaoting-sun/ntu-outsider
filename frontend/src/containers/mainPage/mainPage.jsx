@@ -143,6 +143,7 @@ const MainPage = () => {
   };
 
   const handleEditPost = (editedPost) => {
+    console.log("editedPost");
     navigate(PathConstants.EDIT_POST, {
       state: {
         action: "editPost",

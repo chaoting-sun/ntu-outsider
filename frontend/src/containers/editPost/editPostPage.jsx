@@ -138,58 +138,40 @@ const EditPostPage = () => {
 
   const handleEditPost = () => {};
 
-  const onSubmit = async (data) => {
-    const {
+  const onSubmit = async ({
+    title,
+    classNo,
+    className,
+    teacherName,
+    content,
+    condition,
+    endDate,
+    endTime,
+    tags,
+  }) => {
+    const updatedPost = {
       title,
       classNo,
       className,
       teacherName,
       content,
       condition,
-      endDate,
-      endTime,
       tags,
-    } = data;
+      deadline: `${endDate} ${endTime}`,
+    };
 
     let outData = null;
 
     if (action === "createPost") {
-      const vars = {
-        userId: userId,
-        title: data.title,
-        classNo: data.classNo,
-        className: data.className,
-        teacherName: data.teacherName,
-        content: content,
-        condition: Number(data.condition),
-        deadline: `${data.endDate} ${data.endTime}`,
-        tag: tags,
-      };
-      // console.log('createPost - vars:', vars);
-      outData = await createPost({ variables: vars });
+      updatedPost.userId = userId;
+      outData = await createPost({ variables: updatedPost });
     } else if (action === "editPost") {
-      const vars = {
-        postId: post._id,
-        title: data.title,
-        classNo: data.classNo,
-        className: data.className,
-        teacherName: data.teacherName,
-        content: content,
-        condition: Number(data.condition),
-        deadline: `${data.endDate} ${data.endTime}`,
-        tag: tags,
-      };
-      // console.log('updatePost - vars:', vars);
-      outData = await updatePost({ variables: vars });
+      updatedPost.postId = post._id;
+      outData = await updatePost({ variables: updatedPost });
     }
 
-    // console.log('updatedPost:', outData.data.createPost);
-
     if (outData) {
-      displayStatus({
-        type: "success",
-        msg: "create a post!",
-      });
+      displayStatus({ type: "success", msg: "create a post!" });
       setUpdatedPost(outData.data.createPost);
       setFinishEdit(true);
     } else {
@@ -314,7 +296,6 @@ const EditPostPage = () => {
               value={content}
               defaultValue={post ? post.content : ""}
               rows={3}
-              maxRows={6}
               onChange={(e) => setContent(e.target.value)}
               className={styles.content}
             />

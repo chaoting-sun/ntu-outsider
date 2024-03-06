@@ -3,14 +3,17 @@ import { createServer } from "node:http";
 import { WebSocketServer } from "ws";
 import { createPubSub, createSchema, createYoga } from "graphql-yoga";
 import { useServer } from "graphql-ws/lib/use/ws";
+
 import { ChatBoxModel } from "./models/chatbox";
 import { PostModel } from "./models/post";
 import { UserModel } from "./models/user";
+
 import Query from "./resolvers/Query";
 import Mutation from "./resolvers/Mutation";
 import Subscription from "./resolvers/Subscription";
 import ChatBox from "./resolvers/ChatBox";
 import Post from "./resolvers/Post";
+
 import path from "path";
 import express from "express";
 import cors from "cors";
@@ -51,7 +54,9 @@ const yoga = new createYoga({
     subscriptionsProtocol: "WS",
   },
 });
-app.use('/graphql', yoga);
+
+app.use("/graphql", yoga);
+
 const httpServer = createServer(app);
 const wsServer = new WebSocketServer({
   server: httpServer,

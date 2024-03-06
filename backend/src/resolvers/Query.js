@@ -7,9 +7,11 @@ const Query = {
     if (!box) box = await new ChatBoxModel({ name: boxName }).save();
     return box;
   },
+
   user: async (parent, { name }, { UserModel }, info) => {
     return await UserModel.find({ name: { $regex: new RegExp(name, "i") } });
   },
+
   queryUser: async (parent, { account, password }, { UserModel }, info) => {
     let userExisitng = await UserModel.findOne({ account: account });
     console.log("validate user:", userExisitng);
@@ -37,9 +39,11 @@ const Query = {
       return null;
     }
   },
+
   post: async (parent, { postId }, { PostModel }, ingo) => {
     return await PostModel.findOne({ _id: postId });
   },
+
   queryPost: async (parent, { type, queryString }, { PostModel }, info) => {
     switch (type) {
       case "title":
@@ -68,6 +72,7 @@ const Query = {
         return []; // 如果 type 的值不是上述任何一個，則返回空數組
     }
   },
+
   queryPostCollection: async (
     parent,
     { userId, type },
@@ -77,7 +82,7 @@ const Query = {
     switch (type) {
       case "uploadedPost":
         const post = await PostModel.find({ userId: userId });
-        console.log('uploadedPost:', post);
+        console.log("uploadedPost:", post);
         return post;
       case "followedPost":
         let user = await UserModel.findOne({ _id: userId });
@@ -91,15 +96,16 @@ const Query = {
             await PostModel.findOne({ _id: postId.toHexString() })
           );
         }
-        console.log('followedPosts:', followedPosts);
+        console.log("followedPosts:", followedPosts);
         return followedPosts;
       case "allPost":
         return await PostModel.find({});
       default:
-        console.log('no such query:', type);
+        console.log("no such query:", type);
         return [];
     }
   },
+  
   queryChatBoxes: async (
     parent,
     { userId },

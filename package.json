@@ -1,44 +1,16 @@
 {
-
   "name": "hack2",
-
   "version": "1.0.0",
-
   "main": "index.js",
-
   "license": "MIT",
-
   "devDependencies": {
-
     "cypress": "^13.6.6"
-
   },
-
   "scripts": {
-
     "start": "cd ./frontend && npm run dev",
-
     "server": "cd ./backend && npm server",
-
     "install:prod": "cd frontend && yarn install --freeze-lockfile && cd ../backend && npm install --freeze-lockfile",
-
     "build": "cd frontend && npm build",
-
     "deploy": "cd backend && npm deploy"
-
-  },
-
-  "dependencies": {
-
-    "@emotion/react": "^11.11.4",
-
-    "@emotion/styled": "^11.11.0",
-
-    "@mui/joy": "^5.0.0-beta.29",
-
-    "cryptojs": "^2.5.3"
-
   }
-
 }
-

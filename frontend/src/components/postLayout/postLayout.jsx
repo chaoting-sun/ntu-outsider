@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useForm } from "react-hook-form";
-import { Input } from "antd";
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
-// import { Button, Modal, Space, Tag } from "antd";
 import { useQuery, useMutation } from "@apollo/client";
 
 import Card from "@mui/material/Card";
@@ -19,55 +15,12 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import DataSaverOnIcon from "@mui/icons-material/DataSaverOn";
 import { useOutsider } from "../../containers/hooks/useOutsider";
 import Tooltip from "@mui/material/Tooltip";
-
 import { Modal } from "antd";
 const { confirm } = Modal;
-
 import PathConstants from "../../routes/pathConstants";
 import { CREATE_CHATBOX_MUTATION } from "../../containers/graphql";
 import styles from "./postLayout.module.css";
-
 import PropTypes from "prop-types";
-
-// ref: viewPostPage.js
-
-// // me: toolNo == 3: edit remove save
-// // not me: toolNo == 1: save
-// const ToolBox = styled.div`
-//   width: ${({ me }) => (me ? "150px" : "50px")};
-//   // width: '150px';
-//   height: 50px;
-//   margin-top: 40px;
-//   display: flex;
-// `;
-
-const MyIconButton = styled(IconButton)`
-  box-sizing: border-box !important;
-  width: 50px !important;
-  height: 50px !important;
-  margin-right: 0px !important;
-  display: flex !important;
-  justify-content: center !important;
-`;
-
-// const InformationItem = styled(Typography)`
-//   display: flex !important;
-//   justify-content: start;
-//   left: 5px;
-//   position: relative;
-// `;
-
-// const InformationBox = styled(Grid)`
-//   position: relative;
-//   left: 30px;
-// `;
-
-// const NameButton = styled(Buttonm)`
-//   color: #20b2aa !important;
-//   margin-top: 1vh !important;
-//   font-size: 22px !important;
-//   display: flex !important;
-// `;
 
 const PostLayout = ({
   post,
@@ -75,11 +28,8 @@ const PostLayout = ({
   handleEditPost,
   handleDeletePost,
 }) => {
-  // console.log("PostLayout:", post);
   const { userId, account, authenticated } = useOutsider();
-
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
-
   const [info, setInfo] = useState(null);
   const [me, setMe] = useState(true);
   // const [me, setMe] = useState(false);
@@ -209,7 +159,7 @@ const PostLayout = ({
               arrow
               className={styles.actionButton}
             >
-              <IconButton aria-label="edit" onClick={handleEditPost}>
+              <IconButton aria-label="edit" onClick={() => handleEditPost(post)}>
                 <EditIcon />
               </IconButton>
             </Tooltip>

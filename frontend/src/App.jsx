@@ -10,10 +10,10 @@ import { OutsiderProvider } from "./containers/hooks/useOutsider";
 
 import MainPage from "./containers/mainPage/mainPage";
 import SignInPage from "./containers/signIn/signInPage";
-import Navbar from "./components/navbar/navBar";
 import EditPostPage from "./containers/editPost/editPostPage";
 import MailPage from "./containers/mailPage";
 import MyProfilePage from "./containers/myProfilePage";
+import NavBar from "./containers/navBar/navBar";
 import PathConstants from "./routes/pathConstants";
 import "./css/App.css";
 
@@ -26,7 +26,7 @@ const router = createBrowserRouter([
     element: <SignInPage />,
   },
   {
-    element: <Navbar />,
+    element: <NavBar />,
     children: [
       {
         path: PathConstants.MAIN,
