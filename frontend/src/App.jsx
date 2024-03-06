@@ -7,10 +7,11 @@ import {
 } from "@mui/material/styles";
 
 import { OutsiderProvider } from "./containers/hooks/useOutsider";
-import MainPage from "./containers/mainPage";
+
+import MainPage from "./containers/mainPage/mainPage";
 import SignInPage from "./containers/signIn/signInPage";
 import Navbar from "./components/navbar/navBar";
-import AddPostPage from "./containers/addPost/addPostPage";
+import EditPostPage from "./containers/editPost/editPostPage";
 import MailPage from "./containers/mailPage";
 import MyProfilePage from "./containers/myProfilePage";
 import PathConstants from "./routes/pathConstants";
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
       },
       {
         path: PathConstants.EDIT_POST,
-        element: <AddPostPage />,
+        element: <EditPostPage />,
       },
       {
         path: PathConstants.MAIL,

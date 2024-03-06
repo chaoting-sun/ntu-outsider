@@ -1,22 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { Input, Tag, Tooltip } from 'antd';
-import styled from 'styled-components';
+import { useEffect, useRef, useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
+import { Input, Tag, Tooltip } from "antd";
+import styles from "./tags.module.css";
+import PropTypes from "prop-types";
 
-const TagGroup = styled.div`
-  display: flex;
-  position: relative;
-  left: 3px; 
-  margin-top: 20px;   
-`
-
-export default({tags, setTags}) => {
+const Tags = ({ tags, setTags }) => {
   const [inputVisible, setInputVisible] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [editInputIndex, setEditInputIndex] = useState(-1);
-  const [editInputValue, setEditInputValue] = useState('');
+  const [editInputValue, setEditInputValue] = useState("");
   const inputRef = useRef(null);
   const editInputRef = useRef(null);
+
   useEffect(() => {
     if (inputVisible) {
       inputRef.current?.focus();
@@ -41,7 +36,7 @@ export default({tags, setTags}) => {
       setTags([...tags, inputValue]);
     }
     setInputVisible(false);
-    setInputValue('');
+    setInputValue("");
   };
   const handleEditInputChange = (e) => {
     setEditInputValue(e.target.value);
@@ -51,10 +46,10 @@ export default({tags, setTags}) => {
     newTags[editInputIndex] = editInputValue;
     setTags(newTags);
     setEditInputIndex(-1);
-    setInputValue('');
+    setInputValue("");
   };
   return (
-    <TagGroup>
+    <>
       {tags.map((tag, index) => {
         if (editInputIndex === index) {
           return (
@@ -62,7 +57,7 @@ export default({tags, setTags}) => {
               ref={editInputRef}
               key={tag}
               size="large"
-              className="tag-input"
+              className={styles.input}
               value={editInputValue}
               onChange={handleEditInputChange}
               onBlur={handleEditInputConfirm}
@@ -104,7 +99,7 @@ export default({tags, setTags}) => {
           ref={inputRef}
           type="text"
           size="large"
-          className="tag-input"
+          className={styles.input}
           value={inputValue}
           onChange={handleInputChange}
           onBlur={handleInputConfirm}
@@ -116,6 +111,13 @@ export default({tags, setTags}) => {
           <PlusOutlined /> New Tag
         </Tag>
       )}
-    </TagGroup>
+    </>
   );
 };
+
+Tags.propTypes = {
+  tags: PropTypes.array,
+  setTags: PropTypes.func,
+};
+
+export default Tags;

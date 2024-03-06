@@ -19,7 +19,6 @@ import ListItemText from "@mui/material/ListItemText";
 import { Tooltip, formLabelClasses } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
-import { redirect } from "react-router-dom";
 import { postItems, accountItems } from "./items";
 
 const drawerWidth = 240;

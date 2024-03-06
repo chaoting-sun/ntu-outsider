@@ -1,0 +1,74 @@
+.container {
+  width: 60%;
+  min-width: 600px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-content: flex-end;
+}
+
+.title {
+  font-size: 1.7rem;
+  display: flex;
+  position: relative;
+  left: 30;
+  margin-top: 5;
+}
+
+.name {
+  color: #20b2aa;
+  margin-top: 1vh;
+  font-size: 22px;
+  display: flex;
+}
+
+.desc {
+  position: relative;
+  left: 30px;
+}
+
+.detail {
+  display: flex !important;
+  justify-content: start;
+  left: 5px;
+  position: relative;
+}
+
+.actions {
+  width: 50px;
+  height: 50px;
+  /* margin-top: 40px; */
+  display: flex;
+}
+
+.actionsMe {
+  width: 150px;
+}
+
+.actionButton {
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+  margin-right: 0px;
+  display: flex;
+  justify-content: center;
+}
+
+.chips {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.chip {
+  font-weight: 700;
+  border-radius: 6px;
+  color: #5b94f6;
+  border-color: #5b94f6;
+  background-color: #ebf8ff;
+}

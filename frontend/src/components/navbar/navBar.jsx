@@ -2,9 +2,7 @@ import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 import { useOutsider } from "../../containers/hooks/useOutsider";
-import HeaderBar from "../headerBar";
 import PathConstants from "../../routes/pathConstants";
-// import styles from "../css/navBar.module.css";
 import MiniDrawer from "./miniDrawer";
 
 const NavBar = () => {
@@ -82,9 +80,6 @@ const NavBar = () => {
 
       {/* <HeaderBar authenticated={authenticated}>
       </HeaderBar> */}
-
-
-
       <MiniDrawer
         authenticated={authenticated}
         // handleQueryPost={handleQueryPost}

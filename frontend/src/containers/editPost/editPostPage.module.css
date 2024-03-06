@@ -1,0 +1,185 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 60px 0;
+}
+
+.card {
+  min-width: 500px;
+  height: 700px;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;;
+}
+
+.cardContent {
+  height: 100%;
+}
+
+.username {
+  color: #20b2aa;
+  margin-top: 6vh;
+  font-size: 22px;
+  display: flex;
+  left: 6.5vh;
+}
+
+.form {
+  height: 100%;
+  position: relative;
+}
+
+.desc {
+  margin-top: 5vh;
+  width: 100%;
+  font-size: 18px;
+  padding: 1vh 2vh;
+}
+
+.error {
+  color: #bf1650;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  left: 2vh;
+}
+
+.error::before {
+  display: inline;
+  content: "⚠ ";
+}
+
+.title {
+  font-size: 2rem;
+  border: 1px solid white;
+  margin-bottom: 1.5vh;
+  color: #808080;
+}
+
+.title::placeholder {
+  font-size: 2rem;
+  color: #a9a9a9;
+}
+
+.time {
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  height: 50px;
+}
+
+input {
+  display: block;
+  width: auto;
+  outline: none;
+  margin: 2px 0;
+}
+
+.content {
+  /* margin: 20px 40px 0 10px; */
+  width: 90%;
+  margin-left: 15px;
+  margin-top: 30px;
+  max-height: 120px;
+}
+
+.input {
+  position: relative;
+  top: -1px;
+  font-size: 17px;
+  border: none;
+  border-bottom: 1.5px solid #a9a9a9;
+  height: 40px;
+  padding: 0vh 2vh;
+  color: #808080;
+}
+
+.rowItem {
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
+}
+
+label {
+  width: 100px;
+  color: #696969;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.tags {
+  position: absolute;
+  left: 0;
+  bottom: 60px;
+}
+
+.submit {
+  background: #58b083;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.submit:hover {
+  background: #58b083;
+}
+
+
+/* button[type="submit"],
+input[type="submit"] {
+  background: #20b2aa;
+  color: white;
+  text-transform: uppercase;
+  border: none;
+  margin-top: 40px;
+  padding: 10px 16px;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  border-radius: 12px;
+  align-items: center;
+  margin-bottom: 5vh;
+  position: relative;
+  left: 88vh;
+}
+
+button[type="submit"]:hover,
+input[type="submit"]:hover {
+  background: #008b8b;
+}
+
+button[type="submit"]:active,
+input[type="button"]:active,
+input[type="submit"]:active {
+  transition: 0.3s all;
+  transform: translateY(3px);
+  border: 1px solid transparent;
+  opacity: 0.8;
+}
+
+input:disabled {
+  opacity: 0.4;
+}
+
+input[type="button"]:hover {
+  transition: 0.3s all;
+}
+
+button[type="submit"],
+input[type="button"],
+input[type="submit"] {
+  -webkit-appearance: none;
+}
+
+.App {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+hr {
+  margin-top: 30px;
+}
+
+} */
+

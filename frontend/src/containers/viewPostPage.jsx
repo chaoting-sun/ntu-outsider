@@ -110,7 +110,7 @@
 //   };
 
 //   const EditPost = () => {
-//     navigate("/addPostPage");
+//     navigate("/editPostPage");
 //   }
 
   

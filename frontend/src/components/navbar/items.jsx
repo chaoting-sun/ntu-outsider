@@ -15,18 +15,21 @@ export const postItems = [
     text: "所有貼文",
     key: "allPost",
     icon: <DonutSmallIcon />,
+    loggedIn: false,
     href: PathConstants.MAIN_POST,
   },
   {
     text: "我的貼文",
     key: "uploadedPost",
     icon: <AccessibilityNewIcon />,
+    loggedIn: true,
     href: PathConstants.MAIN_POST,
   },
   {
     text: "追蹤貼文",
     key: "followedPost",
     icon: <StarHalfIcon />,
+    loggedIn: true,
     href: PathConstants.EDIT_POST,
   },
 ];

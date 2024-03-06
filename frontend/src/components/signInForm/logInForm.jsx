@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./signInForm.module.css";
 import { Button } from "@mui/material";
+import PropTypes from "prop-types";
 
 const LogInForm = ({ handleLogIn }) => {
   const [account, setAccount] = useState("");
@@ -9,7 +10,7 @@ const LogInForm = ({ handleLogIn }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     return handleLogIn(account, password);
-  }
+  };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
@@ -45,4 +46,10 @@ const LogInForm = ({ handleLogIn }) => {
   );
 };
 
+LogInForm.propTypes = {
+  handleLogIn: PropTypes.func,
+};
+
+
 export default LogInForm;
+

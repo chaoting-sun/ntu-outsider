@@ -1,9 +1,9 @@
 const PathConstants = {
   LOGIN: "/logIn",
   MAIN: "/",
-  MAIL: "/mailPage",
-  EDIT_POST: "/addPostPage",
-  MY_PROFILE: "/myProfilePage",
+  MAIL: "/mail",
+  EDIT_POST: "/editPost",
+  MY_PROFILE: "/myProfile",
 };
 
 export default PathConstants;

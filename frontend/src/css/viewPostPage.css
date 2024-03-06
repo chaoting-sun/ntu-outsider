@@ -1,31 +1,8 @@
-/* .editPostPageContainer {
-    position: absolute; 
-    margin-top: 72px;
-    padding: 10em;
-    left: 256px;
-    background-color: rgb(233, 233, 233);
-    height: auto;
-    min-height: 100%;
-    width: 83%;
-    justify-content: start;
-    text-align: center;
-    z-index: 0;  
-} */
-
-
-
 .content {
     width: 90%;
     position:relative;
     left: 4px;
 }
-
-
-/* .editBox {
-    position: absolute;
-    left: 100vh;
-    top: 8vh;
-} */
 
 .tags {
     margin-top: 7px;

@@ -76,7 +76,7 @@ const SignInPage = () => {
     }
   };
 
-  const LogInView = () => (
+  const LogInLayout = () => (
     <>
       <h1 className={styles.title}>Log In</h1>
       <LogInForm handleLogIn={handleLogIn} />
@@ -90,7 +90,7 @@ const SignInPage = () => {
     </>
   );
 
-  const SignUpView = () => (
+  const SignUpLayout = () => (
     <>
       <h1 className={styles.title}>Sign up</h1>
       <RegisterForm handleRegister={handleRegister} />
@@ -113,7 +113,7 @@ const SignInPage = () => {
       </Button>
       <div className={styles.formContainer}>
         <LockOpenIcon sx={{ fontSize: "2.4rem" }} />
-        {signUp ? <SignUpView /> : <LogInView />}
+        {signUp ? <SignUpLayout /> : <LogInLayout />}
       </div>
     </div>
   );
