@@ -6,10 +6,11 @@
 }
 
 .card {
+  padding: 30px;
   min-width: 500px;
-  height: 700px;
+  height: 750px;
   border-radius: 6px;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;;
+  box-shadow: var(--box-shadow);
 }
 
 .cardContent {
@@ -53,7 +54,7 @@
   font-size: 2rem;
   border: 1px solid white;
   margin-bottom: 1.5vh;
-  color: #808080;
+  color: #474747;
 }
 
 .title::placeholder {
@@ -75,12 +76,14 @@ input {
 }
 
 .content {
-  /* margin: 20px 40px 0 10px; */
   color: black;
-  width: 90%;
-  margin-left: 15px;
+  width: 95%; 
   margin-top: 30px;
   max-height: 120px;
+  resize: vertical;
+  font-size: 1.1rem;
+  border-color: #d1d1d1;
+  padding: 3px;
 }
 
 .input {
@@ -112,75 +115,19 @@ label {
 .tags {
   position: absolute;
   left: 0;
-  bottom: 60px;
+  bottom: 80px;
 }
 
 .submit {
-  background: #58b083;
+  background: #4ec4a6;
   position: absolute;
+  width: 130px;
+  height: 30px;
+  border-radius: 5px;
   bottom: 0;
   left: 0;
 }
 
 .submit:hover {
-  background: #58b083;
+  background: #389991;
 }
-
-
-/* button[type="submit"],
-input[type="submit"] {
-  background: #20b2aa;
-  color: white;
-  text-transform: uppercase;
-  border: none;
-  margin-top: 40px;
-  padding: 10px 16px;
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: 2px;
-  border-radius: 12px;
-  align-items: center;
-  margin-bottom: 5vh;
-  position: relative;
-  left: 88vh;
-}
-
-button[type="submit"]:hover,
-input[type="submit"]:hover {
-  background: #008b8b;
-}
-
-button[type="submit"]:active,
-input[type="button"]:active,
-input[type="submit"]:active {
-  transition: 0.3s all;
-  transform: translateY(3px);
-  border: 1px solid transparent;
-  opacity: 0.8;
-}
-
-input:disabled {
-  opacity: 0.4;
-}
-
-input[type="button"]:hover {
-  transition: 0.3s all;
-}
-
-button[type="submit"],
-input[type="button"],
-input[type="submit"] {
-  -webkit-appearance: none;
-}
-
-.App {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-hr {
-  margin-top: 30px;
-}
-
-} */
-

@@ -1,0 +1,20 @@
+.header {
+  color: var(--text-color);
+  background-color: var(--header-bg);
+  display: flex;
+  justify-content: space-between;
+}
+
+.headerTools {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 0;
+}
+
+.headerToolButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}

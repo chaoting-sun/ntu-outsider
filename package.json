@@ -12,5 +12,8 @@
     "install:prod": "cd frontend && yarn install --freeze-lockfile && cd ../backend && npm install --freeze-lockfile",
     "build": "cd frontend && npm build",
     "deploy": "cd backend && npm deploy"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }

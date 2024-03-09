@@ -20,6 +20,8 @@ import { Tooltip, formLabelClasses } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
 import { postItems, accountItems } from "./items";
+import styles from "./miniDrawer.module.css";
+import PropTypes from "prop-types";
 
 const drawerWidth = 240;
 
@@ -89,37 +91,24 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MiniDrawer({ authenticated, children }) {
+const MiniDrawer = ({ authenticated, children }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  console.log("authenticated:", authenticated);
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
 
       <AppBar position="fixed" open={open}>
-        <Toolbar
-          sx={{
-            color: "var(--text-color)",
-            backgroundColor: "var(--header-bg)",
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
+        <Toolbar className={styles.header}>
           <Box sx={{ display: "flex", flexDirection: "row" }}>
             <IconButton
               color="inherit"
               aria-label="open drawer"
-              onClick={handleDrawerOpen}
+              onClick={() => setOpen(true)}
               edge="start"
               sx={{
                 marginRight: 5,
@@ -144,14 +133,7 @@ export default function MiniDrawer({ authenticated, children }) {
           {/* Header: Account Items */}
           <Box>
             <nav aria-label="main mailbox folders">
-              <List
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  gap: 0,
-                }}
-              >
+              <List className={styles.headerTools}>
                 {accountItems
                   .filter(({ loggedIn }) => loggedIn === authenticated)
                   .map(({ text, icon, href }) => (
@@ -159,12 +141,7 @@ export default function MiniDrawer({ authenticated, children }) {
                       <Tooltip title={text}>
                         <ListItemButton
                           onClick={() => navigate(href)}
-                          sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: "50%",
-                          }}
+                          className={styles.headerToolButton}
                         >
                           {icon}
                         </ListItemButton>
@@ -179,7 +156,7 @@ export default function MiniDrawer({ authenticated, children }) {
 
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={() => setOpen(false)}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
@@ -189,35 +166,43 @@ export default function MiniDrawer({ authenticated, children }) {
         </DrawerHeader>
         <Divider />
         <List>
-          {postItems.map(({ text, icon, href }, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <Tooltip
-                title={text}
-                placement="right"
-                disableHoverListener={open ? true : false}
-              >
-                <ListItemButton
-                  onClick={() => navigate(href)}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
+          {/* all (x, o), my (o), follow (o) */}
+          {/* o -> all, my, follow, x -> all */}
+
+          {postItems
+            .filter(({ canLogOut }) => authenticated || canLogOut)
+            .map(({ text, icon, href, action }, index) => (
+              <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                <Tooltip
+                  title={text}
+                  placement="right"
+                  disableHoverListener={open ? true : false}
                 >
-                  <ListItemIcon
+                  <ListItemButton
+                    onClick={() => navigate(href, { state: { action } })}
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
                     }}
                   >
-                    {icon}
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </Tooltip>
-            </ListItem>
-          ))}
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </Tooltip>
+              </ListItem>
+            ))}
         </List>
         <Divider />
       </Drawer>
@@ -231,7 +216,7 @@ export default function MiniDrawer({ authenticated, children }) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          backgroundColor: "var(--main-bg)"
+          backgroundColor: "var(--main-bg)",
         }}
       >
         <DrawerHeader />
@@ -240,3 +225,13 @@ export default function MiniDrawer({ authenticated, children }) {
     </Box>
   );
 }
+
+MiniDrawer.propTypes = {
+  authenticated: PropTypes.bool,
+  children: PropTypes.oneOfType([
+    PropTypes.node,
+    PropTypes.arrayOf(PropTypes.node),
+  ]).isRequired,
+};
+
+export default MiniDrawer;

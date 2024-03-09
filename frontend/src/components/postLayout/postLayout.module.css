@@ -1,4 +1,5 @@
 .container {
+  padding: 10px;
   width: 60%;
   min-width: 600px;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
@@ -71,4 +72,8 @@
   color: #5b94f6;
   border-color: #5b94f6;
   background-color: #ebf8ff;
+}
+
+.content {
+  width: 90%;
 }

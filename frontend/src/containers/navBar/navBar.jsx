@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useOutsider } from "../hooks/useOutsider";
 import PathConstants from "../../routes/pathConstants";
 import MiniDrawer from "./miniDrawer";
+import ActionConstants from "../../actions/actionConstants";
 
 const NavBar = () => {
   const {
@@ -56,7 +57,7 @@ const NavBar = () => {
       return;
     }
 
-    if (key === "editPost") {
+    if (key === ActionConstants.EDIT_POST) {
       navigate(PathConstants.EDIT_POST, {
         state: {
           action: "createPost",

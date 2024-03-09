@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import _ from "lodash";
+
 import { useMutation } from "@apollo/client";
 import { useOutsider } from "../hooks/useOutsider";
 import PostLayout from "../../components/postLayout/postLayout";
 import PathConstants from "../../routes/pathConstants";
+import ActionConstants from "../../actions/actionConstants";
 
 import styles from "./mainPage.module.css";
 
@@ -17,13 +20,13 @@ const initialPosts = [
     _id: "ergjrigj",
     title: "Find a good partner",
     author: {
-      _id: "38549hhv5-6jjw4v4å",
+      _id: "38549hhv5-6jjw4v4",
       name: "chaoting",
     },
     className: "parallel computing",
     teacherName: "Weng, Chao-Chao",
     classNo: "No.313",
-    deadline: "2022.08.01",
+    deadline: "2024-02-27 21:35",
     condition: 5,
     tag: ["urgent", "good", "5 people"],
     content:
@@ -39,7 +42,7 @@ const initialPosts = [
     className: "parallel computing",
     teacherName: "Weng, Chao-Chao",
     classNo: "No.313",
-    deadline: "2022.08.01",
+    deadline: "2024-03-27 21:00",
     condition: 9,
     tag: ["urgent", "good", "5 people"],
     content:
@@ -55,7 +58,7 @@ const initialPosts = [
     className: "parallel computing",
     teacherName: "Weng, Chao-Chao",
     classNo: "No.313",
-    deadline: "2022.08.01",
+    deadline: "2024-03-27 03:00",
     condition: 9,
     tag: ["urgent", "good", "5 people"],
     content:
@@ -66,6 +69,7 @@ const initialPosts = [
 const MainPage = () => {
   const {
     userId,
+    username,
     currentPost,
     displayStatus,
     doingQueryPost,
@@ -76,12 +80,40 @@ const MainPage = () => {
   } = useOutsider();
 
   const [posts, setPosts] = useState(initialPosts);
-
+  // const [shouldUp]
   const [updatePostCollection] = useMutation(UPDATE_POST_COLLECTION_MUTATION);
   const [deletePost] = useMutation(DELETE_POST_MUTATION);
+  
   const navigate = useNavigate();
+  const location = useLocation();
 
-  console.log("I am MainPage!");
+  const action = location.state?.action || "";
+  const editedPost = location.state?.updatedPost || null;
+
+  console.log("re-render MainPage");
+
+  // useEffect(() => {
+  //   setPosts(initialPosts);
+  // }, [])
+
+
+  useEffect(() => {
+    if (action === ActionConstants.ADD_POST) {
+      setPosts(posts => [editedPost, ...posts]);
+    } else if (action === ActionConstants.EDIT_POST) {
+      const postToEdit = posts.find(({ _id }) => _id === editedPost._id);
+      if (_.isEqual(postToEdit, editedPost)) return;
+      console.log("editedPost:", JSON.stringify(editedPost));
+      console.log("postToEdit:", JSON.stringify(postToEdit));
+
+      const updatedPosts = posts.map((post) =>
+        post._id === editedPost._id ? editedPost : post
+      );
+      setPosts(updatedPosts);
+    }
+  }, [location, posts, action, editedPost, userId, username]);
+
+  console.log(posts);
 
   // useEffect(() => {
   //   handleQueryPost("all", "") // default queryPost
@@ -131,7 +163,6 @@ const MainPage = () => {
     setPosts(posts.filter(({ _id }) => _id !== postId));
 
     /* TODO: make deletePost work! */
-
     // const fetchedPost = await deletePost({
     //   variables: { postId: postId._id },
     // });
@@ -142,31 +173,28 @@ const MainPage = () => {
     }
   };
 
-  const handleEditPost = (editedPost) => {
-    console.log("editedPost");
+  const handleEditPost = (postToEdit) => {
+    console.log("postToEdit:", postToEdit);
     navigate(PathConstants.EDIT_POST, {
       state: {
-        action: "editPost",
-        post: editedPost,
+        action: ActionConstants.EDIT_POST,
+        post: postToEdit,
       },
     });
   };
 
-  const Posts = () =>
-    posts.map((post) => (
-      <PostLayout
-        post={post}
-        handleChat={handleChat}
-        handleFollowPost={handleFollowPost}
-        handleEditPost={handleEditPost}
-        handleDeletePost={handleDeletePost}
-        key={post._id}
-      />
-    ));
-
   return (
     <div className={styles.container}>
-      <Posts />
+      {posts.map((post) => (
+        <PostLayout
+          post={post}
+          handleChat={handleChat}
+          handleFollowPost={handleFollowPost}
+          handleEditPost={handleEditPost}
+          handleDeletePost={handleDeletePost}
+          key={post._id}
+        />
+      ))}
     </div>
   );
 };

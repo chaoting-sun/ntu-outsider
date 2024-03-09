@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styles from "./signInForm.module.css";
-import { Button } from "@mui/material";
 import PropTypes from "prop-types";
 
 const LogInForm = ({ handleLogIn }) => {
@@ -18,30 +17,21 @@ const LogInForm = ({ handleLogIn }) => {
         <input
           type="email"
           placeholder="Account"
-          name="account"
           value={account}
           onChange={(e) => setAccount(e.target.value)}
+          className={styles.input}
         />
         <input
           type="password"
           placeholder="Password"
-          name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className={styles.input}
         />
       </div>
-      <Button
-        variant="contained"
-        sx={{
-          margin: "15px 0",
-          width: "100%",
-          bgcolor: "#383838",
-          "&:hover": { bgcolor: "#383838" },
-        }}
-        type="submit"
-      >
+      <button className={styles.submit} type="submit">
         SIGN IN
-      </Button>
+      </button>
     </form>
   );
 };

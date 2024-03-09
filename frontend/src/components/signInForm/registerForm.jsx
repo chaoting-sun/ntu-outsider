@@ -1,6 +1,6 @@
-import { Button } from "@mui/material";
-import styles from "./signInForm.module.css";
 import { useState } from "react";
+import PropTypes from "./prop-types";
+import styles from "./signInForm.module.css";
 
 const RegisterForm = ({ handleRegister }) => {
   const [account, setAccount] = useState("");
@@ -18,39 +18,34 @@ const RegisterForm = ({ handleRegister }) => {
         <input
           type="email"
           placeholder="Account"
-          name="account"
           value={account}
           onChange={(e) => setAccount(e.target.value)}
+          className={styles.input}
         />
         <input
           type="text"
           placeholder="Username"
-          name="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          className={styles.input}
         />
         <input
           type="password"
           placeholder="Password"
-          name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className={styles.input}
         />
       </div>
-      <Button
-        variant="contained"
-        sx={{
-          margin: "15px 0",
-          width: "100%",
-          bgcolor: "#383838",
-          "&:hover": { bgcolor: "#383838" },
-        }}
-        type="submit"
-      >
+      <button className={styles.submit} type="submit">
         SIGN UP
-      </Button>
+      </button>
     </form>
   );
+};
+
+RegisterForm.propTypes = {
+  handleRegister: PropTypes.func,
 };
 
 export default RegisterForm;

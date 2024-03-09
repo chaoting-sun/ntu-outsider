@@ -1,0 +1,57 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 100px 0;
+  width: 100%;
+}
+
+.card {
+  height: 580px;
+  min-width: 500px;
+  width: 40%;
+  box-shadow: var(--box-shadow);
+  border-radius: 6px;
+  padding: 15px;
+}
+
+.title {
+  color: #20b2aa;
+  margin: 10px 0;
+  font-size: 30px;
+  display: flex;
+  font-weight: 500;
+}
+
+/* separator */
+
+/* disable border line on click */
+button:focus {
+  outline: none !important;
+}
+
+.profileSubmit {
+  position: relative !important;
+  left: 5px !important;
+  bottom: -20px !important;
+  height: 50px !important;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.inputItem {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start !important;
+  align-items: center;
+  padding: 5px;
+  width: 100% !important;
+}
+
+
+.profileFormSize {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-left: 15px;
+}

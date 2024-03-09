@@ -12,7 +12,7 @@ import MainPage from "./containers/mainPage/mainPage";
 import SignInPage from "./containers/signIn/signInPage";
 import EditPostPage from "./containers/editPost/editPostPage";
 import MailPage from "./containers/mailPage";
-import MyProfilePage from "./containers/myProfilePage";
+import MyProfilePage from "./containers/myProfile/myProfilePage";
 import NavBar from "./containers/navBar/navBar";
 import PathConstants from "./routes/pathConstants";
 import "./css/App.css";

@@ -31,10 +31,15 @@ const OutsiderProvider = (props) => {
   const savedAuthenticated = JSON.parse(localStorage.getItem(AUTHENTICATED_KEY));
   
   // Initialize state variables
-  const [userId, setUserId] = useState(savedUserId || null);
-  const [username, setUsername] = useState(savedUsername || "");
-  const [account, setAccount] = useState(savedAccount || "");
-  const [authenticated, setAuthenticated] = useState(savedAuthenticated || true); // TODO: change to default: false
+  // const [userId, setUserId] = useState(savedUserId || null);
+  // const [username, setUsername] = useState(savedUsername || "");
+  // const [account, setAccount] = useState(savedAccount || "");
+  // const [authenticated, setAuthenticated] = useState(savedAuthenticated || false); // TODO: change to default: false
+  const [userId, setUserId] = useState(savedUserId || "kkbox");
+  const [username, setUsername] = useState(savedUsername || "chaoting");
+  const [account, setAccount] = useState(savedAccount || "a@gmail.com");
+  const [authenticated, setAuthenticated] = useState(false); // TODO: change to default: false
+
   const [preferTags, setPreferTags] = useState([]);
   const [currentPost, setCurrentPost] = useState([]);
   const [doingQueryPost, setDoingQueryPost] = useState(false);

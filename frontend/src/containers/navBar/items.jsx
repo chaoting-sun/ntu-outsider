@@ -10,26 +10,35 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
+import ActionConstants from "../../actions/actionConstants";
+
 export const postItems = [
   {
     text: "所有貼文",
-    key: "allPost",
     icon: <DonutSmallIcon />,
-    loggedIn: false,
+    canLogOut: true,
+    action: null,
     href: PathConstants.MAIN_POST,
   },
   {
     text: "我的貼文",
-    key: "uploadedPost",
     icon: <AccessibilityNewIcon />,
-    loggedIn: true,
+    canLogOut: false,
+    action: null,
     href: PathConstants.MAIN_POST,
   },
   {
     text: "追蹤貼文",
-    key: "followedPost",
     icon: <StarHalfIcon />,
-    loggedIn: true,
+    canLogOut: false,
+    action: null,
+    href: PathConstants.MAIN_POST,
+  },
+  {
+    text: "新增貼文",
+    icon: <PostAddIcon />,
+    canLogOut: false,
+    action: ActionConstants.ADD_POST,
     href: PathConstants.EDIT_POST,
   },
 ];

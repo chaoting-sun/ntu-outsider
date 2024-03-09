@@ -1,12 +1,8 @@
-import React from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import styled from "styled-components";
-import { useForm } from "react-hook-form";
 import { Input } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
+import PathConstants from "../../routes/pathConstants";
 import Tags from "../../components/tags/tags";
 import { useOutsider } from "../hooks/useOutsider";
 import {
@@ -14,43 +10,10 @@ import {
   UPDATE_POST_MUTATION,
 } from "../graphql/mutation";
 import { useMutation } from "@apollo/client";
+import PathContants from "../../routes/pathConstants";
 
+import ActionConstants from "../../actions/actionConstants";
 import styles from "./editPostPage.module.css";
-
-const { TextArea } = Input;
-
-//reference: https://codesandbox.io/s/react-hook-form-get-started-j5wxo?file=/src/index.js:0-1102
-
-// set default value of the form for useFrom
-// ref: https://stackoverflow.com/questions/70663158/set-default-values-in-react-hook-form
-
-// const PostCard = styled(Card)`
-//   // position: relative;
-//   // top: -15vh;
-// `;
-
-//從"/viewPostPage"傳入的state = {
-// class
-// classNo
-// endDate
-// endTime
-// remainder
-// teacher
-// title
-// }
-// e.g. defaultValue={state ? state.title: null}
-
-// const getInfo = (post) => {
-//   const infoList = ['title', 'className', 'teacherName',
-//                     'classNo', 'content', 'condition', 'tags'];
-//   let info = {};
-//   for (let i = 0; i < infoList.length; i++) {
-//     info[infoList[i]] = post ? post[infoList[i]] : null;
-//   }
-//   info['endDate'] = post ? post.deadline.split(" ")[0] : null;
-//   info['endTime'] = post ? post.deadline.split(" ")[1] : null;
-//   return info;
-// }
 
 const classDetail = (post) => {
   return [
@@ -94,61 +57,61 @@ const classDetail = (post) => {
 
 const EditPostPage = () => {
   const { username, userId, displayStatus, authenticated } = useOutsider();
-  const [action, setAction] = useState("");
-  const [updatedPost, setUpdatedPost] = useState(null);
-  const [finishEdit, setFinishEdit] = useState(false);
-  const [postId, setPostId] = useState(null);
-  const [post, setPost] = useState(null);
-  const [tags, setTags] = useState([]);
-  const [content, setContent] = useState("");
 
   const location = useLocation();
   const navigate = useNavigate();
-  const [createPost] = useMutation(CREATE_POST_MUTATION);
-  const [updatePost] = useMutation(UPDATE_POST_MUTATION);
 
-  console.log("I am EditPostPage!");
+  const initPost = location.state?.post;
+  const postId = initPost ? initPost._id : null;
+  const action = location.state.action || "";
+
+  const [updatedPost, setUpdatedPost] = useState(null);
+  const [finishEdit, setFinishEdit] = useState(false);
+  const [editedTag, setEditedTag] = useState(initPost?.tag || []);
+
+  // navigate to LOGIN page if not authencated
+
+  useEffect(() => {
+    if (!authenticated) navigate(PathContants.LOGIN);
+  }, [authenticated, navigate]);
 
   const {
     register,
     handleSubmit,
     watch,
-    reset,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      title: initPost?.title || "",
+      classNo: initPost?.classNo || "",
+      className: initPost?.className || "",
+      teacherName: initPost?.teacherName || "",
+      content: initPost?.content || "",
+      condition: initPost?.condition || "",
+      endDate: initPost?.deadline.split(" ")[0] || "",
+      endTime: initPost?.deadline.split(" ")[1] || "",
+      tags: initPost?.tags || [],
+    },
+  });
 
-  useEffect(() => {
-    if (location.state !== null) {
-      // console.log('info:', location.state);
+  // const [createPost] = useMutation(CREATE_POST_MUTATION);
+  // const [updatePost] = useMutation(UPDATE_POST_MUTATION);
+  const createPost = async (post) => ({ post });
+  const updatePost = async (post) => ({ post });
 
-      const postInfo = location.state.post;
+  const onSubmit = async (formData) => {
+    const {
+      title,
+      classNo,
+      className,
+      teacherName,
+      content,
+      condition,
+      endDate,
+      endTime,
+    } = formData;
+    const deadline = `${endDate} ${endTime}`;
 
-      setAction(location.state.action);
-      setPost(postInfo);
-      setTags(postInfo ? postInfo.tag : []);
-      setPostId(location.state._id);
-      setContent(postInfo ? postInfo.content : "");
-
-      let defaultValues = {
-        title: postInfo ? postInfo.title : "",
-      };
-      reset({ ...defaultValues });
-    }
-  }, [location]);
-
-  const handleEditPost = () => {};
-
-  const onSubmit = async ({
-    title,
-    classNo,
-    className,
-    teacherName,
-    content,
-    condition,
-    endDate,
-    endTime,
-    tags,
-  }) => {
     const updatedPost = {
       title,
       classNo,
@@ -156,52 +119,59 @@ const EditPostPage = () => {
       teacherName,
       content,
       condition,
-      tags,
-      deadline: `${endDate} ${endTime}`,
+      deadline,
+      tag: editedTag,
+      author: initPost ? initPost.author : { name: username, _id: userId },
     };
 
-    let outData = null;
+    try {
+      let res;
+      if (action === ActionConstants.ADD_POST) {
+        updatedPost.userId = userId;
+        res = await createPost(updatedPost);
+        // res = await createPost({ variables: updatedPost });
+      } else if (action === ActionConstants.EDIT_POST) {
+        updatedPost._id = postId;
+        res = await updatePost(updatedPost);
+        // res = await updatePost({ variables: updatedPost });
+      } else {
+        console.log("action is wrong!");
+      }
 
-    if (action === "createPost") {
-      updatedPost.userId = userId;
-      outData = await createPost({ variables: updatedPost });
-    } else if (action === "editPost") {
-      updatedPost.postId = post._id;
-      outData = await updatePost({ variables: updatedPost });
-    }
-
-    if (outData) {
-      displayStatus({ type: "success", msg: "create a post!" });
-      setUpdatedPost(outData.data.createPost);
-      setFinishEdit(true);
-    } else {
+      if (res) {
+        const successMessage =
+          action === "createPost" ? "Post created!" : "Post updated!";
+        displayStatus({ type: "success", msg: successMessage });
+        // setUpdatedPost(res.data["createPost"]);
+        console.log("result:", res);
+        setUpdatedPost(res.post);
+        setFinishEdit(true);
+      } else {
+        throw new Error("No response from the server");
+      }
+    } catch (error) {
+      console.error(error);
       displayStatus({
         type: "fail",
-        msg: "fail to save post!",
+        msg: error.message || "fail to save post!",
       });
     }
-  }; // your form submit function which will invoke after successful validation
+  };
 
   useEffect(() => {
     if (finishEdit) {
-      navigate(-1, {
-        state: {
-          action: "edit",
-          post: updatedPost,
-        },
-      }); //use mutation; 傳入該篇文章資料
+      navigate(PathConstants.MAIN, { state: { action, updatedPost } });
       setFinishEdit(false);
     }
-  }, [finishEdit]);
+  }, [finishEdit, updatedPost, navigate, action]);
 
   const ClassInformation = () => (
     <>
       {/* 標題 */}
       <input
-        defaultValue={post ? post.title : ""}
         placeholder="Title"
         className={styles.title}
-        {...register("Title", { required: "Title is required" })}
+        {...register("title", { required: "Title is required" })}
       />
       {errors.title ? (
         <p className={styles.error}>{errors.title.message}</p>
@@ -210,9 +180,8 @@ const EditPostPage = () => {
       <div className={styles.rowItem}>
         <label>課名</label>
         <input
-          defaultValue={post ? post.className : ""}
           className={styles.input}
-          {...register("Class name", {
+          {...register("className", {
             required: "Class name is required",
           })}
         />
@@ -224,9 +193,8 @@ const EditPostPage = () => {
       <div className={styles.rowItem}>
         <label>授課老師</label>
         <input
-          defaultValue={post ? post.teacherName : ""}
           className={styles.input}
-          {...register("Teacher name", {
+          {...register("teacherName", {
             required: "Teacher name is required",
           })}
         />
@@ -238,9 +206,8 @@ const EditPostPage = () => {
       <div className={styles.rowItem}>
         <label>課程流水號</label>
         <input
-          defaultValue={post ? post.classNo : ""}
           className={styles.input}
-          {...register("Class number", {
+          {...register("classNo", {
             required: "Class number is required",
           })}
         />
@@ -252,7 +219,6 @@ const EditPostPage = () => {
       <div className={styles.rowItem}>
         <label>徵求人數</label>
         <input
-          defaultValue={post ? post.condition : ""}
           type="number"
           min="0"
           className={styles.input}
@@ -265,49 +231,36 @@ const EditPostPage = () => {
   const DeadlineInformation = () => (
     <div className={styles.rowItem}>
       <label>截止時間</label>
-      <input
-        defaultValue={post ? post.deadline.split(" ")[0] : ""}
-        type="date"
-        className={styles.time}
-        {...register("End Date")}
-      />{" "}
+      <input type="date" className={styles.time} {...register("endDate")} />
       &nbsp;
-      <input
-        defaultValue={post ? post.deadline.split(" ")[1] : ""}
-        type="time"
-        className={styles.time}
-        {...register("End time")}
-      />
+      <input type="time" className={styles.time} {...register("endTime")} />
     </div>
   );
 
-  //console.log(watch("example")); // you can watch individual input by pass the name of the input
+  // console.log(watch("content")); // you can watch individual input by pass the name of the input
+  // console.log(watch("tags")); // you can watch individual input by pass the name of the input
 
-  // return !authenticated ? null : (
-  return (
+  return !authenticated ? null : (
     <div className={styles.container}>
-      <Card className={styles.card}>
-        <CardContent className={styles.cardContent}>
-          {/* <Button className={styles.username}>{username}</Button> */}
-          <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-            <ClassInformation />
-            <DeadlineInformation />
-            <TextArea
-              value={content}
-              defaultValue={post ? post.content : ""}
-              rows={3}
-              onChange={(e) => setContent(e.target.value)}
-              className={styles.content}
-            />
-            <div className={styles.tags}>
-              <Tags tags={tags} setTags={setTags} />
-            </div>
-            <Button variant="contained" className={styles.submit} type="submit">
-              SUBMIT
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      <div className={styles.card}>
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+          <ClassInformation />
+          <DeadlineInformation />
+          <textarea
+            name="content"
+            rows="3"
+            placeholder="Write something..."
+            {...register("content", { required: true, maxLength: 500 })}
+            className={styles.content}
+          />
+          <div className={styles.tags}>
+            <Tags tags={editedTag} setTags={setEditedTag} />
+          </div>
+          <button className={styles.submit} type="submit">
+            SUBMIT
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

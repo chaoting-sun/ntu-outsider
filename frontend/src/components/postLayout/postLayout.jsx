@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import { Button, Chip } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -130,7 +128,7 @@ const PostLayout = ({
           </div>
         </Grid>
         <Grid item>
-          <Typography paragraph className="content" align="left">
+          <Typography paragraph className={styles.content} align="left">
             {post.content}
           </Typography>
         </Grid>
@@ -159,7 +157,10 @@ const PostLayout = ({
               arrow
               className={styles.actionButton}
             >
-              <IconButton aria-label="edit" onClick={() => handleEditPost(post)}>
+              <IconButton
+                aria-label="edit"
+                onClick={() => handleEditPost(post)}
+              >
                 <EditIcon />
               </IconButton>
             </Tooltip>
@@ -182,21 +183,19 @@ const PostLayout = ({
     );
 
   return (
-    <Card className={styles.container}>
-      <CardContent>
-        <div className={styles.header}>
-          <Typography gutterBottom className={styles.title}>
-            {post.title}
-          </Typography>
-          <AdmittedAction />
-        </div>
-        <Divider />
-        <Button className={styles.name} onClick={() => handleChat()}>
-          {post.author.name}
-        </Button>
-        <Description />
-      </CardContent>
-    </Card>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <Typography gutterBottom className={styles.title}>
+          {post.title}
+        </Typography>
+        <AdmittedAction />
+      </div>
+      <Divider />
+      <Button className={styles.name} onClick={() => handleChat()}>
+        {post.author.name}
+      </Button>
+      <Description />
+    </div>
   );
 };
 
