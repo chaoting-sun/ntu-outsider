@@ -16,3 +16,32 @@ export const displayStatus = (s) => {
     }
   }
 };
+
+export const normalizeFetchedPost = (post) => {
+  const {
+    _id: postId,
+    title,
+    className,
+    classNo,
+    teacherName,
+    condition,
+    content,
+    deadline,
+    tag,
+    author: { _id: authorId, name: authorName },
+  } = post;
+
+  return {
+    authorId,
+    authorName,
+    postId,
+    title,
+    className,
+    classNo,
+    teacherName,
+    condition,
+    content,
+    deadline,
+    tag,
+  };
+};

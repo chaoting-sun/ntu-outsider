@@ -42,15 +42,13 @@ const Mutation = {
         name,
         password: hashedPassword,
       }).save();
-      console.log("Created user:", newUser)
+      console.log("Created user:", newUser);
       return { __typename: "User", ...newUser.toObject() };
-
     } catch (error) {
       console.log(error);
       return {
-        __typename: "ValidationError",
-        path: "unknown",
-        report: "An error occurred.",
+        __typename: "ServerError",
+        report: "Server error.",
       };
     }
   },
@@ -59,31 +57,40 @@ const Mutation = {
     parent,
     {
       userId,
+      title,
       classNo,
       className,
       teacherName,
-      title,
       content,
-      tag,
       condition,
       deadline,
+      tag,
     },
     { PostModel },
     info
   ) => {
-    let newPost = await new PostModel({
-      userId: userId,
-      classNo: classNo,
-      className: className,
-      teacherName: teacherName,
-      title: title,
-      tag: tag,
-      content: content,
-      condition: condition,
-      deadline: deadline,
-    }).save();
-    console.log("newPost:", newPost);
-    return newPost;
+    console.log("createPost")
+    try {
+      const newPost = await new PostModel({
+        userId,
+        title,
+        classNo,
+        className,
+        teacherName,
+        content,
+        condition,
+        deadline,
+        tag,
+      }).save();
+      console.log("newPost:", newPost)
+      return { __typename: "Post", ...newPost.toObject() };
+    } catch (error) {
+      console.log(error);
+      return {
+        __typename: "ServerError",
+        report: "Server error.",
+      };
+    }
   },
   deleteUser: async (parent, { userId }, { UserModel }, info) => {
     let deletedUser = await UserModel.findOne({ _id: userId });
@@ -143,21 +150,29 @@ const Mutation = {
     { PostModel },
     info
   ) => {
-    let updatedPost = await PostModel.findOneAndUpdate(
-      { _id: postId },
-      {
-        title: title,
-        content: content,
-        classNo: classNo,
-        className: className,
-        teacherName: teacherName,
-        condition: condition,
-        deadline: deadline,
-        tag: tag,
-      },
-      { new: true }
-    );
-    return updatedPost;
+    try {
+      const updatedPost = await PostModel.findOneAndUpdate(
+        { _id: postId },
+        {
+          title,
+          content,
+          classNo,
+          className,
+          teacherName,
+          condition,
+          deadline,
+          tag,
+        },
+        { new: true }
+      );
+      return { __typename: "Post", ...updatedPost.toObject() };
+    } catch (error) {
+      console.log(error);
+      return {
+        __typename: "ServerError",
+        report: "Server error.",
+      };
+    }
   },
   updatePostCollection: async (
     parent,

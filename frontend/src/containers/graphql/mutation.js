@@ -19,6 +19,9 @@ export const CREATE_ACCOUNT_MUTATION = gql`
         path
         report
       }
+      ... on ServerError {
+        report
+      }
     }
   }
 `;
@@ -77,23 +80,25 @@ export const CREATE_POST_MUTATION = gql`
       deadline: $deadline
       tag: $tag
     ) {
-      _id
-      userId
-      author {
+      __typename
+      ... on Post {
         _id
-        account
-        name
-        password
-        postCollection
+        userId
+        author {
+          _id
+        }
+        title
+        classNo
+        className
+        teacherName
+        content
+        condition
+        deadline
+        tag
       }
-      title
-      classNo
-      className
-      teacherName
-      content
-      condition
-      deadline
-      tag
+      ... on ServerError {
+        report
+      }
     }
   }
 `;
@@ -121,23 +126,29 @@ export const UPDATE_POST_MUTATION = gql`
       deadline: $deadline
       tag: $tag
     ) {
-      _id
-      userId
-      author {
+      __typename
+      ... on Post {
         _id
-        account
-        name
-        password
-        postCollection
+        userId
+        author {
+          _id
+          account
+          name
+          password
+          postCollection
+        }
+        title
+        classNo
+        className
+        teacherName
+        content
+        condition
+        deadline
+        tag
       }
-      title
-      classNo
-      className
-      teacherName
-      content
-      condition
-      deadline
-      tag
+      ... on ServerError {
+        report
+      }
     }
   }
 `;

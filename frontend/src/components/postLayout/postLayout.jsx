@@ -26,18 +26,13 @@ const PostLayout = ({
   handleEditPost,
   handleDeletePost,
 }) => {
-  const { userId, account, authenticated } = UseOutsider();
+  const { userId, authenticated } = UseOutsider();
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
   const [info, setInfo] = useState(null);
-  const [me, setMe] = useState(true);
-  // const [me, setMe] = useState(false);
+  const [me, setMe] = useState(post.authorId === userId);
+  
   const navigate = useNavigate();
   const [createChatBox] = useMutation(CREATE_CHATBOX_MUTATION);
-
-  // useEffect(() => {
-  //   setMe(post.author._id === userId);
-  //   // console.log("My post:", post.author.name, post.author._id === userId);
-  // }, [setMe, post.author._id, userId]);
 
   const ShowDeletePostModal = () => {
     confirm({
@@ -46,7 +41,7 @@ const PostLayout = ({
       content: "",
       onOk() {
         console.log("OK");
-        handleDeletePost(post._id);
+        handleDeletePost(post.postId);
       },
       onCancel() {
         console.log("Cancel");
@@ -56,18 +51,18 @@ const PostLayout = ({
 
   const handleChat = async () => {
     console.log("handle chat");
-    if (post.author._id === userId) {
+    if (post.authorId === userId) {
       navigate(paths.MY_PROFILE);
     } else {
       const box = await createChatBox({
         variables: {
           name: userId,
-          to: post.author._id,
+          to: post.authorId,
         },
       });
       navigate(paths.MAIL, {
         state: {
-          PosterId: post.author._id,
+          PosterId: post.authorId,
           Box: box.data.createChatBox,
         },
       });
@@ -139,7 +134,7 @@ const PostLayout = ({
   const AdmittedAction = () =>
     authenticated && (
       <div className={`${styles.actions} ${me ? styles.actionsMe : null}`}>
-        {me ? (
+        {me && (
           <>
             <Tooltip
               title="delete"
@@ -165,7 +160,7 @@ const PostLayout = ({
               </IconButton>
             </Tooltip>
           </>
-        ) : null}
+        )}
         <Tooltip
           title="follow / unfollow"
           placement="top"
@@ -174,7 +169,7 @@ const PostLayout = ({
         >
           <IconButton
             aria-label="save"
-            onClick={() => handleFollowPost(post._id)}
+            onClick={() => handleFollowPost(post.postId)}
           >
             <DataSaverOnIcon />
           </IconButton>
@@ -192,7 +187,7 @@ const PostLayout = ({
       </div>
       <Divider />
       <Button className={styles.name} onClick={() => handleChat()}>
-        {post.author.name}
+        {post.authorName}
       </Button>
       <Description />
     </div>
@@ -201,7 +196,9 @@ const PostLayout = ({
 
 PostLayout.propTypes = {
   post: PropTypes.shape({
-    _id: PropTypes.string,
+    authorId: PropTypes.string,
+    authorName: PropTypes.string,
+    postId: PropTypes.string,
     title: PropTypes.string,
     className: PropTypes.string,
     teacherName: PropTypes.string,
@@ -210,7 +207,6 @@ PostLayout.propTypes = {
     condition: PropTypes.number,
     tag: PropTypes.array,
     content: PropTypes.string,
-    author: PropTypes.object,
   }),
   handleFollowPost: PropTypes.func,
   handleEditPost: PropTypes.func,

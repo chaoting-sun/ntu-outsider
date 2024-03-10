@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import _ from "lodash";
 
@@ -70,7 +70,9 @@ const initialPosts = [
 
 const MainPage = () => {
   const {
+    posts,
     userId,
+    setPosts,
     username,
     currentPost,
     doingQueryPost,
@@ -80,51 +82,34 @@ const MainPage = () => {
     // handleQueryPost,
   } = UseOutsider();
 
-  const [posts, setPosts] = useState([]);
-  // const [shouldUp]
-  const [updatePostCollection] = useMutation(UPDATE_POST_COLLECTION_MUTATION);
-  const [deletePost] = useMutation(DELETE_POST_MUTATION);
-  const [queryPost] = useLazyQuery(POST_QUERY, { fetchPolicy: "network-only" });
-
   const navigate = useNavigate();
   const location = useLocation();
 
-  const action = location.state?.action || "";
   const editedPost = location.state?.updatedPost || null;
 
-  console.log("re-render MainPage");
-
-  // useEffect(() => {
-  //   setPosts(initialPosts);
-  // }, [])
-
-  const handleFetchAllPosts = useCallback(
-    async (type, queryString) => {
-      const { data } = await queryPost({ variables: { type, queryString } });
-      setPosts(data.queryPost);
-      return data.queryPosts;
-    },
-    [queryPost]
-  );
+  // const [shouldUp]
+  const [action, setAction] = useState(location.state?.action || null);
+  const [updatePostCollection] = useMutation(UPDATE_POST_COLLECTION_MUTATION);
+  const [deletePost] = useMutation(DELETE_POST_MUTATION);
+  const [queryPost] = useLazyQuery(POST_QUERY, { fetchPolicy: "network-only" });
+  const lastEditedPostIdRef = useRef(null);
 
   useEffect(() => {
-    console.log("useEffect")
-    handleFetchAllPosts("all", "");
-  }, [handleFetchAllPosts]);
+    console.log(`  useEffect(MainPage), action=${action} lastId=${lastEditedPostIdRef.current}`);
 
-  useEffect(() => {
-    if (action === actions.ADD_POST) {
-      setPosts(posts => [editedPost, ...posts]);
-    } else if (action === actions.EDIT_POST) {
-      const postToEdit = posts.find(({ _id }) => _id === editedPost._id);
-      if (_.isEqual(postToEdit, editedPost)) return;
-
-      const updatedPosts = posts.map((post) =>
-        post._id === editedPost._id ? editedPost : post
-      );
-      setPosts(updatedPosts);
+    if (editedPost?.postId !== lastEditedPostIdRef.current) {
+      if (action === actions.ADD_POST) {
+        setPosts((prevPosts) => [editedPost, ...prevPosts]);
+      } else if (action === actions.EDIT_POST) {
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post.postId === editedPost.postId ? editedPost : post
+          )
+        );
+      }
+      lastEditedPostIdRef.current = editedPost?.postId;
     }
-  }, [location, posts, action, editedPost, userId, username]);
+  }, [action, editedPost, setPosts]);
 
   // useEffect(() => {
   //   if (doingQueryPost) {
@@ -177,7 +162,7 @@ const MainPage = () => {
   };
 
   const handleEditPost = (postToEdit) => {
-    console.log("postToEdit:", postToEdit);
+    // console.log("postToEdit:", postToEdit);
     navigate(paths.EDIT_POST, {
       state: {
         action: actions.EDIT_POST,
@@ -185,6 +170,8 @@ const MainPage = () => {
       },
     });
   };
+
+  console.log(`re-render MainPage`);
 
   return (
     <div className={styles.container}>
@@ -195,7 +182,7 @@ const MainPage = () => {
           handleFollowPost={handleFollowPost}
           handleEditPost={handleEditPost}
           handleDeletePost={handleDeletePost}
-          key={post._id}
+          key={post.postId}
         />
       ))}
     </div>

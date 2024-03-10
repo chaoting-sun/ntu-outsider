@@ -35,7 +35,7 @@ const SignInPage = () => {
         handleAuthenticated(_id, account, name);
         displayStatus({ type: "success", msg: "Log in successfully" });
         navigate(paths.MAIN);
-      } else if (response.__typename === "ValidationError") {
+      } else {
         displayStatus({ type: "error", msg: response.report });
       }
     } catch (error) {
@@ -57,10 +57,8 @@ const SignInPage = () => {
       if (response.__typename === "User") {
         displayStatus({ type: "success", msg: "Register successfully!" });
         setLogInPhase(true);
-      } else if (response.__typename === "ValidationError") {
-        displayStatus({ type: "error", msg: response.report });
       } else {
-        console.log("Something went wrong!");
+        displayStatus({ type: "error", msg: response.report });
       }
     } catch (error) {
       console.log(error);

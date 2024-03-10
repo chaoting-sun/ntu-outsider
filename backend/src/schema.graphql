@@ -18,11 +18,6 @@ type Message {
   body: String!
 }
 
-type ValidationError {
-  path: String!
-  report: String!
-}
-
 type Post {
   _id: ID!
   userId: ID!
@@ -37,7 +32,17 @@ type Post {
   tag: [String]
 }
 
-union AccountResult = User | ValidationError
+type ValidationError {
+  path: String!
+  report: String!
+}
+
+type ServerError {
+  report: String!
+}
+
+union AccountResult = User | ValidationError | ServerError
+union PostResult = Post | ServerError
 
 type Query {
   user(name: String!): [User!] # for backend checking not used in frontend
@@ -65,19 +70,18 @@ type Mutation {
     condition: Int!
     deadline: String!
     tag: [String]
-  ): Post!
-
+  ): PostResult!
   updatePost(
     postId: ID!
     title: String!
-    content: String!
     classNo: String!
     className: String!
     teacherName: String!
+    content: String!
     condition: Int!
     deadline: String!
     tag: [String]
-  ): Post!
+  ): PostResult!
   deletePost(postId: ID!): Post!
   updatePostCollection(userId: ID!, postId: ID!): User!
 

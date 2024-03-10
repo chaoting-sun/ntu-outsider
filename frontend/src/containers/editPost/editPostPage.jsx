@@ -14,55 +14,56 @@ import PathContants from "../../constants/paths";
 import actions from "../../constants/actions";
 import { displayStatus } from "../utils";
 import styles from "./editPostPage.module.css";
+import { normalizeFetchedPost } from "../utils";
 
-const classDetail = (post) => {
-  return [
-    {
-      name: "課名",
-      placeholder: "ex: 化工實驗",
-      defaultValue: post ? post.className : "",
-      type: "text",
-      constraint: {},
-    },
-    {
-      name: "授課老師",
-      placeholder: "ex: 鄭進一",
-      defaultValue: post ? post.className : "",
-      type: "text",
-      constraint: {},
-    },
-    {
-      name: "課程流水號",
-      placeholder: "ex: PE24336",
-      defaultValue: post ? post.classNo : "",
-      type: "text",
-      constraint: {},
-    },
-    {
-      name: "尚須徵求人數",
-      placeholder: "ex: PE24336",
-      defaultValue: post ? post.condition : "",
-      type: "number",
-      constraint: { min: "0" },
-    },
-    {
-      name: "課程流水號",
-      placeholder: "ex: PE24336",
-      defaultValue: post ? post.classNo : "",
-      type: "text",
-      constraint: {},
-    },
-  ];
-};
+// const classDetail = (post) => {
+//   return [
+//     {
+//       name: "課名",
+//       placeholder: "ex: 化工實驗",
+//       defaultValue: post ? post.className : "",
+//       type: "text",
+//       constraint: {},
+//     },
+//     {
+//       name: "授課老師",
+//       placeholder: "ex: 鄭進一",
+//       defaultValue: post ? post.className : "",
+//       type: "text",
+//       constraint: {},
+//     },
+//     {
+//       name: "課程流水號",
+//       placeholder: "ex: PE24336",
+//       defaultValue: post ? post.classNo : "",
+//       type: "text",
+//       constraint: {},
+//     },
+//     {
+//       name: "尚須徵求人數",
+//       placeholder: "ex: PE24336",
+//       defaultValue: post ? post.condition : "",
+//       type: "number",
+//       constraint: { min: "0" },
+//     },
+//     {
+//       name: "課程流水號",
+//       placeholder: "ex: PE24336",
+//       defaultValue: post ? post.classNo : "",
+//       type: "text",
+//       constraint: {},
+//     },
+//   ];
+// };
 
 const EditPostPage = () => {
-  const { username, userId, authenticated } = UseOutsider();
+  const { userId, authenticated } = UseOutsider();
 
   const location = useLocation();
   const navigate = useNavigate();
 
   const initPost = location.state?.post;
-  const postId = initPost ? initPost._id : null;
+  const postId = initPost ? initPost.postId : null;
   const action = location.state.action || "";
 
   const [updatedPost, setUpdatedPost] = useState(null);
@@ -94,10 +95,8 @@ const EditPostPage = () => {
     },
   });
 
-  // const [createPost] = useMutation(CREATE_POST_MUTATION);
-  // const [updatePost] = useMutation(UPDATE_POST_MUTATION);
-  const createPost = async (post) => ({ post });
-  const updatePost = async (post) => ({ post });
+  const [createPost] = useMutation(CREATE_POST_MUTATION);
+  const [updatePost] = useMutation(UPDATE_POST_MUTATION);
 
   const onSubmit = async (formData) => {
     const {
@@ -118,50 +117,53 @@ const EditPostPage = () => {
       className,
       teacherName,
       content,
-      condition,
+      condition: parseInt(condition),
       deadline,
       tag: editedTag,
-      author: initPost ? initPost.author : { name: username, _id: userId },
     };
 
-    try {
-      let res;
-      if (action === actions.ADD_POST) {
-        updatedPost.userId = userId;
-        res = await createPost(updatedPost);
-        // res = await createPost({ variables: updatedPost });
-      } else if (action === actions.EDIT_POST) {
-        updatedPost._id = postId;
-        res = await updatePost(updatedPost);
-        // res = await updatePost({ variables: updatedPost });
-      } else {
-        console.log("action is wrong!");
-      }
+    let res;
+    if (action === actions.ADD_POST) {
+      console.log("addPost");
 
-      if (res) {
-        const successMessage =
-          action === "createPost" ? "Post created!" : "Post updated!";
-        displayStatus({ type: "success", msg: successMessage });
-        // setUpdatedPost(res.data["createPost"]);
-        console.log("result:", res);
-        setUpdatedPost(res.post);
-        setFinishEdit(true);
-      } else {
-        throw new Error("No response from the server");
+      updatedPost.userId = userId;
+      try {
+        const {
+          data: { createPost: response },
+        } = await createPost({ variables: updatedPost });
+        res = response;
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.error(error);
-      displayStatus({
-        type: "fail",
-        msg: error.message || "fail to save post!",
-      });
+    } else if (action === actions.EDIT_POST) {
+      console.log("editPost");
+
+      updatedPost.postId = postId;
+      try {
+        const {
+          data: { updatePost: response },
+        } = await updatePost({ variables: updatedPost });
+        res = response;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    // console.log(res);
+
+    if (res.__typename === "Post") {
+      const updatedPost = normalizeFetchedPost(res);
+      setUpdatedPost(updatedPost);
+      setFinishEdit(true);
+      displayStatus({ type: "success", msg: "Post successfully updated!" });
+    } else if (res.__typename === "ServerError") {
+      displayStatus({ type: "error", msg: res.report });
     }
   };
 
   useEffect(() => {
     if (finishEdit) {
-      navigate(paths.MAIN, { state: { action, updatedPost } });
       setFinishEdit(false);
+      navigate(paths.MAIN, { state: { action, updatedPost } });
     }
   }, [finishEdit, updatedPost, navigate, action]);
 
@@ -236,9 +238,19 @@ const EditPostPage = () => {
   const DeadlineInformation = () => (
     <div className={styles.rowItem}>
       <label>截止時間</label>
-      <input name="date" type="date" className={styles.time} {...register("endDate")} />
+      <input
+        name="date"
+        type="date"
+        className={styles.time}
+        {...register("endDate")}
+      />
       &nbsp;
-      <input name="time" type="time" className={styles.time} {...register("endTime")} />
+      <input
+        name="time"
+        type="time"
+        className={styles.time}
+        {...register("endTime")}
+      />
     </div>
   );
 

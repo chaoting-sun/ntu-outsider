@@ -56,9 +56,8 @@ const Query = {
     } catch (error) {
       console.log(error);
       return {
-        __typename: "ValidationError",
-        path: "unknown",
-        report: "An error occurred.",
+        __typename: "ServerError",
+        report: "Server error.",
       };
     }
   },
@@ -68,36 +67,40 @@ const Query = {
   },
 
   queryPost: async (parent, { type, queryString }, { PostModel }, info) => {
-    let data;
+    let fetchedPosts;
     switch (type) {
       case "title":
-        return await PostModel.find({
+        fetchedPosts = await PostModel.find({
           title: { $regex: new RegExp(queryString, "i") },
         });
+        break;
       case "tag":
-        return await PostModel.find({
+        fetchedPosts = await PostModel.find({
           tag: { $regex: new RegExp(queryString, "i") },
         });
+        break;
       case "className":
-        return await PostModel.find({
+        fetchedPosts = await PostModel.find({
           className: { $regex: new RegExp(queryString, "i") },
         });
+        break;
       case "classNo":
-        return await PostModel.find({
+        fetchedPosts = await PostModel.find({
           classNo: { $regex: new RegExp(queryString, "i") },
         });
+        break;
       case "teacherName":
-        return await PostModel.find({
+        fetchedPosts = await PostModel.find({
           teacherName: { $regex: new RegExp(queryString, "i") },
         });
+        break;
       case "all":
-        data = await PostModel.find({});
+        fetchedPosts = await PostModel.find({});
         break;
       default:
         return []; // 如果 type 的值不是上述任何一個，則返回空數組
     }
-    console.log("data:", data);
-    return data;
+    return fetchedPosts;
   },
 
   queryPostCollection: async (

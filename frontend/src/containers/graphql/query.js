@@ -41,6 +41,9 @@ export const USER_QUERY = gql`
         path
         report
       }
+      ... on ServerError {
+        report
+      }
     }
   }
 `;
@@ -48,13 +51,9 @@ export const POST_QUERY = gql`
   query queryPost($type: String!, $queryString: String!) {
     queryPost(type: $type, queryString: $queryString) {
       _id
-      userId
       author {
         _id
-        account
         name
-        password
-        postCollection
       }
       title
       classNo
