@@ -15,6 +15,7 @@ const LogInForm = ({ handleLogIn }) => {
     <form className={styles.form} onSubmit={handleSubmit}>
       <div className={styles.inputs}>
         <input
+          name="email"
           type="email"
           placeholder="Account"
           value={account}
@@ -22,6 +23,7 @@ const LogInForm = ({ handleLogIn }) => {
           className={styles.input}
         />
         <input
+          name="password"
           type="password"
           placeholder="Password"
           value={password}

@@ -1,8 +1,6 @@
-import { DownOutlined } from '@ant-design/icons';
 import { Select, Input, Space } from 'antd';
-import { useOutsider } from '../containers/hooks/useOutsider';
+import { displayStatus } from '../containers/utils';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import '../css/searchBox.css'
 
 // Select: https://ant.design/components/select
@@ -18,7 +16,6 @@ const queryTypes = [
 ]
 
 const SearchBox = ({ handleQueryPost }) => {
-  const { displayStatus } = useOutsider();
   const [queryType, setQueryType] = useState("select");
   const [queryString, setQueryString] = useState("");
 

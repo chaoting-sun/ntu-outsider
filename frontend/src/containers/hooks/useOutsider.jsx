@@ -1,44 +1,28 @@
-import { message } from 'antd'
-import { createContext, useContext, useState, useEffect } from "react";
-import { POST_QUERY, POST_COLLECTION_QUERY } from '../graphql';
+import { message } from "antd";
+import { useContext, useState, useEffect } from "react";
+import { POST_QUERY, POST_COLLECTION_QUERY } from "../graphql";
 import { useLazyQuery } from "@apollo/client";
-
-// Constants for local storage
-const USERID_KEY = "save-userId";
-const USERNAME_KEY = "save-username";
-const ACCOUNT_KEY = "save-account";
-const AUTHENTICATED_KEY = "save-autheticated"
-
-// Create the context object
-const OusiderContext = createContext({
-  userId: null,
-  username: "",
-  passWord: "",
-  authenticated: false,
-  setUserId: () => { },
-  setUsername: () => { },
-  setPassword: () => { },
-  setAuthenticated: () => { },
-  displayStatus: () => { }
-});
+import OutsiderContext from "./outsiderContext";
+import {
+  USERID_KEY,
+  USERNAME_KEY,
+  ACCOUNT_KEY,
+  AUTHENTICATED_KEY,
+} from "../../constants/localStorages";
 
 // Define the provider component
 const OutsiderProvider = (props) => {
   // get local storages
-  const savedUserId = localStorage.getItem(USERID_KEY);
-  const savedUsername = localStorage.getItem(USERNAME_KEY);
-  const savedAccount = localStorage.getItem(ACCOUNT_KEY);
-  const savedAuthenticated = JSON.parse(localStorage.getItem(AUTHENTICATED_KEY));
-  
+
   // Initialize state variables
   // const [userId, setUserId] = useState(savedUserId || null);
   // const [username, setUsername] = useState(savedUsername || "");
   // const [account, setAccount] = useState(savedAccount || "");
   // const [authenticated, setAuthenticated] = useState(savedAuthenticated || false); // TODO: change to default: false
-  const [userId, setUserId] = useState(savedUserId || "kkbox");
-  const [username, setUsername] = useState(savedUsername || "chaoting");
-  const [account, setAccount] = useState(savedAccount || "a@gmail.com");
-  const [authenticated, setAuthenticated] = useState(false); // TODO: change to default: false
+  const [userId, setUserId] = useState(localStorage.getItem(USERID_KEY) || null);
+  const [username, setUsername] = useState(localStorage.getItem(USERNAME_KEY) || "");
+  const [account, setAccount] = useState(localStorage.getItem(ACCOUNT_KEY) || "");
+  const [authenticated, setAuthenticated] = useState(JSON.parse(localStorage.getItem(AUTHENTICATED_KEY)) || false); // TODO: change to default: false
 
   const [preferTags, setPreferTags] = useState([]);
   const [currentPost, setCurrentPost] = useState([]);
@@ -46,70 +30,56 @@ const OutsiderProvider = (props) => {
   const [doingQueryPostCollection, setDoingQueryPostCollection] = useState(false);
 
   // Save data to local storage
-  useEffect(() => {
-    localStorage.setItem(USERID_KEY, userId);
-    localStorage.setItem(ACCOUNT_KEY, account);
-    localStorage.setItem(USERNAME_KEY, username);
-    localStorage.setItem(AUTHENTICATED_KEY, authenticated);
-  }, [authenticated, userId, account, username]);
 
-  // Define function to display status message
-  const displayStatus = (s) => {
-    if (s.msg) {
-      const { type, msg } = s;
-      const content = { content: msg, duration: 1 }
-
-      switch (type) {
-        case 'success':
-          message.success(content) // show status of success
-          break
-        case 'error':
-        default:
-          message.error(content) // show status of error
-          break
-      }
-    }
-  }
+  // useEffect(() => {
+  //   localStorage.setItem(USERID_KEY, userId);
+  //   localStorage.setItem(ACCOUNT_KEY, account);
+  //   localStorage.setItem(USERNAME_KEY, username);
+  //   localStorage.setItem(AUTHENTICATED_KEY, authenticated);
+  // }, [authenticated, userId, account, username]);
 
   // Define function to handle post queries
-  const [queryPost] = useLazyQuery(POST_QUERY, { fetchPolicy: 'network-only' });
-  const handleQueryPost = async (type, queryString) => {
-    setDoingQueryPost(true);
-    const { data } = await queryPost({
-      variables: {
-        type: type,
-        queryString: queryString
-      }
-    })
-    setCurrentPost(data.queryPost);
-    return data.queryPost;
-  }
+
+  console.log('re-render useOutsider')
+
+  const [queryPost] = useLazyQuery(POST_QUERY, { fetchPolicy: "network-only" });
+  
+  // const handleQueryPost = async (type, queryString) => {
+  //   setDoingQueryPost(true);
+  //   const { data } = await queryPost({
+  //     variables: {
+  //       type: type,
+  //       queryString: queryString,
+  //     },
+  //   });
+  //   console.log("handle query post:", data);
+  //   setCurrentPost(data.queryPost);
+  //   return data.queryPost;
+  // };
 
   // Define function to handle post collection queries
-  const [queryPostCollection] = useLazyQuery(POST_COLLECTION_QUERY, { fetchPolicy: 'network-only' });
+  const [queryPostCollection] = useLazyQuery(POST_COLLECTION_QUERY, {
+    fetchPolicy: "network-only",
+  });
   const handleQueryPostCollection = async (type) => {
-    setDoingQueryPostCollection(true);
-    const { data } = await queryPostCollection({
-      variables: {
-        userId: userId,
-        type: type
-      }
-    })
-    setCurrentPost(data.queryPostCollection);
-    return data.queryPostCollection;
-  }
+    // setDoingQueryPostCollection(true);
+    // const { data } = await queryPostCollection({
+    //   variables: { userId: userId, type: type },
+    // });
+    // setCurrentPost(data.queryPostCollection);
+    // return data.queryPostCollection;
+  };
 
-  // Define function to autheticate account
-  const autheticateAccount = (user) => {
+  const handleAuthenticated = (userId, account, name) => {
     setAuthenticated(true);
-    setUserId(user._id);
-    setAccount(user.account);
-    setUsername(user.name);
+    setUserId(userId);
+    setAccount(account);
+    setUsername(name);
   }
 
   // Define the context provider with the state
   return (
-    <OusiderContext.Provider
+    <OutsiderContext.Provider
       value={{
         userId,
         setUserId,
@@ -122,9 +92,8 @@ const OutsiderProvider = (props) => {
         currentPost,
         authenticated,
         setAuthenticated,
-        displayStatus,
-        autheticateAccount,
-        handleQueryPost,
+        handleAuthenticated,
+        // handleQueryPost,
         handleQueryPostCollection,
         doingQueryPost,
         setDoingQueryPost,
@@ -133,10 +102,10 @@ const OutsiderProvider = (props) => {
       }}
       {...props}
     />
-  )
-}
+  );
+};
 
 // Define context consumer
-const useOutsider = () => useContext(OusiderContext);
+const UseOutsider = () => useContext(OutsiderContext);
 
-export { OutsiderProvider, useOutsider };
+export { OutsiderProvider, UseOutsider };

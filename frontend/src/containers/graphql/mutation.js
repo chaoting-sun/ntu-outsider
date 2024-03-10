@@ -7,11 +7,18 @@ export const CREATE_ACCOUNT_MUTATION = gql`
     $password: String!
   ) {
     createAccount(account: $account, name: $name, password: $password) {
-      _id
-      account
-      name
-      password
-      postCollection
+      __typename
+      ... on User {
+        _id
+        account
+        name
+        password
+        postCollection
+      }
+      ... on ValidationError {
+        path
+        report
+      }
     }
   }
 `;
@@ -48,7 +55,7 @@ export const UPDATE_PASSWORD_MUTATION = gql`
 `;
 
 export const CREATE_POST_MUTATION = gql`
- mutation createPost(
+  mutation createPost(
     $userId: ID!
     $title: String!
     $classNo: String!
@@ -57,38 +64,39 @@ export const CREATE_POST_MUTATION = gql`
     $content: String!
     $condition: Int!
     $deadline: String!
-    $tag: [String])
-    {
+    $tag: [String]
+  ) {
     createPost(
-      userId: $userId,
-      title: $title,
-      classNo: $classNo,
-      className: $className,
-      teacherName: $teacherName,
-      content: $content,
-      condition: $condition,
-      deadline: $deadline,
-      tag: $tag)
-    {
-    _id
-    userId
-    author{
+      userId: $userId
+      title: $title
+      classNo: $classNo
+      className: $className
+      teacherName: $teacherName
+      content: $content
+      condition: $condition
+      deadline: $deadline
+      tag: $tag
+    ) {
+      _id
+      userId
+      author {
         _id
         account
         name
         password
         postCollection
+      }
+      title
+      classNo
+      className
+      teacherName
+      content
+      condition
+      deadline
+      tag
     }
-    title
-    classNo
-    className
-    teacherName
-    content
-    condition
-    deadline
-    tag
-    }
- }`;
+  }
+`;
 
 export const UPDATE_POST_MUTATION = gql`
   mutation updatePost(
@@ -185,8 +193,8 @@ export const CREATE_CHATBOX_MUTATION = gql`
 export const CREATE_MESSAGE_MUTATION = gql`
   mutation createMessage($name: ID!, $to: ID!, $message: String!) {
     createMessage(name: $name, to: $to, message: $message) {
-        sender
-        body
+      sender
+      body
     }
   }
 `;

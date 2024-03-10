@@ -1,27 +1,60 @@
-const Mutation = {
-  // 資料存在之後，應該有更好的寫法 send error
+import bcrypt from "bcryptjs";
+import { GraphQLError } from "graphql";
 
+const Mutation = {
   createAccount: async (
     parent,
     { account, name, password },
     { UserModel },
     info
   ) => {
-    let userExisitng = await UserModel.findOne({ account: account });
-    if (userExisitng) {
-      console.log(
-        "This account exists, please choose another account or log in your account."
-      );
-      return null;
-    } else {
-      let newUser = await new UserModel({
-        account: account,
-        name: name,
-        password: password,
+    console.log("createAccount:", account, name, password);
+
+    // Check if some input is empty
+
+    if (!account || !name || !password) {
+      return {
+        __typename: "ValidationError",
+        path: "input",
+        report: "All fields must be provided.",
+      };
+    }
+
+    // Check if the account is existing
+
+    const existingUser = await UserModel.findOne({ account });
+    if (existingUser) {
+      return {
+        __typename: "ValidationError",
+        path: "account",
+        report: "Account has been registered",
+      };
+    }
+
+    // Create a new account
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    try {
+      const newUser = await new UserModel({
+        account,
+        name,
+        password: hashedPassword,
       }).save();
-      return newUser;
+      console.log("Created user:", newUser)
+      return { __typename: "User", ...newUser.toObject() };
+
+    } catch (error) {
+      console.log(error);
+      return {
+        __typename: "ValidationError",
+        path: "unknown",
+        report: "An error occurred.",
+      };
     }
   },
+
   createPost: async (
     parent,
     {
@@ -49,7 +82,7 @@ const Mutation = {
       condition: condition,
       deadline: deadline,
     }).save();
-    console.log('newPost:', newPost);
+    console.log("newPost:", newPost);
     return newPost;
   },
   deleteUser: async (parent, { userId }, { UserModel }, info) => {
@@ -151,7 +184,7 @@ const Mutation = {
       );
     }
     const user = await UserModel.findOne({ _id: userId });
-    console.log('updated user:', user);
+    console.log("updated user:", user);
     return user;
   },
   createChatBox: async (
@@ -160,7 +193,7 @@ const Mutation = {
     { ChatBoxModel, UserModel, pubsub },
     info
   ) => {
-    console.log("create chatBox")
+    console.log("create chatBox");
     let chatBoxName = [name, to].sort().join("_");
     let chatBox = await ChatBoxModel.findOne({ name: chatBoxName });
     if (!chatBox) {
@@ -176,12 +209,12 @@ const Mutation = {
       console.log("publish");
       pubsub.publish(`chatBox ${name}`, {
         subscribeChatBox: chatBox,
-      })
+      });
       pubsub.publish(`chatBox ${to}`, {
         subscribeChatBox: chatBox,
       });
-      console.log(`chatBox ${name}`)
-      console.log(`chatBox ${to}`)
+      console.log(`chatBox ${name}`);
+      console.log(`chatBox ${to}`);
     }
     return chatBox;
   },
@@ -191,7 +224,7 @@ const Mutation = {
     { ChatBoxModel, pubsub },
     info
   ) => {
-    console.log("create message")
+    console.log("create message");
     const chatBoxName = [name, to].sort().join("_");
     const chatBox = await ChatBoxModel.findOne({ name: chatBoxName });
     if (!chatBox) {
@@ -201,12 +234,12 @@ const Mutation = {
     chatBox.messages.push(newMsg);
     await chatBox.save();
     pubsub.publish(`message ${name}`, {
-      subscribeMessage: {chatBoxName: chatBoxName, message: newMsg},
-    })
+      subscribeMessage: { chatBoxName: chatBoxName, message: newMsg },
+    });
     pubsub.publish(`message ${to}`, {
-      subscribeMessage: {chatBoxName: chatBoxName, message: newMsg},
-    })
-    return {...newMsg};
+      subscribeMessage: { chatBoxName: chatBoxName, message: newMsg },
+    });
+    return { ...newMsg };
   },
 };
 

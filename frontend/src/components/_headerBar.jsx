@@ -15,7 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import styled from "styled-components";
 import { Outlet, useNavigate } from "react-router-dom";
 
-import PathConstants from "../routes/pathConstants";
+import paths from "../routes/paths";
 
 // dropdown
 const dropdowItems = [
@@ -159,7 +159,7 @@ const HeaderBar = ({
           <div
             className="brandNameContainer"
             onClick={() => {
-              navigate(PathConstants.MAIN);
+              navigate(paths.MAIN);
             }}
           >
             <div>NTU</div>

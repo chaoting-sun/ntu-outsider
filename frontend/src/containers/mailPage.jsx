@@ -11,7 +11,7 @@ import {
   CREATE_CHATBOX_MUTATION,
 } from "./graphql/index";
 import { useQuery, useMutation } from "@apollo/client";
-
+    
 import { Divider, IconButton } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import List from "@mui/material/List";
@@ -19,7 +19,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { ListItemButton } from "@mui/material";
 
-import { useOutsider } from "./hooks/useOutsider";
+import { UseOutsider } from "./hooks/useOutsider";
 import Message from "../components/Message";
 import "../css/mailPage.css";
 
@@ -48,7 +48,7 @@ const SendButton = styled(IconButton)`
 //test end
 
 //Test subscription
-//take me from useOutsider
+//take me from UseOutsider
 
 //test end
 
@@ -61,7 +61,7 @@ const MailPage = () => {
   const [friendId, setFriendId] = useState("");
   const [friendName, setFriendName] = useState("");
   const [boxName, setBoxName] = useState("");
-  const { userId, username } = useOutsider();
+  const { userId, username } = UseOutsider();
   const [openChatBox, setOpenChatBox] = useState(false);
   const msgFooter = useRef();
   const scrollToBottom = () => {
@@ -72,15 +72,15 @@ const MailPage = () => {
 
   console.log("I am mailPage!")
 
-  const {
-    loading,
-    error,
-    data: boxesData,
-    subscribeToMore,
-  } = useQuery(CHATBOXES_QUERY, {
-    variables: { userId },
-    fetchPolicy: "network-only",
-  });
+  // const {
+  //   loading,
+  //   error,
+  //   data: boxesData,
+  //   subscribeToMore,
+  // } = useQuery(CHATBOXES_QUERY, {
+  //   variables: { userId },
+  //   fetchPolicy: "network-only",
+  // });
 
   const OpenChatBox = (box) => {
     //console.log("open");
@@ -100,15 +100,15 @@ const MailPage = () => {
     setBoxName(box.name);
   };
 
-  useEffect(() => {
-    // console.log("loaction");
-    if (state) {
-      setOpenChatBox(true);
-      // console.log(state.Box);
-      OpenChatBox(state.Box);
-      // console.log(state.PosterId);
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   // console.log("loaction");
+  //   if (state) {
+  //     setOpenChatBox(true);
+  //     // console.log(state.Box);
+  //     OpenChatBox(state.Box);
+  //     // console.log(state.PosterId);
+  //   }
+  // }, [location]);
 
   const HandleSend = async () => {
     //console.log(me._id, friendId, myMsg);
@@ -137,9 +137,9 @@ const MailPage = () => {
 
   //console.log(error);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, messages);
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, messages);
 
   /*const resetMessages = async() => {
         const box = await createChatBox({variables: {
@@ -157,75 +157,72 @@ const MailPage = () => {
 
   // console.log(chatBoxes);
 
-  useEffect(() => {
-    //console.log("subscribe")
-    let unsubscribe;
-    unsubscribe = subscribeToMore({
-      document: MESSAGE_SUBSCRIPTION,
-      variables: { id: userId },
-      updateQuery: (prev, { subscriptionData }) => {
-        // console.log(subscriptionData);
-        if (!subscriptionData.data) return prev;
-        // console.log(subscriptionData.data.subscribeChatBox);
-        const newMessage = subscriptionData.data.subscribeMessage.message;
-        const boxToPut = subscriptionData.data.subscribeMessage.chatBoxName;
-        //console.log(prev.queryChatBoxes)
-        return {
-          queryChatBoxes: prev.queryChatBoxes.map((box) => {
-            if (box.name === boxToPut) {
-              const newBox = {
-                ...box,
-                messages: [...box.messages, newMessage],
-              };
-              if (box._id === newBox._id)
-                setMessages([...box.messages, newMessage]);
-              //console.log(newBox);
-              return newBox;
-            } else {
-              return box;
-            }
-          }),
-        };
-      },
-    });
-    if (unsubscribe) return () => unsubscribe();
-  }, [subscribeToMore]);
+  // useEffect(() => {
+  //   //console.log("subscribe")
+  //   let unsubscribe;
+  //   unsubscribe = subscribeToMore({
+  //     document: MESSAGE_SUBSCRIPTION,
+  //     variables: { id: userId },
+  //     updateQuery: (prev, { subscriptionData }) => {
+  //       // console.log(subscriptionData);
+  //       if (!subscriptionData.data) return prev;
+  //       // console.log(subscriptionData.data.subscribeChatBox);
+  //       const newMessage = subscriptionData.data.subscribeMessage.message;
+  //       const boxToPut = subscriptionData.data.subscribeMessage.chatBoxName;
+  //       //console.log(prev.queryChatBoxes)
+  //       return {
+  //         queryChatBoxes: prev.queryChatBoxes.map((box) => {
+  //           if (box.name === boxToPut) {
+  //             const newBox = {
+  //               ...box,
+  //               messages: [...box.messages, newMessage],
+  //             };
+  //             if (box._id === newBox._id)
+  //               setMessages([...box.messages, newMessage]);
+  //             //console.log(newBox);
+  //             return newBox;
+  //           } else {
+  //             return box;
+  //           }
+  //         }),
+  //       };
+  //     },
+  //   });
+  //   if (unsubscribe) return () => unsubscribe();
+  // }, [subscribeToMore]);
 
-  useEffect(() => {
-    // console.log("subscribe");
-    let unsubscribe;
-    unsubscribe = subscribeToMore({
-      document: CHATBOX_SUBSCRIPTION,
-      variables: { id: userId },
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev;
-        //console.log(subscriptionData.data.subscribeChatBox);
-        const newBox = subscriptionData.data.subscribeChatBox;
-        //console.log(boxesData);
-        let add = true;
-        prev.queryChatBoxes.forEach((e) => {
-          if (e.name === newBox.name) {
-            add = false;
-          }
-        });
-        if (add) {
-          return {
-            queryChatBoxes: [newBox, ...prev.queryChatBoxes],
-          };
-        } else return prev;
-      },
-    });
-    if (unsubscribe) return () => unsubscribe();
-  }, [subscribeToMore]);
+  // useEffect(() => {
+  //   // console.log("subscribe");
+  //   let unsubscribe;
+  //   unsubscribe = subscribeToMore({
+  //     document: CHATBOX_SUBSCRIPTION,
+  //     variables: { id: userId },
+  //     updateQuery: (prev, { subscriptionData }) => {
+  //       if (!subscriptionData.data) return prev;
+  //       //console.log(subscriptionData.data.subscribeChatBox);
+  //       const newBox = subscriptionData.data.subscribeChatBox;
+  //       //console.log(boxesData);
+  //       let add = true;
+  //       prev.queryChatBoxes.forEach((e) => {
+  //         if (e.name === newBox.name) {
+  //           add = false;
+  //         }
+  //       });
+  //       if (add) {
+  //         return {
+  //           queryChatBoxes: [newBox, ...prev.queryChatBoxes],
+  //         };
+  //       } else return prev;
+  //     },
+  //   });
+  //   if (unsubscribe) return () => unsubscribe();
+  // }, [subscribeToMore]);
 
-  useEffect(() => {
-    //console.log(boxesData);
-    if (boxesData !== undefined) setChatBoxes(boxesData.queryChatBoxes);
-  }, [boxesData]);
+  // useEffect(() => {
+  //   //console.log(boxesData);
+  //   if (boxesData !== undefined) setChatBoxes(boxesData.queryChatBoxes);
+  // }, [boxesData]);
 
-  // console.log(boxesData);
-  //console.log(boxesData.queryChatBoxes);
-  //console.log(chatBoxes);
 
   //console.log(messages);
   return (

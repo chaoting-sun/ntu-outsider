@@ -1,26 +1,26 @@
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-import { useOutsider } from "../hooks/useOutsider";
-import PathConstants from "../../routes/pathConstants";
+import { UseOutsider } from "../hooks/useOutsider";
+import paths from "../../constants/paths";
 import MiniDrawer from "./miniDrawer";
-import ActionConstants from "../../actions/actionConstants";
+import actions from "../../constants/actions";
+import { displayStatus } from "../utils";
 
 const NavBar = () => {
   const {
     authenticated,
-    displayStatus,
     setAuthenticated,
     handleQueryPost,
     handleQueryPostCollection,
-  } = useOutsider();
+  } = UseOutsider();
   const navigate = useNavigate();
 
   const handleOnClickMail = () => {
     if (authenticated) {
-      navigate(PathConstants.MAIL);
+      navigate(paths.MAIL);
     } else {
-      navigate(PathConstants.LOGIN);
+      navigate(paths.LOGIN);
     }
   };
 
@@ -28,17 +28,17 @@ const NavBar = () => {
     // logIn or logOut
     switch (action) {
       case "logIn":
-        navigate(PathConstants.LOGIN, { state: { signUp: false } });
+        navigate(paths.LOGIN, { state: { signUp: false } });
         break;
       case "logOut":
         setAuthenticated(false);
-        navigate(PathConstants.LOGIN, { state: { signUp: false } });
+        navigate(paths.LOGIN, { state: { signUp: false } });
         break;
       case "signUp":
-        navigate(PathConstants.LOGIN, { state: { signUp: true } });
+        navigate(paths.LOGIN, { state: { signUp: true } });
         break;
       case "editProfile":
-        navigate(PathConstants.MY_PROFILE);
+        navigate(paths.MY_PROFILE);
         break;
       default:
         console.log("wrong option");
@@ -53,12 +53,12 @@ const NavBar = () => {
         type: "error",
         msg: "Please log in!",
       });
-      navigate(PathConstants.LOGIN);
+      navigate(paths.LOGIN);
       return;
     }
 
-    if (key === ActionConstants.EDIT_POST) {
-      navigate(PathConstants.EDIT_POST, {
+    if (key === actions.EDIT_POST) {
+      navigate(paths.EDIT_POST, {
         state: {
           action: "createPost",
           post: null,
@@ -67,7 +67,7 @@ const NavBar = () => {
     } else {
       // key = savedPost, followedPost, myPost, all
       handleQueryPostCollection(key);
-      navigate(PathConstants.MAIN);
+      navigate(paths.MAIN);
     }
   };
 

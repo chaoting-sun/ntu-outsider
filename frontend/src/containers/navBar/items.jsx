@@ -1,4 +1,4 @@
-import PathConstants from "../../routes/pathConstants";
+import paths from "../../constants/paths";
 
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
@@ -10,7 +10,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
-import ActionConstants from "../../actions/actionConstants";
+import actions from "../../constants/actions";
 
 export const postItems = [
   {
@@ -18,28 +18,28 @@ export const postItems = [
     icon: <DonutSmallIcon />,
     canLogOut: true,
     action: null,
-    href: PathConstants.MAIN_POST,
+    href: paths.MAIN_POST,
   },
   {
     text: "我的貼文",
     icon: <AccessibilityNewIcon />,
     canLogOut: false,
     action: null,
-    href: PathConstants.MAIN_POST,
+    href: paths.MAIN_POST,
   },
   {
     text: "追蹤貼文",
     icon: <StarHalfIcon />,
     canLogOut: false,
     action: null,
-    href: PathConstants.MAIN_POST,
+    href: paths.MAIN_POST,
   },
   {
     text: "新增貼文",
     icon: <PostAddIcon />,
     canLogOut: false,
-    action: ActionConstants.ADD_POST,
-    href: PathConstants.EDIT_POST,
+    action: actions.ADD_POST,
+    href: paths.EDIT_POST,
   },
 ];
 
@@ -49,27 +49,27 @@ export const accountItems = [
     key: "logIn",
     icon: <LoginIcon sx={{ fontSize: "2rem" }} />,
     loggedIn: false,
-    href: PathConstants.LOGIN,
+    href: paths.LOGIN,
   },
   {
     text: "註冊",
     key: "signUp",
     icon: <AppRegistrationIcon sx={{ fontSize: "2rem" }} />,
     loggedIn: false,
-    href: PathConstants.LOGIN,
+    href: paths.LOGIN,
   },
   {
     text: "登出",
     key: "logOut",
     icon: <LogoutIcon sx={{ fontSize: "2rem" }} />,
     loggedIn: true,
-    href: PathConstants.LOGIN,
+    href: paths.LOGIN,
   },
   {
     text: "編輯個人資料",
     key: "editProfile",
     icon: <AccountBoxIcon sx={{ fontSize: "2rem" }} />,
     loggedIn: true,
-    href: PathConstants.MY_PROFILE,
+    href: paths.MY_PROFILE,
   },
 ];

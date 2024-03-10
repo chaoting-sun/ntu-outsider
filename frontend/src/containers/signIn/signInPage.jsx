@@ -1,12 +1,12 @@
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import bcrypt from "bcryptjs";
 
-import PathConstants from "../../routes/pathConstants";
-import { useOutsider } from "../hooks/useOutsider";
+import paths from "../../constants/paths";
+import { UseOutsider } from "../hooks/useOutsider";
 import RegisterForm from "../../components/signInForm/registerForm";
 import LogInForm from "../../components/signInForm/logInForm";
+import { displayStatus } from "../utils";
 
 import { USER_QUERY } from "../graphql/query";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -15,64 +15,55 @@ import { CREATE_ACCOUNT_MUTATION } from "../graphql/mutation";
 import styles from "./signInPage.module.css";
 import { Button } from "@mui/material";
 
-// import SignUp from "../../components/signUp";
-// import Typography from "@mui/material/Typography";
-
 const SignInPage = () => {
-  const { displayStatus, autheticateAccount } = useOutsider();
-  const [signUp, setSignUp] = useState(false);
-  const [queryUser] = useLazyQuery(USER_QUERY, { fetchPolicy: "network-only" });
-  const [createAccount] = useMutation(CREATE_ACCOUNT_MUTATION);
   const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.state != null) {
-      setSignUp(location.state.signUp);
-    }
-  }, [location.state]);
+  const { handleAuthenticated } = UseOutsider();
+  const [logInPhase, setLogInPhase] = useState(true);
+  const [queryUser, { loading, error }] = useLazyQuery(USER_QUERY);
+  const [createAccount] = useMutation(CREATE_ACCOUNT_MUTATION);
 
   const handleLogIn = async (account, password) => {
-    const { data } = await queryUser({ variables: { account, password } });
+    // console.log("handleLogIn:", account, password);
 
-    if (data.queryUser) {
-      autheticateAccount(data.queryUser);
-      displayStatus({
-        type: "success",
-        msg: "log in successfully",
-      });
-      navigate(PathConstants.MAIN);
-    } else {
-      displayStatus({
-        type: "error",
-        msg: "Account or password is incorrect!",
-      });
+    try {
+      const {
+        data: { queryUser: response },
+      } = await queryUser({ variables: { account, password } });
+
+      if (response.__typename === "User") {
+        const { _id, account, name } = response;
+        handleAuthenticated(_id, account, name);
+        displayStatus({ type: "success", msg: "Log in successfully" });
+        navigate(paths.MAIN);
+      } else if (response.__typename === "ValidationError") {
+        displayStatus({ type: "error", msg: response.report });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const handleRegister = async (account, username, password) => {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+  const handleRegister = async (account, name, password) => {
+    // console.log("handleRegister:", account, name, password);
 
-    const { data } = await createAccount({
-      variables: {
-        account,
-        name: username,
-        password: hashedPassword,
-      },
-    });
+    try {
+      const {
+        data: { createAccount: response },
+      } = await createAccount({
+        variables: { account, name, password },
+      });
+      console.log("res:", response);
 
-    if (data.createAccount) {
-      displayStatus({
-        type: "success",
-        msg: "sign up successfully!",
-      });
-      setSignUp(false);
-    } else {
-      displayStatus({
-        type: "error",
-        msg: "Account already exists!",
-      });
+      if (response.__typename === "User") {
+        displayStatus({ type: "success", msg: "Register successfully!" });
+        setLogInPhase(true);
+      } else if (response.__typename === "ValidationError") {
+        displayStatus({ type: "error", msg: response.report });
+      } else {
+        console.log("Something went wrong!");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -83,7 +74,10 @@ const SignInPage = () => {
 
       <div className={styles.footer}>
         Do not have an account?{" "}
-        <span className={styles.signInLink} onClick={() => setSignUp(true)}>
+        <span
+          className={styles.signInLink}
+          onClick={() => setLogInPhase(false)}
+        >
           Sign up.
         </span>
       </div>
@@ -96,7 +90,7 @@ const SignInPage = () => {
       <RegisterForm handleRegister={handleRegister} />
       <div className={styles.footer}>
         Already have an account?{" "}
-        <span className={styles.signInLink} onClick={() => setSignUp(false)}>
+        <span className={styles.signInLink} onClick={() => setLogInPhase(true)}>
           Log in.
         </span>
       </div>
@@ -107,14 +101,16 @@ const SignInPage = () => {
     <div className={styles.container}>
       <Button
         className={styles.projectName}
-        onClick={() => navigate(PathConstants.MAIN)}
+        onClick={() => navigate(paths.MAIN)}
       >
         NTU OUTSIDER
       </Button>
       <div className={styles.formContainer}>
         <LockOpenIcon sx={{ fontSize: "2.4rem" }} />
-        {signUp ? <SignUpLayout /> : <LogInLayout />}
+        {logInPhase ? <LogInLayout /> : <SignUpLayout />}
       </div>
+      {loading && <p>Loading...</p>}
+      {error && <p>Error logging in. Please try again.</p>}
     </div>
   );
 };

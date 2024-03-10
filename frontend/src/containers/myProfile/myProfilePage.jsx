@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import AccountForm from "../../components/myProfileForm/AccountForm";
 import PasswordForm from "../../components/myProfileForm/PasswordForm";
-import { useOutsider } from "../hooks/useOutsider";
+import { UseOutsider } from "../hooks/useOutsider";
 import {
   USER_QUERY,
   UPDATE_USER_MUTATION,
   UPDATE_PASSWORD_MUTATION,
 } from "../graphql/index";
-import PathContants from "../../routes/pathConstants";
-import { hashPassword } from "../../utils/hash";
+import PathContants from "../../constants/paths";
 import styles from "./myProfilePage.module.css";
+import { displayStatus } from "../utils";
 
 const MyProfilePage = () => {
   const {
@@ -20,9 +20,8 @@ const MyProfilePage = () => {
     account,
     setUsername,
     setAccount,
-    displayStatus,
     authenticated,
-  } = useOutsider();
+  } = UseOutsider();
   const [queryUser] = useLazyQuery(USER_QUERY, { fetchPolicy: "network-only" });
   const [updateUser] = useMutation(UPDATE_USER_MUTATION);
   const [updatePassword] = useMutation(UPDATE_PASSWORD_MUTATION);
@@ -34,7 +33,7 @@ const MyProfilePage = () => {
     if (!authenticated) navigate(PathContants.LOGIN);
   }, [authenticated, navigate]);
 
-  const handleOnSubmitAccount = async (data) => {
+  const handleOnSubmitAccount = async () => {
     // TODO: make updateUser work
     // const user = await updateUser({
     //   variables: {

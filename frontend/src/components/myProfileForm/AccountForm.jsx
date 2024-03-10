@@ -17,6 +17,7 @@ const AccountForm = ({ username, account, onSubmit }) => {
       <div className={styles.rowItem}>
         <label>使用者名稱</label>
         <input
+          name="username"
           {...register("username", {
             required: "Username is required",
           })}
@@ -28,8 +29,9 @@ const AccountForm = ({ username, account, onSubmit }) => {
       <div className={styles.rowItem}>
         <label>使用者帳號</label>
         <input
+          name="userAccount"
           {...register("userAccount", {
-            required: "User  is required",
+            required: "User is required",
           })}
         />
         {errors.userAccount && (

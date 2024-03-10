@@ -33,6 +33,12 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+// test
+
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Backend is running!" });
+});
+
 const yoga = new createYoga({
   schema: createSchema({
     typeDefs: fs.readFileSync("./src/schema.graphql", "utf-8"),

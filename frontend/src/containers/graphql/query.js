@@ -29,11 +29,18 @@ export const CHATBOXES_QUERY = gql`
 export const USER_QUERY = gql`
   query queryUser($account: String!, $password: String!) {
     queryUser(account: $account, password: $password) {
-      _id
-      account
-      name
-      password
-      postCollection
+      __typename
+      ... on User {
+          _id
+        account
+        name
+        password
+        postCollection
+      }
+      ... on ValidationError {
+        path
+        report
+      }
     }
   }
 `;

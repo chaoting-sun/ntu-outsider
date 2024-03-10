@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import _ from "lodash";
 
-import { useMutation } from "@apollo/client";
-import { useOutsider } from "../hooks/useOutsider";
+import { useMutation, useLazyQuery } from "@apollo/client";
+import { UseOutsider } from "../hooks/useOutsider";
 import PostLayout from "../../components/postLayout/postLayout";
-import PathConstants from "../../routes/pathConstants";
-import ActionConstants from "../../actions/actionConstants";
+import paths from "../../constants/paths";
+import actions from "../../constants/actions";
+import { displayStatus } from "../utils";
 
 import styles from "./mainPage.module.css";
 
 import {
+  POST_QUERY,
   DELETE_POST_MUTATION,
   UPDATE_POST_COLLECTION_MUTATION,
 } from "../graphql";
@@ -71,19 +73,19 @@ const MainPage = () => {
     userId,
     username,
     currentPost,
-    displayStatus,
     doingQueryPost,
     setDoingQueryPost,
     doingQueryPostCollection,
     setDoingQueryPostCollection,
-    handleQueryPost,
-  } = useOutsider();
+    // handleQueryPost,
+  } = UseOutsider();
 
-  const [posts, setPosts] = useState(initialPosts);
+  const [posts, setPosts] = useState([]);
   // const [shouldUp]
   const [updatePostCollection] = useMutation(UPDATE_POST_COLLECTION_MUTATION);
   const [deletePost] = useMutation(DELETE_POST_MUTATION);
-  
+  const [queryPost] = useLazyQuery(POST_QUERY, { fetchPolicy: "network-only" });
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -96,15 +98,26 @@ const MainPage = () => {
   //   setPosts(initialPosts);
   // }, [])
 
+  const handleFetchAllPosts = useCallback(
+    async (type, queryString) => {
+      const { data } = await queryPost({ variables: { type, queryString } });
+      setPosts(data.queryPost);
+      return data.queryPosts;
+    },
+    [queryPost]
+  );
 
   useEffect(() => {
-    if (action === ActionConstants.ADD_POST) {
+    console.log("useEffect")
+    handleFetchAllPosts("all", "");
+  }, [handleFetchAllPosts]);
+
+  useEffect(() => {
+    if (action === actions.ADD_POST) {
       setPosts(posts => [editedPost, ...posts]);
-    } else if (action === ActionConstants.EDIT_POST) {
+    } else if (action === actions.EDIT_POST) {
       const postToEdit = posts.find(({ _id }) => _id === editedPost._id);
       if (_.isEqual(postToEdit, editedPost)) return;
-      console.log("editedPost:", JSON.stringify(editedPost));
-      console.log("postToEdit:", JSON.stringify(postToEdit));
 
       const updatedPosts = posts.map((post) =>
         post._id === editedPost._id ? editedPost : post
@@ -112,16 +125,6 @@ const MainPage = () => {
       setPosts(updatedPosts);
     }
   }, [location, posts, action, editedPost, userId, username]);
-
-  console.log(posts);
-
-  // useEffect(() => {
-  //   handleQueryPost("all", "") // default queryPost
-  //     .then((fetchedPost) => {
-  //       setPosts(fetchedPost);
-  //       // console.log('fetchedPost:', fetchedPost);
-  //     });
-  // }, [handleQueryPost]);
 
   // useEffect(() => {
   //   if (doingQueryPost) {
@@ -143,20 +146,20 @@ const MainPage = () => {
         msg: "This is your post!",
       });
     } else {
-      navigate(PathConstants.MAIL, { state: author });
+      navigate(paths.MAIL, { state: author });
     }
   };
 
   const handleFollowPost = async (postId) => {
-    const { data } = await updatePostCollection({
-      variables: { userId, postId },
-    });
-    const fetchedPost = data.updatePostCollection.postCollection;
-    if (fetchedPost.find((id) => id === postId) !== undefined) {
-      displayStatus({ type: "success", msg: "follow the post!" });
-    } else {
-      displayStatus({ type: "success", msg: "unfollow the post!" });
-    }
+    // const { data } = await updatePostCollection({
+    //   variables: { userId, postId },
+    // });
+    // const fetchedPost = data.updatePostCollection.postCollection;
+    // if (fetchedPost.find((id) => id === postId) !== undefined) {
+    //   displayStatus({ type: "success", msg: "follow the post!" });
+    // } else {
+    //   displayStatus({ type: "success", msg: "unfollow the post!" });
+    // }
   };
 
   const handleDeletePost = async (postId) => {
@@ -175,9 +178,9 @@ const MainPage = () => {
 
   const handleEditPost = (postToEdit) => {
     console.log("postToEdit:", postToEdit);
-    navigate(PathConstants.EDIT_POST, {
+    navigate(paths.EDIT_POST, {
       state: {
-        action: ActionConstants.EDIT_POST,
+        action: actions.EDIT_POST,
         post: postToEdit,
       },
     });

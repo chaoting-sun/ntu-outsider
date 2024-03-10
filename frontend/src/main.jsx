@@ -15,37 +15,50 @@ import { StyledEngineProvider } from "@mui/material";
 import App from "./App.jsx";
 import "./index.css";
 
-// Create an http link to the GraphQL API
-const httpLink = new HttpLink({
-  uri: "http://localhost:5000/graphql",
-});
-
-// Create a WebSocket link with GraphQLWsLink for subscription support
-const wsLink = new GraphQLWsLink(
-  createClient({
-    url: "ws://localhost:5000/graphql",
-    options: { reconnect: true },
-  })
+console.log(
+  "Connect to",
+  `http://localhost:${import.meta.env.VITE_SERVER_PORT}/graphql`
 );
 
-// Use the split function to route operations to different links based on their type
-const link = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query);
-    return (
-      definition.kind === "OperationDefinition" &&
-      definition.operation === "subscription"
-    );
-  },
-  wsLink,
-  httpLink
-);
+// past
 
-// Create an instance of the ApolloClient class used to interact with the GraphQL API
+// const httpLink = new HttpLink({
+//   uri: "http://localhost:5001/graphql",
+// });
+
+// const wsLink = new GraphQLWsLink(
+//   createClient({
+//     url: "ws://localhost:5001/graphql",
+//     options: { reconnect: true },
+//   })
+// );
+
+// const splitLink = split(
+//   ({ query }) => {
+//     const definition = getMainDefinition(query);
+//     return (
+//       definition.kind === "OperationDefinition" &&
+//       definition.operation === "subscription"
+//     );
+//   },
+//   wsLink,
+//   httpLink
+// );
+
+// const client = new ApolloClient({
+//   splitLink,
+//   cache: new InMemoryCache(),
+// });
+
+import { YogaLink } from "@graphql-yoga/apollo-link";
+import { onError } from "@apollo/client/link/error";
+
 const client = new ApolloClient({
-  link,
-  cache: new InMemoryCache(),
-});
+  link: new YogaLink({
+    endpoint: 'http://localhost:5001/graphql'
+  }),
+  cache: new InMemoryCache()
+})
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

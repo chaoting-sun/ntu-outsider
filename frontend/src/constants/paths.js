@@ -1,4 +1,4 @@
-const PathConstants = {
+const paths = {
   LOGIN: "/logIn",
   MAIN: "/",
   MAIL: "/mail",
@@ -6,4 +6,4 @@ const PathConstants = {
   MY_PROFILE: "/myProfile",
 };
 
-export default PathConstants;
+export default paths;

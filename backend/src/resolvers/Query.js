@@ -1,4 +1,5 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
+import { GraphQLError } from "graphql";
 
 const Query = {
   queryChatBox: async (parent, { name1, name2 }, { ChatBoxModel }, info) => {
@@ -13,30 +14,52 @@ const Query = {
   },
 
   queryUser: async (parent, { account, password }, { UserModel }, info) => {
-    let userExisitng = await UserModel.findOne({ account: account });
-    console.log("validate user:", userExisitng);
-    const varifyPassword = (password, hashedPassword) => {
-      return bcrypt.compareSync(password, hashedPassword);
-    };
-    if (userExisitng) {
-      if (varifyPassword(password, userExisitng.password)) return userExisitng;
-      else {
-        // to deal with wrong password
-        console.log("Wrong Password");
-        return null;
-      }
+    console.log("execute queryUser:", account, password);
+
+    // Check if some input is empty
+
+    if (!account || !password) {
+      return {
+        __typename: "ValidationError",
+        path: "input",
+        report: "All fields must be provided!",
+      };
     }
-    // if (userExisitng) {
-    //   if (password === userExisitng.password) return userExisitng;
-    //   else {
-    //     // to deal with wrong password
-    //     console.log("Wrong Password");
-    //     return null;
-    //   }
-    // }
-    else {
-      console.log("User does not exist!");
-      return null;
+
+    try {
+      // Check if the account is existing
+      
+      const existingUser = await UserModel.findOne({ account });
+      if (!existingUser) {
+        return {
+          __typename: "ValidationError",
+          path: "account",
+          report: "Account hasn't been registered!",
+        };
+      }
+
+      // Check if the password is correct
+
+      console.log(password, existingUser.password);
+
+      const validPassword = bcrypt.compareSync(password, existingUser.password);
+      if (validPassword) {
+        console.log({ __typename: "User", ...existingUser.toObject()});
+        return { __typename: "User", ...existingUser.toObject()};
+      } else {
+        return {
+          __typename: "ValidationError",
+          path: "password",
+          report: "Password is not correct!",
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      return {
+        __typename: "ValidationError",
+        path: "unknown",
+        report: "An error occurred.",
+      };
     }
   },
 
@@ -45,6 +68,7 @@ const Query = {
   },
 
   queryPost: async (parent, { type, queryString }, { PostModel }, info) => {
+    let data;
     switch (type) {
       case "title":
         return await PostModel.find({
@@ -67,10 +91,13 @@ const Query = {
           teacherName: { $regex: new RegExp(queryString, "i") },
         });
       case "all":
-        return await PostModel.find({});
+        data = await PostModel.find({});
+        break;
       default:
         return []; // 如果 type 的值不是上述任何一個，則返回空數組
     }
+    console.log("data:", data);
+    return data;
   },
 
   queryPostCollection: async (
@@ -105,7 +132,7 @@ const Query = {
         return [];
     }
   },
-  
+
   queryChatBoxes: async (
     parent,
     { userId },

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 
 import { Button, Chip } from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -11,11 +11,11 @@ import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import DataSaverOnIcon from "@mui/icons-material/DataSaverOn";
-import { useOutsider } from "../../containers/hooks/useOutsider";
+import { UseOutsider } from "../../containers/hooks/useOutsider";
 import Tooltip from "@mui/material/Tooltip";
 import { Modal } from "antd";
 const { confirm } = Modal;
-import PathConstants from "../../routes/pathConstants";
+import paths from "../../constants/paths";
 import { CREATE_CHATBOX_MUTATION } from "../../containers/graphql";
 import styles from "./postLayout.module.css";
 import PropTypes from "prop-types";
@@ -26,7 +26,7 @@ const PostLayout = ({
   handleEditPost,
   handleDeletePost,
 }) => {
-  const { userId, account, authenticated } = useOutsider();
+  const { userId, account, authenticated } = UseOutsider();
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
   const [info, setInfo] = useState(null);
   const [me, setMe] = useState(true);
@@ -57,7 +57,7 @@ const PostLayout = ({
   const handleChat = async () => {
     console.log("handle chat");
     if (post.author._id === userId) {
-      navigate(PathConstants.MY_PROFILE);
+      navigate(paths.MY_PROFILE);
     } else {
       const box = await createChatBox({
         variables: {
@@ -65,7 +65,7 @@ const PostLayout = ({
           to: post.author._id,
         },
       });
-      navigate(PathConstants.MAIL, {
+      navigate(paths.MAIL, {
         state: {
           PosterId: post.author._id,
           Box: box.data.createChatBox,

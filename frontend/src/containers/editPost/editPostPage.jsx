@@ -2,17 +2,17 @@ import { Input } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import PathConstants from "../../routes/pathConstants";
+import paths from "../../constants/paths";
 import Tags from "../../components/tags/tags";
-import { useOutsider } from "../hooks/useOutsider";
+import { UseOutsider } from "../hooks/useOutsider";
 import {
   CREATE_POST_MUTATION,
   UPDATE_POST_MUTATION,
 } from "../graphql/mutation";
 import { useMutation } from "@apollo/client";
-import PathContants from "../../routes/pathConstants";
-
-import ActionConstants from "../../actions/actionConstants";
+import PathContants from "../../constants/paths";
+import actions from "../../constants/actions";
+import { displayStatus } from "../utils";
 import styles from "./editPostPage.module.css";
 
 const classDetail = (post) => {
@@ -56,7 +56,7 @@ const classDetail = (post) => {
 };
 
 const EditPostPage = () => {
-  const { username, userId, displayStatus, authenticated } = useOutsider();
+  const { username, userId, authenticated } = UseOutsider();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -126,11 +126,11 @@ const EditPostPage = () => {
 
     try {
       let res;
-      if (action === ActionConstants.ADD_POST) {
+      if (action === actions.ADD_POST) {
         updatedPost.userId = userId;
         res = await createPost(updatedPost);
         // res = await createPost({ variables: updatedPost });
-      } else if (action === ActionConstants.EDIT_POST) {
+      } else if (action === actions.EDIT_POST) {
         updatedPost._id = postId;
         res = await updatePost(updatedPost);
         // res = await updatePost({ variables: updatedPost });
@@ -160,7 +160,7 @@ const EditPostPage = () => {
 
   useEffect(() => {
     if (finishEdit) {
-      navigate(PathConstants.MAIN, { state: { action, updatedPost } });
+      navigate(paths.MAIN, { state: { action, updatedPost } });
       setFinishEdit(false);
     }
   }, [finishEdit, updatedPost, navigate, action]);
@@ -169,6 +169,7 @@ const EditPostPage = () => {
     <>
       {/* 標題 */}
       <input
+        name="title"
         placeholder="Title"
         className={styles.title}
         {...register("title", { required: "Title is required" })}
@@ -180,6 +181,7 @@ const EditPostPage = () => {
       <div className={styles.rowItem}>
         <label>課名</label>
         <input
+          name="className"
           className={styles.input}
           {...register("className", {
             required: "Class name is required",
@@ -193,6 +195,7 @@ const EditPostPage = () => {
       <div className={styles.rowItem}>
         <label>授課老師</label>
         <input
+          name="teacherName"
           className={styles.input}
           {...register("teacherName", {
             required: "Teacher name is required",
@@ -206,6 +209,7 @@ const EditPostPage = () => {
       <div className={styles.rowItem}>
         <label>課程流水號</label>
         <input
+          name="classNo"
           className={styles.input}
           {...register("classNo", {
             required: "Class number is required",
@@ -219,6 +223,7 @@ const EditPostPage = () => {
       <div className={styles.rowItem}>
         <label>徵求人數</label>
         <input
+          name="condition"
           type="number"
           min="0"
           className={styles.input}
@@ -231,9 +236,9 @@ const EditPostPage = () => {
   const DeadlineInformation = () => (
     <div className={styles.rowItem}>
       <label>截止時間</label>
-      <input type="date" className={styles.time} {...register("endDate")} />
+      <input name="date" type="date" className={styles.time} {...register("endDate")} />
       &nbsp;
-      <input type="time" className={styles.time} {...register("endTime")} />
+      <input name="time" type="time" className={styles.time} {...register("endTime")} />
     </div>
   );
 

@@ -5,7 +5,6 @@
   "license": "MIT",
   "dependencies": {
     "@mui/base": "^5.0.0-beta.38",
-    "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.4",

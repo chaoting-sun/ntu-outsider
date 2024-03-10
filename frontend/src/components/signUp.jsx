@@ -3,7 +3,8 @@ import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import styled from "styled-components";
 import React, { useState } from "react";
 // import "../css/signIn.css";
-import { useOutsider } from "../containers/hooks/useOutsider";
+import { UseOutsider } from "../containers/hooks/useOutsider";
+import { displayStatus } from "../containers/utils";
 // import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@mui/material/Typography";
 
@@ -19,7 +20,6 @@ import Typography from "@mui/material/Typography";
 
 const SignUp = ({ handleSignUp }) => {
   // const StylesClasses = useStyles();
-  const { displayStatus } = useOutsider();
   const [userName, setUserName] = useState("");
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PropTypes from "./prop-types";
+import PropTypes from "prop-types";
 import styles from "./signInForm.module.css";
 
 const RegisterForm = ({ handleRegister }) => {
@@ -16,6 +16,7 @@ const RegisterForm = ({ handleRegister }) => {
     <form className={styles.form} onSubmit={handleSubmit}>
       <div className={styles.inputs}>
         <input
+          name="email"
           type="email"
           placeholder="Account"
           value={account}
@@ -23,6 +24,7 @@ const RegisterForm = ({ handleRegister }) => {
           className={styles.input}
         />
         <input
+          name="username"
           type="text"
           placeholder="Username"
           value={username}
@@ -30,6 +32,7 @@ const RegisterForm = ({ handleRegister }) => {
           className={styles.input}
         />
         <input
+          name="password"
           type="password"
           placeholder="Password"
           value={password}

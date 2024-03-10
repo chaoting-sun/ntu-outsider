@@ -96,7 +96,7 @@ const MiniDrawer = ({ authenticated, children }) => {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
 
-  console.log("authenticated:", authenticated);
+  // console.log("authenticated:", authenticated);
 
   return (
     <Box sx={{ display: "flex" }}>

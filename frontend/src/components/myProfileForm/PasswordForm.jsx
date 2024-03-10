@@ -15,6 +15,7 @@ const PasswordForm = ({ onSubmit }) => {
       <div className={styles.rowItem}>
         <label>原始密碼</label>
         <input
+          name="password"
           {...register("password", {
             required: "Password is required",
           })}
@@ -27,6 +28,7 @@ const PasswordForm = ({ onSubmit }) => {
       <div className={styles.rowItem}>
         <label>新密碼</label>
         <input
+          name="newPassword"
           {...register("newPassword", {
             required: "New password is required",
           })}
