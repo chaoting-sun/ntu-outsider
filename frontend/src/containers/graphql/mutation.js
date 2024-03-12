@@ -1,5 +1,25 @@
 import { gql } from "@apollo/client";
 
+export const SIGNUP_MUTATION = gql`
+  mutation signUp($account: String!, $name: String!, $password: String!) {
+    signUp(account: $account, name: $name, password: $password) {
+      userId
+      createPost
+      name
+    }
+  }
+`;
+
+export const LOGIN_MUTATION = gql`
+  mutation login($account: String!, $password: String!) {
+    login(account: $account, password: $password) {
+      userId
+      account
+      name
+    }
+  }
+`;
+
 export const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccount(
     $account: String!
@@ -80,25 +100,19 @@ export const CREATE_POST_MUTATION = gql`
       deadline: $deadline
       tag: $tag
     ) {
-      __typename
-      ... on Post {
+      _id
+      userId
+      author {
         _id
-        userId
-        author {
-          _id
-        }
-        title
-        classNo
-        className
-        teacherName
-        content
-        condition
-        deadline
-        tag
       }
-      ... on ServerError {
-        report
-      }
+      title
+      classNo
+      className
+      teacherName
+      content
+      condition
+      deadline
+      tag
     }
   }
 `;
@@ -126,29 +140,23 @@ export const UPDATE_POST_MUTATION = gql`
       deadline: $deadline
       tag: $tag
     ) {
-      __typename
-      ... on Post {
+      _id
+      userId
+      author {
         _id
-        userId
-        author {
-          _id
-          account
-          name
-          password
-          postCollection
-        }
-        title
-        classNo
-        className
-        teacherName
-        content
-        condition
-        deadline
-        tag
+        account
+        name
+        password
+        postCollection
       }
-      ... on ServerError {
-        report
-      }
+      title
+      classNo
+      className
+      teacherName
+      content
+      condition
+      deadline
+      tag
     }
   }
 `;

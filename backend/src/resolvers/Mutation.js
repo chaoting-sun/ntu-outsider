@@ -1,57 +1,143 @@
 import bcrypt from "bcryptjs";
 import { GraphQLError } from "graphql";
+import jwt from "jsonwebtoken";
+import config from "../config";
+import { UserInputError, ValidationError, AuthenticationError } from "../error";
 
 const Mutation = {
-  createAccount: async (
+  // new
+  signUp: async (
     parent,
-    { account, name, password },
-    { UserModel },
+    { account, name, password: plaintextPassword },
+    { UserModel, res },
     info
   ) => {
-    console.log("createAccount:", account, name, password);
+    console.log("signUp");
 
     // Check if some input is empty
 
-    if (!account || !name || !password) {
-      return {
-        __typename: "ValidationError",
-        path: "input",
-        report: "All fields must be provided.",
-      };
+    if (!account || !name || !plaintextPassword) {
+      throw new UserInputError("All fields must be provided.");
     }
 
     // Check if the account is existing
 
     const existingUser = await UserModel.findOne({ account });
     if (existingUser) {
-      return {
-        __typename: "ValidationError",
-        path: "account",
-        report: "Account has been registered",
-      };
+      throw new UserInputError("Account has been registered.");
     }
 
     // Create a new account
 
     const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const password = await bcrypt.hash(plaintextPassword, saltRounds);
+    const user = await new UserModel({ account, name, password }).save();
+    const token = jwt.sign({ userId: user._id }, config.JWT_SECRET);
 
-    try {
-      const newUser = await new UserModel({
-        account,
-        name,
-        password: hashedPassword,
-      }).save();
-      console.log("Created user:", newUser);
-      return { __typename: "User", ...newUser.toObject() };
-    } catch (error) {
-      console.log(error);
-      return {
-        __typename: "ServerError",
-        report: "Server error.",
-      };
-    }
+    // TODO: revise the returned value
+    return {
+      userId: user._id,
+      account: user.account,
+      name: user.name,
+    };
   },
+
+  login: async (
+    parent,
+    { account, password: plaintextPassword },
+    { res, UserModel },
+    info
+  ) => {
+    // Check if some input is empty
+
+    if (!account || !plaintextPassword) {
+      throw new UserInputError("All fields must be provided.");
+    }
+
+    // Check if the account is existing
+
+    const user = await UserModel.findOne({ account });
+    if (!user) {
+      throw new UserInputError("Account hasn't been registered.");
+    }
+
+    // Check if the password is correct
+
+    const valid = bcrypt.compareSync(plaintextPassword, user.password);
+    if (!valid) {
+      throw new UserInputError("Password is not correct!");
+    }
+
+    // set cookie
+
+    const token = jwt.sign({ userId: user._id }, config.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    res.cookie("userId", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24,
+    });
+
+    return {
+      userId: user._id,
+      account: user.account,
+      name: user.name,
+    };
+  },
+
+  // old
+  // createAccount: async (
+  //   parent,
+  //   { account, name, password },
+  //   { UserModel },
+  //   info
+  // ) => {
+  //   console.log("createAccount:", account, name, password);
+
+  //   // Check if some input is empty
+
+  //   if (!account || !name || !password) {
+  //     return {
+  //       __typename: "ValidationError",
+  //       path: "input",
+  //       report: "All fields must be provided.",
+  //     };
+  //   }
+
+  //   // Check if the account is existing
+
+  //   const existingUser = await UserModel.findOne({ account });
+  //   if (existingUser) {
+  //     return {
+  //       __typename: "ValidationError",
+  //       path: "account",
+  //       report: "Account has been registered",
+  //     };
+  //   }
+
+  //   // Create a new account
+
+  //   const saltRounds = 10;
+  //   const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+  //   try {
+  //     const newUser = await new UserModel({
+  //       account,
+  //       name,
+  //       password: hashedPassword,
+  //     }).save();
+  //     console.log("Created user:", newUser);
+  //     return { __typename: "User", ...newUser.toObject() };
+  //   } catch (error) {
+  //     console.log(error);
+  //     return {
+  //       __typename: "ServerError",
+  //       report: "Server error.",
+  //     };
+  //   }
+  // },
 
   createPost: async (
     parent,
@@ -66,32 +152,41 @@ const Mutation = {
       deadline,
       tag,
     },
-    { PostModel },
+    { PostModel, userId: contextUserId },
     info
   ) => {
-    console.log("createPost")
-    try {
-      const newPost = await new PostModel({
-        userId,
-        title,
-        classNo,
-        className,
-        teacherName,
-        content,
-        condition,
-        deadline,
-        tag,
-      }).save();
-      console.log("newPost:", newPost)
-      return { __typename: "Post", ...newPost.toObject() };
-    } catch (error) {
-      console.log(error);
-      return {
-        __typename: "ServerError",
-        report: "Server error.",
-      };
+    console.log("createPost:");
+    console.log(title, userId, contextUserId);
+
+    if (userId !== contextUserId) {
+      throw new AuthenticationError(
+        "You are not authorized to create a post for another user."
+      );
     }
+
+    // Check if some input is empty
+
+    if (!title || !classNo || !className || !teacherName || !content) {
+      throw new UserInputError("All fields must be provided.");
+    }
+
+    // Create a new post
+
+    const newPost = await new PostModel({
+      userId,
+      title,
+      classNo,
+      className,
+      teacherName,
+      content,
+      condition,
+      deadline,
+      tag,
+    }).save();
+    console.log("newPost:", newPost);
+    return { __typename: "Post", ...newPost.toObject() };
   },
+
   deleteUser: async (parent, { userId }, { UserModel }, info) => {
     let deletedUser = await UserModel.findOne({ _id: userId });
     await UserModel.deleteOne({ _id: userId });

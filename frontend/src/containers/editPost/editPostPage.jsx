@@ -14,7 +14,8 @@ import PathContants from "../../constants/paths";
 import actions from "../../constants/actions";
 import { displayStatus } from "../utils";
 import styles from "./editPostPage.module.css";
-import { normalizeFetchedPost } from "../utils";
+import { standardizeFetchedPost } from "../utils";
+import { parseErrorMessage } from "../utils";
 
 // const classDetail = (post) => {
 //   return [
@@ -56,8 +57,23 @@ import { normalizeFetchedPost } from "../utils";
 //   ];
 // };
 
+const defaultPost = {
+  title: "化工實驗找人",
+  classNo: "PE24336",
+  className: "化工實驗",
+  teacherName: "鄭進一",
+  content: "找優秀的人一起做化工實驗",
+  condition: 6,
+  endDate: "2024-02-29",
+  endTime: "12:42",
+  tags: ["化工", "實驗"],
+};
+
 const EditPostPage = () => {
-  const { userId, authenticated } = UseOutsider();
+  const {
+    user: { userId },
+    authenticated
+  } = UseOutsider();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -68,13 +84,7 @@ const EditPostPage = () => {
 
   const [updatedPost, setUpdatedPost] = useState(null);
   const [finishEdit, setFinishEdit] = useState(false);
-  const [editedTag, setEditedTag] = useState(initPost?.tag || []);
-
-  // navigate to LOGIN page if not authencated
-
-  useEffect(() => {
-    if (!authenticated) navigate(PathContants.LOGIN);
-  }, [authenticated, navigate]);
+  const [editedTag, setEditedTag] = useState(initPost?.tag || defaultPost.tags);
 
   const {
     register,
@@ -83,20 +93,42 @@ const EditPostPage = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      title: initPost?.title || "",
-      classNo: initPost?.classNo || "",
-      className: initPost?.className || "",
-      teacherName: initPost?.teacherName || "",
-      content: initPost?.content || "",
-      condition: initPost?.condition || "",
-      endDate: initPost?.deadline.split(" ")[0] || "",
-      endTime: initPost?.deadline.split(" ")[1] || "",
-      tags: initPost?.tags || [],
+      title: initPost?.title || defaultPost.title,
+      classNo: initPost?.classNo || defaultPost.classNo,
+      className: initPost?.className || defaultPost.className,
+      teacherName: initPost?.teacherName || defaultPost.teacherName,
+      content: initPost?.content || defaultPost.content,
+      condition: initPost?.condition || defaultPost.condition,
+      endDate: initPost?.deadline.split(" ")[0] || defaultPost.endDate,
+      endTime: initPost?.deadline.split(" ")[1] || defaultPost.endTime,
     },
   });
 
-  const [createPost] = useMutation(CREATE_POST_MUTATION);
-  const [updatePost] = useMutation(UPDATE_POST_MUTATION);
+  const [createPost] = useMutation(CREATE_POST_MUTATION, {
+    onCompleted: ({ createPost }) => {
+      const newPost = standardizeFetchedPost(createPost);
+      setUpdatedPost(newPost);
+      setFinishEdit(true);
+      displayStatus({ type: "success", msg: "Post successfully created!" });
+    },
+    onError:  (error) => {
+      const errorMessage = parseErrorMessage(error);
+      displayStatus(errorMessage);
+    }
+  });
+
+  const [updatePost] = useMutation(UPDATE_POST_MUTATION, {
+    onCompleted: ({ updatePost }) => {
+      const updatedPost = standardizeFetchedPost(updatePost);
+      setUpdatedPost(updatedPost);
+      setFinishEdit(true);
+      displayStatus({ type: "success", msg: "Post successfully updated!" });
+    },
+    onError:  (error) => {
+      const errorMessage = parseErrorMessage(error);
+      displayStatus(errorMessage);
+    }
+  });
 
   const onSubmit = async (formData) => {
     const {
@@ -122,43 +154,65 @@ const EditPostPage = () => {
       tag: editedTag,
     };
 
-    let res;
-    if (action === actions.ADD_POST) {
-      console.log("addPost");
+    console.log("action:", action);
+    console.log("authen:", authenticated);
+    console.log("userId:", userId);
 
+    if (action === actions.ADD_POST) {
       updatedPost.userId = userId;
+      console.log("addPost:", updatedPost);
       try {
-        const {
-          data: { createPost: response },
-        } = await createPost({ variables: updatedPost });
-        res = response;
+        createPost({ variables: updatedPost });
       } catch (error) {
         console.log(error);
       }
     } else if (action === actions.EDIT_POST) {
-      console.log("editPost");
-
       updatedPost.postId = postId;
       try {
-        const {
-          data: { updatePost: response },
-        } = await updatePost({ variables: updatedPost });
-        res = response;
+        updatePost({ variables: updatedPost });
       } catch (error) {
         console.log(error);
       }
     }
-    // console.log(res);
-
-    if (res.__typename === "Post") {
-      const updatedPost = normalizeFetchedPost(res);
-      setUpdatedPost(updatedPost);
-      setFinishEdit(true);
-      displayStatus({ type: "success", msg: "Post successfully updated!" });
-    } else if (res.__typename === "ServerError") {
-      displayStatus({ type: "error", msg: res.report });
-    }
   };
+
+  //   let res;
+  //   if (action === actions.ADD_POST) {
+  //     console.log("addPost");
+
+  //     updatedPost.userId = userId;
+  //     try {
+  //       const {
+  //         data: { createPost: response },
+  //       } = await createPost({ variables: updatedPost });
+  //       res = response;
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   } else if (action === actions.EDIT_POST) {
+  //     console.log("editPost");
+
+  //     updatedPost.postId = postId;
+  //     try {
+  //       const {
+  //         data: { updatePost: response },
+  //       } = await updatePost({ variables: updatedPost });
+  //       res = response;
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  //   // console.log(res);
+
+  //   if (res.__typename === "Post") {
+  //     const updatedPost = standardizeFetchedPost(res);
+  //     setUpdatedPost(updatedPost);
+  //     setFinishEdit(true);
+  //     displayStatus({ type: "success", msg: "Post successfully updated!" });
+  //   } else if (res.__typename === "ServerError") {
+  //     displayStatus({ type: "error", msg: res.report });
+  //   }
+  // };
 
   useEffect(() => {
     if (finishEdit) {
@@ -254,10 +308,11 @@ const EditPostPage = () => {
     </div>
   );
 
-  // console.log(watch("content")); // you can watch individual input by pass the name of the input
-  // console.log(watch("tags")); // you can watch individual input by pass the name of the input
+  // navigate to LOGIN page if not authencated
 
-  return !authenticated ? null : (
+  if (!authenticated) navigate(PathContants.LOGIN);
+
+  return (
     <div className={styles.container}>
       <div className={styles.card}>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
@@ -281,4 +336,5 @@ const EditPostPage = () => {
     </div>
   );
 };
+
 export default EditPostPage;

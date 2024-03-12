@@ -1,13 +1,9 @@
 import { createContext } from "react";
 
 const OutsiderContext = createContext({
-  userId: null,
-  username: "",
-  passWord: "",
+  user: {},
   authenticated: false,
-  setUserId: () => {},
-  setUsername: () => {},
-  setPassword: () => {},
+  setUser: () => {},
   handleAuthenticated: () => {},
   displayStatus: () => {},
 });

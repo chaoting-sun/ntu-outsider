@@ -1,17 +1,16 @@
 import mongoose from "mongoose";
-import dotenv from 'dotenv'
+import config from "./config";
+
 
 export default {
-  connect: () => {
-    dotenv.config()
-    
-    if (!process.env.MONGO_URL) {
+  connect: () => {    
+    if (!config.MONGO_URL) {
       console.error("Missing MONGO_URL!!!");
       process.exit(1);
     }
     mongoose.set("strictQuery", false);
     mongoose
-      .connect(process.env.MONGO_URL, {
+      .connect(config.MONGO_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       })

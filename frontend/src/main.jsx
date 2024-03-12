@@ -6,10 +6,12 @@ import {
   ApolloProvider,
   split,
   HttpLink,
+  ApolloLink,
 } from "@apollo/client";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
+import { YogaLink } from "@graphql-yoga/apollo-link";
 import { StyledEngineProvider } from "@mui/material";
 
 import App from "./App.jsx";
@@ -20,7 +22,7 @@ console.log(
   `http://localhost:${import.meta.env.VITE_SERVER_PORT}/graphql`
 );
 
-// past
+// past working code
 
 // const httpLink = new HttpLink({
 //   uri: "http://localhost:5001/graphql",
@@ -50,15 +52,20 @@ console.log(
 //   cache: new InMemoryCache(),
 // });
 
-import { YogaLink } from "@graphql-yoga/apollo-link";
-import { onError } from "@apollo/client/link/error";
+const yogaLink = new YogaLink({
+  endpoint: "http://localhost:5001/graphql",
+  credentials: "include",
+});
+
+// const httpLink = new HttpLink({
+//   uri: "http://localhost:5001/graphql",
+// });
 
 const client = new ApolloClient({
-  link: new YogaLink({
-    endpoint: 'http://localhost:5001/graphql'
-  }),
-  cache: new InMemoryCache()
-})
+  link: yogaLink,
+  cache: new InMemoryCache(),
+  
+});
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

@@ -2,14 +2,16 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import styles from "./signInForm.module.css";
 
+// TODO: prevent the inputs from being removed when the form is submitted
+
 const RegisterForm = ({ handleRegister }) => {
   const [account, setAccount] = useState("");
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    return handleRegister(account, username, password);
+    return handleRegister({ variables: { account, name, password } });
   };
 
   return (
@@ -27,8 +29,8 @@ const RegisterForm = ({ handleRegister }) => {
           name="username"
           type="text"
           placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           className={styles.input}
         />
         <input

@@ -2,13 +2,16 @@ import { useState } from "react";
 import styles from "./signInForm.module.css";
 import PropTypes from "prop-types";
 
-const LogInForm = ({ handleLogIn }) => {
+// TODO: prevent the inputs from being removed when the form is submitted
+
+const LoginForm = ({ handleLogin }) => {
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    return handleLogIn(account, password);
+    handleLogin({ variables: { account, password } });
   };
 
   return (
@@ -38,10 +41,8 @@ const LogInForm = ({ handleLogIn }) => {
   );
 };
 
-LogInForm.propTypes = {
-  handleLogIn: PropTypes.func,
+LoginForm.propTypes = {
+  handleLogin: PropTypes.func,
 };
 
-
-export default LogInForm;
-
+export default LoginForm;

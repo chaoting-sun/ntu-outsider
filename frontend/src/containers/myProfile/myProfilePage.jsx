@@ -14,14 +14,8 @@ import styles from "./myProfilePage.module.css";
 import { displayStatus } from "../utils";
 
 const MyProfilePage = () => {
-  const {
-    userId,
-    username,
-    account,
-    setUsername,
-    setAccount,
-    authenticated,
-  } = UseOutsider();
+  const { user, authenticated } = UseOutsider();
+
   const [queryUser] = useLazyQuery(USER_QUERY, { fetchPolicy: "network-only" });
   const [updateUser] = useMutation(UPDATE_USER_MUTATION);
   const [updatePassword] = useMutation(UPDATE_PASSWORD_MUTATION);
@@ -87,7 +81,7 @@ const MyProfilePage = () => {
     // }
   };
 
-  return !authenticated ? null : (
+  return authenticated ? (
     <div className={styles.container}>
       <div className={styles.card}>
         <title className={styles.title}>個人資訊</title>
@@ -95,7 +89,7 @@ const MyProfilePage = () => {
         <PasswordForm onSubmit={handleOnSubmitPassword} />
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default MyProfilePage;

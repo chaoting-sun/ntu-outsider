@@ -17,7 +17,18 @@ export const displayStatus = (s) => {
   }
 };
 
-export const normalizeFetchedPost = (post) => {
+// a error parser for graphql error
+
+export const parseErrorMessage = (error) => {
+  const graphQLError = error.graphQLErrors[0];
+  const errorCode = graphQLError.extensions?.code;
+  const customMessage = graphQLError.extensions?.msg;
+  console.log("Error code/message:", errorCode, customMessage);
+
+  return { type: errorCode, msg: customMessage || "Unexpected error" };
+}
+
+export const standardizeFetchedPost = (post) => {
   const {
     _id: postId,
     title,

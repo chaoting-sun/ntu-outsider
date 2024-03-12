@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs";
-import { GraphQLError } from "graphql";
 
 const Query = {
   queryChatBox: async (parent, { name1, name2 }, { ChatBoxModel }, info) => {
@@ -28,7 +27,7 @@ const Query = {
 
     try {
       // Check if the account is existing
-      
+
       const existingUser = await UserModel.findOne({ account });
       if (!existingUser) {
         return {
@@ -44,8 +43,8 @@ const Query = {
 
       const validPassword = bcrypt.compareSync(password, existingUser.password);
       if (validPassword) {
-        console.log({ __typename: "User", ...existingUser.toObject()});
-        return { __typename: "User", ...existingUser.toObject()};
+        console.log({ __typename: "User", ...existingUser.toObject() });
+        return { __typename: "User", ...existingUser.toObject() };
       } else {
         return {
           __typename: "ValidationError",
@@ -66,7 +65,15 @@ const Query = {
     return await PostModel.findOne({ _id: postId });
   },
 
-  queryPost: async (parent, { type, queryString }, { PostModel }, info) => {
+  queryPost: async (
+    parent,
+    { type, queryString },
+    { PostModel, userId },
+    info
+  ) => {
+    console.log("queryPost:");
+    console.log("userId:", userId);
+
     let fetchedPosts;
     switch (type) {
       case "title":

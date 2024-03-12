@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -93,10 +93,8 @@ const Drawer = styled(MuiDrawer, {
 
 const MiniDrawer = ({ authenticated, children }) => {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-
-  // console.log("authenticated:", authenticated);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -166,9 +164,6 @@ const MiniDrawer = ({ authenticated, children }) => {
         </DrawerHeader>
         <Divider />
         <List>
-          {/* all (x, o), my (o), follow (o) */}
-          {/* o -> all, my, follow, x -> all */}
-
           {postItems
             .filter(({ canLogOut }) => authenticated || canLogOut)
             .map(({ text, icon, href, action }, index) => (

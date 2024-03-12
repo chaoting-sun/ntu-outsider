@@ -9,29 +9,14 @@ import {
   ACCOUNT_KEY,
   AUTHENTICATED_KEY,
 } from "../../constants/localStorages";
-import { normalizeFetchedPost } from "../utils";
+import { standardizeFetchedPost } from "../utils";
 
 // Define the provider component
 const OutsiderProvider = (props) => {
-  // get local storages
-
-  // Initialize state variables
-  // const [userId, setUserId] = useState(savedUserId || null);
-  // const [username, setUsername] = useState(savedUsername || "");
-  // const [account, setAccount] = useState(savedAccount || "");
-  // const [authenticated, setAuthenticated] = useState(savedAuthenticated || false); // TODO: change to default: false
-  const [userId, setUserId] = useState(
-    localStorage.getItem(USERID_KEY) || null
-  );
-  const [username, setUsername] = useState(
-    localStorage.getItem(USERNAME_KEY) || ""
-  );
-  const [account, setAccount] = useState(
-    localStorage.getItem(ACCOUNT_KEY) || ""
-  );
+  const [user, setUser] = useState({ userId: null, account: null, name: null });
   const [authenticated, setAuthenticated] = useState(
     JSON.parse(localStorage.getItem(AUTHENTICATED_KEY)) || false
-  ); // TODO: change to default: false
+  );
 
   const [posts, setPosts] = useState([]);
   const [preferTags, setPreferTags] = useState([]);
@@ -75,16 +60,14 @@ const OutsiderProvider = (props) => {
 
   useEffect(() => {
     console.log("  useEffect (UseOutsider)");
-
-    const fetchAllPosts = async (type, queryString) => {
+    const fetchAllPosts = async () => {
       const {
         data: { queryPost: fetchedPosts },
       } = await queryPost({ variables: { type: "all", queryString: "" } });
-      setPosts(fetchedPosts.map(normalizeFetchedPost));
+      setPosts(fetchedPosts.map(standardizeFetchedPost));
     };
     fetchAllPosts();
   }, [queryPost]);
-
 
   // const handleQueryPost = async (type, queryString) => {
   //   setDoingQueryPost(true);
@@ -112,34 +95,21 @@ const OutsiderProvider = (props) => {
     // return data.queryPostCollection;
   };
 
-  const handleAuthenticated = (userId, account, name) => {
-    setAuthenticated(true);
-    setUserId(userId);
-    setAccount(account);
-    setUsername(name);
-  };
-
   console.log(`re-render useOutsider`);
 
   // Define the context provider with the state
   return (
     <OutsiderContext.Provider
       value={{
+        user,
+        setUser,
         posts,
-        userId,
-        setUserId,
-        account,
-        username,
         preferTags,
         setPosts,
-        setAccount,
-        setUsername,
         setPreferTags,
         currentPost,
         authenticated,
         setAuthenticated,
-        handleAuthenticated,
-        // handleQueryPost,
         handleQueryPostCollection,
         doingQueryPost,
         setDoingQueryPost,

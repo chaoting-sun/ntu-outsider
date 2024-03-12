@@ -3,6 +3,7 @@ import { createServer } from "node:http";
 import { WebSocketServer } from "ws";
 import { createPubSub, createSchema, createYoga } from "graphql-yoga";
 import { useServer } from "graphql-ws/lib/use/ws";
+import cookieParser from "cookie-parser";
 
 import { ChatBoxModel } from "./models/chatbox";
 import { PostModel } from "./models/post";
@@ -18,20 +19,32 @@ import path from "path";
 import express from "express";
 import cors from "cors";
 
+// import { useJWT } from "@graphql-yoga/plugin-jwt";
+// import { useCookies } from "@whatwg-node/server-plugin-cookies";
+import config from "./config";
+import { getUserId } from "./auth";
+
 const pubsub = createPubSub();
 
 const app = express();
-if (process.env.NODE_ENV === "development") {
-  app.use(cors());
+if (config.NODE_ENV === "development") {
+  app.use(
+    cors({
+      origin: "http://localhost:5173",
+      credentials: true,
+    })
+  );
 }
 
-if (process.env.NODE_ENV === "production") {
+if (config.NODE_ENV === "production") {
   const __dirname = path.resolve();
   app.use(express.static(path.join(__dirname, "../frontend", "build")));
   app.get("/*", function (req, res) {
     res.sendFile(path.join(__dirname, "../frontend", "build", "index.html"));
   });
 }
+
+app.use(cookieParser());
 
 // test
 
@@ -50,11 +63,17 @@ const yoga = new createYoga({
       Post,
     },
   }),
-  context: {
-    ChatBoxModel,
-    PostModel,
-    UserModel,
-    pubsub,
+
+  // if using local storage
+  context: ({ req, res }) => {
+    return {
+      res,
+      userId: req && req.headers.cookie ? getUserId(req.headers.cookie, UserModel) : null,
+      ChatBoxModel,
+      PostModel,
+      UserModel,
+      pubsub,
+    };
   },
   graphql: {
     subscriptionsProtocol: "WS",

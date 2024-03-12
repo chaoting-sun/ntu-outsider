@@ -8,12 +8,8 @@ import actions from "../../constants/actions";
 import { displayStatus } from "../utils";
 
 const NavBar = () => {
-  const {
-    authenticated,
-    setAuthenticated,
-    handleQueryPost,
-    handleQueryPostCollection,
-  } = UseOutsider();
+  const { authenticated, setAuthenticated } = UseOutsider();
+
   const navigate = useNavigate();
 
   const handleOnClickMail = () => {

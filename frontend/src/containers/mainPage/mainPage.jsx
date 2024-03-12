@@ -71,9 +71,8 @@ const initialPosts = [
 const MainPage = () => {
   const {
     posts,
-    userId,
+    user: { userId },
     setPosts,
-    username,
     currentPost,
     doingQueryPost,
     setDoingQueryPost,
@@ -95,7 +94,9 @@ const MainPage = () => {
   const lastEditedPostIdRef = useRef(null);
 
   useEffect(() => {
-    console.log(`  useEffect(MainPage), action=${action} lastId=${lastEditedPostIdRef.current}`);
+    console.log(
+      `  useEffect(MainPage), action=${action} lastId=${lastEditedPostIdRef.current}`
+    );
 
     if (editedPost?.postId !== lastEditedPostIdRef.current) {
       if (action === actions.ADD_POST) {

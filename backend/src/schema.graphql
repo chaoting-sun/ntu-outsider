@@ -32,6 +32,12 @@ type Post {
   tag: [String]
 }
 
+type AuthPayload {
+  userId: String!
+  account: String!
+  name: String!
+}
+
 type ValidationError {
   path: String!
   report: String!
@@ -42,7 +48,6 @@ type ServerError {
 }
 
 union AccountResult = User | ValidationError | ServerError
-union PostResult = Post | ServerError
 
 type Query {
   user(name: String!): [User!] # for backend checking not used in frontend
@@ -55,7 +60,16 @@ type Query {
 }
 
 type Mutation {
-  createAccount(account: String!, name: String!, password: String!): AccountResult!
+  # old
+  createAccount(
+    account: String!
+    name: String!
+    password: String!
+  ): AccountResult!
+  # new
+  signUp(account: String!, name: String!, password: String!): AuthPayload
+  login(account: String!, password: String!): AuthPayload
+
   updateUser(userId: ID!, name: String!, account: String!): User!
   updatePassword(userId: ID!, oldPassword: String!, newPassword: String!): User
   deleteUser(userId: ID!): User!
@@ -70,7 +84,7 @@ type Mutation {
     condition: Int!
     deadline: String!
     tag: [String]
-  ): PostResult!
+  ): Post
   updatePost(
     postId: ID!
     title: String!
@@ -81,7 +95,7 @@ type Mutation {
     condition: Int!
     deadline: String!
     tag: [String]
-  ): PostResult!
+  ): Post!
   deletePost(postId: ID!): Post!
   updatePostCollection(userId: ID!, postId: ID!): User!
 
@@ -98,5 +112,3 @@ type MessageSubscriptionPayload {
   chatBoxName: String!
   message: Message!
 }
-
-
