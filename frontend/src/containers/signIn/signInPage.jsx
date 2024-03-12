@@ -22,9 +22,6 @@ const SignInPage = () => {
   const location = useLocation();
   const action = location.state?.action === "signUp" ? "signUp" : "login";
 
-  console.log("state:", location.state);
-
-
   const { setUser, setAuthenticated } = UseOutsider();
   const [loginPhase, setLoginPhase] = useState(action);
 
@@ -42,6 +39,7 @@ const SignInPage = () => {
   const [login] = useMutation(LOGIN_MUTATION, {
     onCompleted: ({ login }) => {
       const { userId, account, name } = login;
+      console.log("login:", userId, account, name);
       setUser({ userId, account, name });
       setAuthenticated(true);
       displayStatus({ type: "success", msg: "Log in successfully" });

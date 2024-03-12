@@ -155,8 +155,6 @@ const EditPostPage = () => {
     };
 
     console.log("action:", action);
-    console.log("authen:", authenticated);
-    console.log("userId:", userId);
 
     if (action === actions.ADD_POST) {
       updatedPost.userId = userId;

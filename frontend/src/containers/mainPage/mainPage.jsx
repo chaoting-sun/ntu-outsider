@@ -86,6 +86,9 @@ const MainPage = () => {
 
   const editedPost = location.state?.updatedPost || null;
 
+  console.log("mainPage")
+  console.log("userId:", userId);
+
   // const [shouldUp]
   const [action, setAction] = useState(location.state?.action || null);
   const [updatePostCollection] = useMutation(UPDATE_POST_COLLECTION_MUTATION);

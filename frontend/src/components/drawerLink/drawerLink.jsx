@@ -2,7 +2,7 @@ import { Drawer, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip }
 import PropTypes from "prop-types";
 import styles from "./drawerLink.module.css";
 
-const DrawerLink = ({ text, icon, href, open, handleNavigate }) => {
+const DrawerLink = ({ text, icon, href, open, handleAction }) => {
   return (
     <ListItem key={text} disablePadding className={styles.container}>
       <Tooltip
@@ -11,7 +11,7 @@ const DrawerLink = ({ text, icon, href, open, handleNavigate }) => {
         disableHoverListener={open ? true : false}
       >
         <ListItemButton
-          onClick={() => handleNavigate(href)}
+          onClick={() => handleAction(href)}
           sx={{
             minHeight: 48,
             justifyContent: open ? "initial" : "center",
@@ -39,7 +39,7 @@ DrawerLink.propTypes = {
   icon: PropTypes.element.isRequired,
   href: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired,
-  handleNavigate: PropTypes.func.isRequired,
+  handleAction: PropTypes.func.isRequired,
 };
 
 export default DrawerLink;

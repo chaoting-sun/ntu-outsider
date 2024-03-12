@@ -21,6 +21,7 @@ export const displayStatus = (s) => {
 
 export const parseErrorMessage = (error) => {
   const graphQLError = error.graphQLErrors[0];
+  console.log(graphQLError)
   const errorCode = graphQLError.extensions?.code;
   const customMessage = graphQLError.extensions?.msg;
   console.log("Error code/message:", errorCode, customMessage);

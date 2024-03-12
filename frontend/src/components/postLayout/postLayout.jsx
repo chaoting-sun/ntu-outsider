@@ -26,11 +26,17 @@ const PostLayout = ({
   handleEditPost,
   handleDeletePost,
 }) => {
-  const { userId, authenticated } = UseOutsider();
+  const {
+    user: { userId },
+    authenticated,
+  } = UseOutsider();
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
   const [info, setInfo] = useState(null);
   const [me, setMe] = useState(post.authorId === userId);
-  
+
+  // console.log("PostLayout");
+  console.log(post.authorId, userId, me);
+
   const navigate = useNavigate();
   const [createChatBox] = useMutation(CREATE_CHATBOX_MUTATION);
 

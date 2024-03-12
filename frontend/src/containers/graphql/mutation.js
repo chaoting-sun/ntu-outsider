@@ -4,7 +4,7 @@ export const SIGNUP_MUTATION = gql`
   mutation signUp($account: String!, $name: String!, $password: String!) {
     signUp(account: $account, name: $name, password: $password) {
       userId
-      createPost
+      account
       name
     }
   }
@@ -16,6 +16,14 @@ export const LOGIN_MUTATION = gql`
       userId
       account
       name
+    }
+  }
+`;
+
+export const LOGOUT_MUTATION = gql`
+  mutation logout {
+    logout {
+      msg
     }
   }
 `;

@@ -9,7 +9,7 @@ import {
   ACCOUNT_KEY,
   AUTHENTICATED_KEY,
 } from "../../constants/localStorages";
-import { standardizeFetchedPost } from "../utils";
+import { displayStatus, standardizeFetchedPost } from "../utils";
 
 // Define the provider component
 const OutsiderProvider = (props) => {
@@ -36,7 +36,15 @@ const OutsiderProvider = (props) => {
 
   // Define function to handle post queries
 
-  const [queryPost] = useLazyQuery(POST_QUERY, { fetchPolicy: "network-only" });
+  const [queryPost] = useLazyQuery(POST_QUERY, {
+    onCompleted: ({ queryPost: fetchedPosts }) => {
+      setPosts(fetchedPosts.map(standardizeFetchedPost));
+    },
+    onError: (error) => {
+      console.log(error);
+      displayStatus({ type: "fail", msg: "Failed to fetch posts" });
+    },
+  });
 
   // const handleFetchAllPosts = useCallback(
   //   async (type, queryString) => {
@@ -59,14 +67,7 @@ const OutsiderProvider = (props) => {
   // }, [handleFetchAllPosts]);
 
   useEffect(() => {
-    console.log("  useEffect (UseOutsider)");
-    const fetchAllPosts = async () => {
-      const {
-        data: { queryPost: fetchedPosts },
-      } = await queryPost({ variables: { type: "all", queryString: "" } });
-      setPosts(fetchedPosts.map(standardizeFetchedPost));
-    };
-    fetchAllPosts();
+    queryPost({ variables: { type: "all", queryString: "" } });
   }, [queryPost]);
 
   // const handleQueryPost = async (type, queryString) => {

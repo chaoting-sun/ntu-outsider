@@ -34,10 +34,13 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import HeaderLink from "../../components/headerLink/headerLink";
 import DrawerLink from "../../components/drawerLink/drawerLink";
 
+import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { postItems, accountItems } from "./items";
 import styles from "./miniDrawer.module.css";
 import PropTypes from "prop-types";
+import { LOGOUT_MUTATION } from "../graphql";
+import { displayStatus } from "../utils";
 
 const drawerWidth = 240;
 
@@ -111,6 +114,16 @@ const MiniDrawer = ({ authenticated, children }) => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const [Logout] = useMutation(LOGOUT_MUTATION, {
+    onCompleted: () => {
+      navigate(paths.LOGIN, { state: { action: actions.LOGIN } });
+      displayStatus({ type: "success", msg: "Logout successfully" });
+    },
+    onError: (error) => {
+      console.log("logout error:", error);
+      displayStatus({ type: "error", msg: "Logout failed" });
+    },
+  });
 
   const HeaderLinks = () => {
     return (
@@ -121,7 +134,8 @@ const MiniDrawer = ({ authenticated, children }) => {
               text="登出"
               icon={<LogoutIcon sx={{ fontSize: "2rem" }} />}
               href={paths.LOGIN}
-              handleNavigate={(link) => {
+              handleAction={(link) => {
+                Logout();
                 navigate(link, { state: { login: actions.LOGIN } });
               }}
             />
@@ -129,7 +143,7 @@ const MiniDrawer = ({ authenticated, children }) => {
               text="編輯個人資料"
               icon={<AccountBoxIcon sx={{ fontSize: "2rem" }} />}
               href={paths.MY_PROFILE}
-              handleNavigate={(link) => {
+              handleAction={(link) => {
                 navigate(link);
               }}
             />
@@ -140,7 +154,7 @@ const MiniDrawer = ({ authenticated, children }) => {
               text="登入"
               icon={<LoginIcon sx={{ fontSize: "2rem" }} />}
               href={paths.LOGIN}
-              handleNavigate={(link) => {
+              handleAction={(link) => {
                 navigate(link, { state: { action: actions.LOGIN } });
               }}
             />
@@ -148,7 +162,7 @@ const MiniDrawer = ({ authenticated, children }) => {
               text="註冊"
               icon={<AppRegistrationIcon sx={{ fontSize: "2rem" }} />}
               href={paths.LOGIN}
-              handleNavigate={(link) => {
+              handleAction={(link) => {
                 navigate(link, { state: { action: actions.SIGNUP } });
               }}
             />
@@ -166,7 +180,7 @@ const MiniDrawer = ({ authenticated, children }) => {
           icon={<DonutSmallIcon />}
           href={paths.MAIN}
           open={open}
-          handleNavigate={(link) => {
+          handleAction={(link) => {
             navigate(link);
           }}
         />
@@ -176,7 +190,7 @@ const MiniDrawer = ({ authenticated, children }) => {
             icon={<AccessibilityNewIcon />}
             href={paths.MAIN}
             open={open}
-            handleNavigate={(link) => {
+            handleAction={(link) => {
               navigate(link, { state: { action: actions.MY_POST } });
             }}
           />
@@ -187,7 +201,7 @@ const MiniDrawer = ({ authenticated, children }) => {
             icon={<StarHalfIcon />}
             href={paths.MAIN}
             open={open}
-            handleNavigate={(link) => {
+            handleAction={(link) => {
               navigate(link, { state: { action: actions.FOLLOW_POST } });
             }}
           />
@@ -198,7 +212,7 @@ const MiniDrawer = ({ authenticated, children }) => {
             icon={<PostAddIcon />}
             href={paths.EDIT_POST}
             open={open}
-            handleNavigate={(link) => {
+            handleAction={(link) => {
               navigate(link, { state: { action: actions.ADD_POST } });
             }}
           />
