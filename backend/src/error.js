@@ -36,3 +36,16 @@ export class ValidationError extends Error {
     };
   }
 }
+
+// handling server errors
+
+export class ServerError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ServerError";
+    this.extensions = {
+      msg: message,
+      code: "SERVER_ERROR",
+    };
+  }
+}

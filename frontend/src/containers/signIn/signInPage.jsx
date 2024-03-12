@@ -19,12 +19,18 @@ import { Button } from "@mui/material";
 
 const SignInPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const action = location.state?.action === "signUp" ? "signUp" : "login";
+
+  console.log("state:", location.state);
+
+
   const { setUser, setAuthenticated } = UseOutsider();
-  const [logInPhase, setLogInPhase] = useState(true);
+  const [loginPhase, setLoginPhase] = useState(action);
 
   const [signUp] = useMutation(SIGNUP_MUTATION, {
     onCompleted: () => {
-      setLogInPhase(true);
+      setLoginPhase("login");
       displayStatus({ type: "success", msg: "Sign up successfully" });
     },
     onError: (error) => {
@@ -44,7 +50,7 @@ const SignInPage = () => {
     onError: (error) => {
       const errorMessage = parseErrorMessage(error);
       displayStatus(errorMessage);
-    }
+    },
   });
 
   const LogInLayout = () => (
@@ -55,7 +61,7 @@ const SignInPage = () => {
         Do not have an account?{" "}
         <span
           className={styles.signInLink}
-          onClick={() => setLogInPhase(false)}
+          onClick={() => setLoginPhase("signUp")}
         >
           Sign up.
         </span>
@@ -69,7 +75,7 @@ const SignInPage = () => {
       <RegisterForm handleRegister={signUp} />
       <div className={styles.footer}>
         Already have an account?{" "}
-        <span className={styles.signInLink} onClick={() => setLogInPhase(true)}>
+        <span className={styles.signInLink} onClick={() => setLoginPhase("login")}>
           Log in.
         </span>
       </div>
@@ -86,7 +92,7 @@ const SignInPage = () => {
       </Button>
       <div className={styles.formContainer}>
         <LockOpenIcon sx={{ fontSize: "2.4rem" }} />
-        {logInPhase ? <LogInLayout /> : <SignUpLayout />}
+        {loginPhase === "login" ? <LogInLayout /> : <SignUpLayout />}
       </div>
       {/* {loading && <p>Loading...</p>}
       {error && <p>Error logging in. Please try again.</p>} */}

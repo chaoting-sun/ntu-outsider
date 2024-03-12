@@ -5,7 +5,7 @@
   justify-content: space-between;
 }
 
-.headerTools {
+.headerLinks {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

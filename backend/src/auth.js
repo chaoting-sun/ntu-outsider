@@ -6,7 +6,7 @@ import { AuthenticationError } from "./error";
 
 export const getUserId = (cookie, UserModel) => {
   if (!cookie) {
-    throw new AuthenticationError("Not authenticated.");
+    return null;
   }
 
   const fragments = cookie.split(" ");
@@ -20,14 +20,14 @@ export const getUserId = (cookie, UserModel) => {
   }
 
   if (!token) {
-    throw new AuthenticationError("Not authenticated.");
+    return null;
   }
 
   const { userId } = jwt.verify(token, config.JWT_SECRET);
   const user = UserModel.findOne({ _id: userId });
 
   if (!user) {
-    throw new AuthenticationError("Not authenticated.");
+    return null;
   }
 
   console.log("userId:", userId);

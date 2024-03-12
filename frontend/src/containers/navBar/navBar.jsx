@@ -12,60 +12,60 @@ const NavBar = () => {
 
   const navigate = useNavigate();
 
-  const handleOnClickMail = () => {
-    if (authenticated) {
-      navigate(paths.MAIL);
-    } else {
-      navigate(paths.LOGIN);
-    }
-  };
+  // const handleOnClickMail = () => {
+  //   if (authenticated) {
+  //     navigate(paths.MAIL);
+  //   } else {
+  //     navigate(paths.LOGIN);
+  //   }
+  // };
 
-  const handleOnClickLogInOut = (action) => {
-    // logIn or logOut
-    switch (action) {
-      case "logIn":
-        navigate(paths.LOGIN, { state: { signUp: false } });
-        break;
-      case "logOut":
-        setAuthenticated(false);
-        navigate(paths.LOGIN, { state: { signUp: false } });
-        break;
-      case "signUp":
-        navigate(paths.LOGIN, { state: { signUp: true } });
-        break;
-      case "editProfile":
-        navigate(paths.MY_PROFILE);
-        break;
-      default:
-        console.log("wrong option");
-    }
-  };
+  // const handleOnClickLogInOut = (action) => {
+  //   // logIn or logOut
+  //   switch (action) {
+  //     case "logIn":
+  //       navigate(paths.LOGIN, { state: { signUp: false } });
+  //       break;
+  //     case "logOut":
+  //       setAuthenticated(false);
+  //       navigate(paths.LOGIN, { state: { signUp: false } });
+  //       break;
+  //     case "signUp":
+  //       navigate(paths.LOGIN, { state: { signUp: true } });
+  //       break;
+  //     case "editProfile":
+  //       navigate(paths.MY_PROFILE);
+  //       break;
+  //     default:
+  //       console.log("wrong option");
+  //   }
+  // };
 
-  const handleMenuOperation = (key) => {
-    // console.log('menu operation:', key);
+  // const handleMenuOperation = (key) => {
+  //   // console.log('menu operation:', key);
 
-    if (!authenticated) {
-      displayStatus({
-        type: "error",
-        msg: "Please log in!",
-      });
-      navigate(paths.LOGIN);
-      return;
-    }
+  //   if (!authenticated) {
+  //     displayStatus({
+  //       type: "error",
+  //       msg: "Please log in!",
+  //     });
+  //     navigate(paths.LOGIN);
+  //     return;
+  //   }
 
-    if (key === actions.EDIT_POST) {
-      navigate(paths.EDIT_POST, {
-        state: {
-          action: "createPost",
-          post: null,
-        },
-      });
-    } else {
-      // key = savedPost, followedPost, myPost, all
-      handleQueryPostCollection(key);
-      navigate(paths.MAIN);
-    }
-  };
+  //   if (key === actions.EDIT_POST) {
+  //     navigate(paths.EDIT_POST, {
+  //       state: {
+  //         action: "createPost",
+  //         post: null,
+  //       },
+  //     });
+  //   } else {
+  //     // key = savedPost, followedPost, myPost, all
+  //     handleQueryPostCollection(key);
+  //     navigate(paths.MAIN);
+  //   }
+  // };
 
   return (
     <>

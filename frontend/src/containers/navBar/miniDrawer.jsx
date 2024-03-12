@@ -12,11 +12,27 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import { Tooltip, formLabelClasses } from "@mui/material";
+// import ListItem from "@mui/material/ListItem";
+// import ListItemButton from "@mui/material/ListItemButton";
+// import ListItemIcon from "@mui/material/ListItemIcon";
+// import ListItemText from "@mui/material/ListItemText";
+// import { Tooltip, formLabelClasses } from "@mui/material";
+
+import DonutSmallIcon from "@mui/icons-material/DonutSmall";
+import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
+import StarHalfIcon from "@mui/icons-material/StarHalf";
+import PostAddIcon from "@mui/icons-material/PostAdd";
+
+import paths from "../../constants/paths";
+import actions from "../../constants/actions";
+
+import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from "@mui/icons-material/Logout";
+import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+
+import HeaderLink from "../../components/headerLink/headerLink";
+import DrawerLink from "../../components/drawerLink/drawerLink";
 
 import { useNavigate } from "react-router-dom";
 import { postItems, accountItems } from "./items";
@@ -96,10 +112,104 @@ const MiniDrawer = ({ authenticated, children }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
+  const HeaderLinks = () => {
+    return (
+      <>
+        {authenticated ? (
+          <>
+            <HeaderLink
+              text="登出"
+              icon={<LogoutIcon sx={{ fontSize: "2rem" }} />}
+              href={paths.LOGIN}
+              handleNavigate={(link) => {
+                navigate(link, { state: { login: actions.LOGIN } });
+              }}
+            />
+            <HeaderLink
+              text="編輯個人資料"
+              icon={<AccountBoxIcon sx={{ fontSize: "2rem" }} />}
+              href={paths.MY_PROFILE}
+              handleNavigate={(link) => {
+                navigate(link);
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <HeaderLink
+              text="登入"
+              icon={<LoginIcon sx={{ fontSize: "2rem" }} />}
+              href={paths.LOGIN}
+              handleNavigate={(link) => {
+                navigate(link, { state: { action: actions.LOGIN } });
+              }}
+            />
+            <HeaderLink
+              text="註冊"
+              icon={<AppRegistrationIcon sx={{ fontSize: "2rem" }} />}
+              href={paths.LOGIN}
+              handleNavigate={(link) => {
+                navigate(link, { state: { action: actions.SIGNUP } });
+              }}
+            />
+          </>
+        )}
+      </>
+    );
+  };
+
+  const DrawerLinks = () => {
+    return (
+      <>
+        <DrawerLink
+          text="所有貼文"
+          icon={<DonutSmallIcon />}
+          href={paths.MAIN}
+          open={open}
+          handleNavigate={(link) => {
+            navigate(link);
+          }}
+        />
+        {authenticated && (
+          <DrawerLink
+            text="我的貼文"
+            icon={<AccessibilityNewIcon />}
+            href={paths.MAIN}
+            open={open}
+            handleNavigate={(link) => {
+              navigate(link, { state: { action: actions.MY_POST } });
+            }}
+          />
+        )}
+        {authenticated && (
+          <DrawerLink
+            text="追蹤貼文"
+            icon={<StarHalfIcon />}
+            href={paths.MAIN}
+            open={open}
+            handleNavigate={(link) => {
+              navigate(link, { state: { action: actions.FOLLOW_POST } });
+            }}
+          />
+        )}
+        {authenticated && (
+          <DrawerLink
+            text="新增貼文"
+            icon={<PostAddIcon />}
+            href={paths.EDIT_POST}
+            open={open}
+            handleNavigate={(link) => {
+              navigate(link, { state: { action: actions.ADD_POST } });
+            }}
+          />
+        )}
+      </>
+    );
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-
       <AppBar position="fixed" open={open}>
         <Toolbar className={styles.header}>
           <Box sx={{ display: "flex", flexDirection: "row" }}>
@@ -115,7 +225,6 @@ const MiniDrawer = ({ authenticated, children }) => {
             >
               <MenuIcon />
             </IconButton>
-
             <img src="/ntu-symbol.png" width={45} height={45} />
             <Typography
               variant="h7"
@@ -128,24 +237,10 @@ const MiniDrawer = ({ authenticated, children }) => {
               Outsider
             </Typography>
           </Box>
-          {/* Header: Account Items */}
           <Box>
             <nav aria-label="main mailbox folders">
-              <List className={styles.headerTools}>
-                {accountItems
-                  .filter(({ loggedIn }) => loggedIn === authenticated)
-                  .map(({ text, icon, href }) => (
-                    <ListItem key={text} sx={{ width: "50px", padding: 0 }}>
-                      <Tooltip title={text}>
-                        <ListItemButton
-                          onClick={() => navigate(href)}
-                          className={styles.headerToolButton}
-                        >
-                          {icon}
-                        </ListItemButton>
-                      </Tooltip>
-                    </ListItem>
-                  ))}
+              <List className={styles.headerLinks}>
+                <HeaderLinks />
               </List>
             </nav>
           </Box>
@@ -164,40 +259,7 @@ const MiniDrawer = ({ authenticated, children }) => {
         </DrawerHeader>
         <Divider />
         <List>
-          {postItems
-            .filter(({ canLogOut }) => authenticated || canLogOut)
-            .map(({ text, icon, href, action }, index) => (
-              <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                <Tooltip
-                  title={text}
-                  placement="right"
-                  disableHoverListener={open ? true : false}
-                >
-                  <ListItemButton
-                    onClick={() => navigate(href, { state: { action } })}
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={text}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </Tooltip>
-              </ListItem>
-            ))}
+          <DrawerLinks />
         </List>
         <Divider />
       </Drawer>
@@ -219,7 +281,7 @@ const MiniDrawer = ({ authenticated, children }) => {
       </Box>
     </Box>
   );
-}
+};
 
 MiniDrawer.propTypes = {
   authenticated: PropTypes.bool,

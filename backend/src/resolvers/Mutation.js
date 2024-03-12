@@ -14,6 +14,9 @@ const Mutation = {
   ) => {
     console.log("signUp");
 
+
+
+
     // Check if some input is empty
 
     if (!account || !name || !plaintextPassword) {
@@ -87,6 +90,18 @@ const Mutation = {
     };
   },
 
+  logout: async (parent, args, { res }, info) => {
+    console.log("logout");
+    
+    res.cookie("userId", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: -1,
+    });
+    return { msg: "Logout successfully!" };
+  },
+
+
   // old
   // createAccount: async (
   //   parent,
@@ -158,6 +173,10 @@ const Mutation = {
     console.log("createPost:");
     console.log(title, userId, contextUserId);
 
+    if (!contextUserId) {
+      throw new AuthenticationError("You are not authenticated.");
+    }
+
     if (userId !== contextUserId) {
       throw new AuthenticationError(
         "You are not authorized to create a post for another user."
@@ -187,16 +206,18 @@ const Mutation = {
     return { __typename: "Post", ...newPost.toObject() };
   },
 
-  deleteUser: async (parent, { userId }, { UserModel }, info) => {
-    let deletedUser = await UserModel.findOne({ _id: userId });
-    await UserModel.deleteOne({ _id: userId });
-    return deletedUser;
-  },
+  // deleteUser: async (parent, { userId }, { UserModel }, info) => {
+  //   let deletedUser = await UserModel.findOne({ _id: userId });
+  //   await UserModel.deleteOne({ _id: userId });
+  //   return deletedUser;
+  // },
+
   deletePost: async (parent, { postId }, { PostModel }, info) => {
     let deletedPost = await PostModel.findOne({ _id: postId });
     await PostModel.deleteOne({ _id: postId });
     return deletedPost;
   },
+
   updateUser: async (
     parent,
     { userId, name, account },
@@ -210,6 +231,7 @@ const Mutation = {
     );
     return updatedUser;
   },
+
   updatePassword: async (
     parent,
     { userId, oldPassword, newPassword },

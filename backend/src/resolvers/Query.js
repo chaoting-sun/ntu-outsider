@@ -72,7 +72,6 @@ const Query = {
     info
   ) => {
     console.log("queryPost:");
-    console.log("userId:", userId);
 
     let fetchedPosts;
     switch (type) {

@@ -3,8 +3,8 @@ import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import styled from "styled-components";
 import React, { useState } from "react";
 // import "../css/signIn.css";
-import { UseOutsider } from "../containers/hooks/useOutsider";
-import { displayStatus } from "../containers/utils";
+import { UseOutsider } from "../../containers/hooks/useOutsider";
+import { displayStatus } from "../../containers/utils";
 // import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@mui/material/Typography";
 

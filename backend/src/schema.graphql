@@ -38,6 +38,10 @@ type AuthPayload {
   name: String!
 }
 
+type LogoutPayload {
+  msg: String!
+}
+
 type ValidationError {
   path: String!
   report: String!
@@ -69,6 +73,7 @@ type Mutation {
   # new
   signUp(account: String!, name: String!, password: String!): AuthPayload
   login(account: String!, password: String!): AuthPayload
+  logout: LogoutPayload
 
   updateUser(userId: ID!, name: String!, account: String!): User!
   updatePassword(userId: ID!, oldPassword: String!, newPassword: String!): User

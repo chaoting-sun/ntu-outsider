@@ -3,7 +3,7 @@ import { AppstoreOutlined, SettingOutlined, MailOutlined, HeartOutlined } from '
 import { Menu } from 'antd';
 import '../css/menuBar.css';
 import UserAddOutlined from '@ant-design/icons';
-import SearchBox from './searchBox';
+import SearchBox from '../searchBox';
 
 
 // antd: menu

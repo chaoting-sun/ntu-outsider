@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { createServer } from "node:http";
 import { WebSocketServer } from "ws";
-import { createPubSub, createSchema, createYoga } from "graphql-yoga";
+import { createPubSub, createYoga } from "graphql-yoga";
 import { useServer } from "graphql-ws/lib/use/ws";
 import cookieParser from "cookie-parser";
 
@@ -19,13 +19,14 @@ import path from "path";
 import express from "express";
 import cors from "cors";
 
-// import { useJWT } from "@graphql-yoga/plugin-jwt";
-// import { useCookies } from "@whatwg-node/server-plugin-cookies";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { applyMiddleware } from "graphql-middleware";
+import { ServerError } from "./error";
+
 import config from "./config";
 import { getUserId } from "./auth";
 
 const pubsub = createPubSub();
-
 const app = express();
 if (config.NODE_ENV === "development") {
   app.use(
@@ -44,31 +45,46 @@ if (config.NODE_ENV === "production") {
   });
 }
 
-app.use(cookieParser());
-
-// test
+// for testing
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Backend is running!" });
 });
 
-const yoga = new createYoga({
-  schema: createSchema({
-    typeDefs: fs.readFileSync("./src/schema.graphql", "utf-8"),
-    resolvers: {
-      Query,
-      Mutation,
-      Subscription,
-      ChatBox,
-      Post,
-    },
-  }),
+// Create a schema
 
-  // if using local storage
+const schema = makeExecutableSchema({
+  typeDefs: fs.readFileSync("./src/schema.graphql", "utf-8"),
+  resolvers: {
+    Query,
+    Mutation,
+    Subscription,
+    ChatBox,
+    Post,
+  },
+});
+
+const errorHandlingMiddleware = async (resolve, root, args, context, info) => {
+  try {
+    return await resolve(root, args, context, info);
+  } catch (error) {
+    throw new ServerError("Internal server error");
+  }
+};
+
+const schemaWithMiddleware = applyMiddleware(schema, errorHandlingMiddleware);
+
+// Create a new instance of Yoga server
+
+const yoga = new createYoga({
+  schema: schemaWithMiddleware,
   context: ({ req, res }) => {
     return {
       res,
-      userId: req && req.headers.cookie ? getUserId(req.headers.cookie, UserModel) : null,
+      userId:
+        req && req.headers.cookie
+          ? getUserId(req.headers.cookie, UserModel)
+          : null,
       ChatBoxModel,
       PostModel,
       UserModel,
@@ -80,6 +96,7 @@ const yoga = new createYoga({
   },
 });
 
+app.use(cookieParser());
 app.use("/graphql", yoga);
 
 const httpServer = createServer(app);
