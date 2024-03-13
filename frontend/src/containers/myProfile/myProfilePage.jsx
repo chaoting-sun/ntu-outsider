@@ -11,77 +11,40 @@ import {
 } from "../graphql/index";
 import PathContants from "../../constants/paths";
 import styles from "./myProfilePage.module.css";
-import { displayStatus } from "../utils";
+import { displayStatus, parseErrorMessage } from "../utils";
 
 const MyProfilePage = () => {
-  const { user, authenticated } = UseOutsider();
-
-  const [queryUser] = useLazyQuery(USER_QUERY, { fetchPolicy: "network-only" });
-  const [updateUser] = useMutation(UPDATE_USER_MUTATION);
-  const [updatePassword] = useMutation(UPDATE_PASSWORD_MUTATION);
+  const { user, setUser, authenticated } = UseOutsider();
   const navigate = useNavigate();
+
+  const [updateUser] = useMutation(UPDATE_USER_MUTATION, {
+    onCompleted: ({ updateUser }) => {
+      const { name, account } = updateUser;
+      setUser({ ...user, name, account });
+      displayStatus({ type: "success", msg: "save profile successfully!" });
+    },
+    onError: (error) => {
+      const errorMessage = parseErrorMessage(error);
+      displayStatus(errorMessage);
+    },
+  });
+
+  const [updatePassword] = useMutation(UPDATE_PASSWORD_MUTATION, {
+    onCompleted: ({ updatePassword }) => {
+      const { msg } = updatePassword;
+      displayStatus({ type: "success", msg });
+    },
+    onError: (error) => {
+      const errorMessage = parseErrorMessage(error);
+      displayStatus(errorMessage);
+    },
+  });
 
   // navigate to LOGIN page if not authencated
 
   useEffect(() => {
     if (!authenticated) navigate(PathContants.LOGIN);
   }, [authenticated, navigate]);
-
-  const handleSubmitAccount = async (formData) => {
-    const { name, account } = formData;
-
-    // TODO: make updateUser work
-    // const user = await updateUser({
-    //   variables: {
-    //     userId,
-    //     name: data.username,
-    //     account: data.userAccount,
-    //   },
-    // });
-    // if (user) {
-    //   displayStatus({ type: "success", msg: "save profile successfully!" });
-    // } else {
-    //   displayStatus({ type: "fail", msg: "Your account has been used!" });
-    // }
-  };
-
-  const handleSubmitPassword = async (input) => {
-    // TODO: make queryUser and updatePassword work
-    // const { data: userData } = await queryUser({
-    //   variables: {
-    //     account: account,
-    //     password: input.password,
-    //   },
-    // });
-    // const userData = {
-    //   queryUser: {
-    //     variables: {
-    //       account: account,
-    //       password: input.password,
-    //     },
-    //   },
-    // };
-    // if (!userData.queryUser) {
-    //   displayStatus({ type: "fail", msg: "Wrong password!" });
-    // } else {
-    //   // correct password
-    //   const { data } = await updatePassword({
-    //     variables: {
-    //       userId: userId,
-    //       oldPassword: userData.queryUser.password,
-    //       newPassword: hashPassword(input.newPassword),
-    //     },
-    //   });
-    //   if (data.updatePassword) {
-    //     displayStatus({
-    //       type: "success",
-    //       msg: "successfully update password!",
-    //     });
-    //   } else {
-    //     displayStatus({ type: "fail", msg: "fail to update password!" });
-    //   }
-    // }
-  };
 
   return authenticated ? (
     <div className={styles.container}>
@@ -90,9 +53,15 @@ const MyProfilePage = () => {
         <AccountForm
           name={user.name}
           account={user.account}
-          onSubmit={handleSubmitAccount}
+          onSubmit={async ({ name, account }) => {
+            await updateUser({ variables: { name, account } });
+          }}
         />
-        <PasswordForm onSubmit={handleSubmitPassword} />
+        <PasswordForm
+          onSubmit={async ({ oldPassword, newPassword }) => {
+            await updatePassword({ variables: { oldPassword, newPassword } });
+          }}
+        />
       </div>
     </div>
   ) : null;

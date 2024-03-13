@@ -10,7 +10,6 @@ import { displayStatus, parseErrorMessage } from "../utils";
 
 import { USER_QUERY } from "../graphql/query";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { CREATE_ACCOUNT_MUTATION } from "../graphql/mutation";
 
 import { SIGNUP_MUTATION, LOGIN_MUTATION } from "../graphql/mutation";
 

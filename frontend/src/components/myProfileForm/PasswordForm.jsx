@@ -15,14 +15,14 @@ const PasswordForm = ({ onSubmit }) => {
       <div className={styles.rowItem}>
         <label>原始密碼</label>
         <input
-          name="password"
-          {...register("password", {
+          name="oldPassword"
+          {...register("oldPassword", {
             required: "Password is required",
           })}
           type="password"
         />
-        {errors.password && (
-          <p className={styles.error}>{errors.password.message}</p>
+        {errors.oldPassword && (
+          <p className={styles.error}>{errors.oldPassword.message}</p>
         )}
       </div>
       <div className={styles.rowItem}>

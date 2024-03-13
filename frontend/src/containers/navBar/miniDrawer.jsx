@@ -40,6 +40,8 @@ import styles from "./miniDrawer.module.css";
 import PropTypes from "prop-types";
 import { LOGOUT_MUTATION } from "../graphql";
 import { displayStatus } from "../utils";
+import { UseOutsider } from "../hooks/useOutsider";
+import { AUTHENTICATED_KEY, USER_KEY } from "../../constants/localStorages";
 
 const drawerWidth = 240;
 
@@ -111,10 +113,23 @@ const Drawer = styled(MuiDrawer, {
 
 const MiniDrawer = ({ authenticated, children }) => {
   const theme = useTheme();
+  const { setUser, setAuthenticated } = UseOutsider();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
   const [Logout] = useMutation(LOGOUT_MUTATION, {
     onCompleted: () => {
+      // clear local storage
+      
+      const newUserState = { userId: null, account: null, name: null };
+      localStorage.setItem(USER_KEY, JSON.stringify(newUserState));
+      localStorage.setItem(AUTHENTICATED_KEY, false);
+
+      // clear state
+
+      setUser(newUserState);
+      setAuthenticated(false);
+
       navigate(paths.LOGIN, { state: { action: actions.LOGIN } });
       displayStatus({ type: "success", msg: "Logout successfully" });
     },

@@ -21,7 +21,7 @@ import cors from "cors";
 
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { applyMiddleware } from "graphql-middleware";
-import { ServerError } from "./error";
+import { AuthenticationError, ServerError, UnexpectedError, UserInputError } from "./error";
 
 import config from "./config";
 import { getUserId } from "./auth";
@@ -68,7 +68,11 @@ const errorHandlingMiddleware = async (resolve, root, args, context, info) => {
   try {
     return await resolve(root, args, context, info);
   } catch (error) {
-    throw new ServerError("Internal server error");
+    if (error instanceof UserInputError || error instanceof AuthenticationError || error instanceof ServerError) {
+      throw error;
+    } else {
+      throw new UnexpectedError("An unexpected error occurred");
+    }
   }
 };
 

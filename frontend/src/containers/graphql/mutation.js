@@ -28,59 +28,26 @@ export const LOGOUT_MUTATION = gql`
   }
 `;
 
-export const CREATE_ACCOUNT_MUTATION = gql`
-  mutation createAccount(
-    $account: String!
-    $name: String!
-    $password: String!
-  ) {
-    createAccount(account: $account, name: $name, password: $password) {
-      __typename
-      ... on User {
-        _id
-        account
-        name
-        password
-        postCollection
-      }
-      ... on ValidationError {
-        path
-        report
-      }
-      ... on ServerError {
-        report
-      }
-    }
-  }
-`;
 export const UPDATE_USER_MUTATION = gql`
-  mutation updateUser($userId: ID!, $name: String!, $account: String!) {
-    updateUser(userId: $userId, name: $name, account: $account) {
-      _id
+  mutation updateUser($name: String!, $account: String!) {
+    updateUser(name: $name, account: $account) {
+      userId
       account
       name
-      password
-      postCollection
     }
   }
 `;
 
 export const UPDATE_PASSWORD_MUTATION = gql`
   mutation updatePassword(
-    $userId: ID!
     $oldPassword: String!
     $newPassword: String!
   ) {
     updatePassword(
-      userId: $userId
       oldPassword: $oldPassword
       newPassword: $newPassword
     ) {
-      _id
-      account
-      name
-      password
-      postCollection
+      msg
     }
   }
 `;
@@ -126,7 +93,7 @@ export const CREATE_POST_MUTATION = gql`
 export const UPDATE_POST_MUTATION = gql`
   mutation updatePost(
     $postId: ID!
-    $authorId: ID!    
+    $authorId: ID!
     $title: String!
     $classNo: String!
     $className: String!

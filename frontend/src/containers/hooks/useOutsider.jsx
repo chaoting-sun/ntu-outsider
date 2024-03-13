@@ -8,6 +8,8 @@ import { displayStatus, standardizeFetchedPost } from "../utils";
 
 // Define the provider component
 const OutsiderProvider = (props) => {
+  console.log("outsider user:", JSON.parse(localStorage.getItem(USER_KEY)));
+  
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem(USER_KEY)) || {
       userId: null,

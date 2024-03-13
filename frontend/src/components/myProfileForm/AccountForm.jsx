@@ -18,6 +18,8 @@ const AccountForm = ({ name, account, onSubmit }) => {
         <label>使用者名稱</label>
         <input
           name="name"
+          type="text"
+          placeholder="Name"
           {...register("name", {
             required: "Name is required",
           })}
@@ -30,6 +32,8 @@ const AccountForm = ({ name, account, onSubmit }) => {
         <label>使用者帳號</label>
         <input
           name="account"
+          type="email"
+          placeholder="Account"
           {...register("account", {
             required: "Account is required",
           })}

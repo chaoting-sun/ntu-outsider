@@ -24,19 +24,6 @@ export class AuthenticationError extends Error {
   }
 }
 
-// handling validation errors
-
-export class ValidationError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "ValidationError";
-    this.extensions = {
-      msg: message,
-      code: "VALIDATION_ERROR",
-    };
-  }
-}
-
 // handling server errors
 
 export class ServerError extends Error {
@@ -46,6 +33,19 @@ export class ServerError extends Error {
     this.extensions = {
       msg: message,
       code: "SERVER_ERROR",
+    };
+  }
+}
+
+// handling unexpected errors
+
+export class UnexpectedError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "UnexpectedError";
+    this.extensions = {
+      msg: message,
+      code: "UNEXPECTED_ERROR",
     };
   }
 }

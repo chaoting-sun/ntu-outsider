@@ -42,15 +42,15 @@ type AuthPayload {
   name: String!
 }
 
-type CompletePayload {
-  msg: String!
+type UserPayload {
+  userId: String!
+  account: String!
+  name: String!
 }
 
-# type UserPayload {
-#   userId: String!
-#   account: String!
-#   name: String!
-# }
+type SimpleCompletePayload {
+  msg: String!
+}
 
 type Query {
   user(name: String!): [User!] # for backend checking not used in frontend
@@ -64,12 +64,12 @@ type Query {
 
 type Mutation {
   # new
-  signUp(account: String!, name: String!, password: String!): AuthPayload
-  login(account: String!, password: String!): AuthPayload
-  logout: CompletePayload
+  signUp(account: String!, name: String!, password: String!): AuthPayload!
+  login(account: String!, password: String!): AuthPayload!
+  logout: SimpleCompletePayload!
 
-  updateUser(name: String!, account: String!): CompletePayload!
-  updatePassword(userId: ID!, oldPassword: String!, newPassword: String!): User
+  updateUser(name: String!, account: String!): UserPayload!
+  updatePassword(oldPassword: String!, newPassword: String!): SimpleCompletePayload!
   deleteUser(userId: ID!): User!
 
   createPost(

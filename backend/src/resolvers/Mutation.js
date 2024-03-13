@@ -61,6 +61,7 @@ const Authentication = {
     }
 
     // Check if the account is existing
+    console.log("account:", account);
 
     const user = await UserModel.findOne({ account });
     if (!user) {
@@ -69,12 +70,16 @@ const Authentication = {
 
     // Check if the password is correct
 
+    console.log("plaintextPassword:", plaintextPassword);
+
     const valid = bcrypt.compareSync(plaintextPassword, user.password);
     if (!valid) {
       throw new UserInputError("Password is not correct!");
     }
 
     // set cookie
+
+    console.log("set cookie")
 
     const token = jwt.sign({ userId: user._id }, config.JWT_SECRET, {
       expiresIn: "1d",
@@ -137,53 +142,55 @@ const UpdatingUser = {
 
     // Update the user
 
-    const updatedUser = await UserModel.findOneAndUpdate(
+    const user = await UserModel.findOneAndUpdate(
       { _id: userId },
       { name, account },
       { new: true }
     );
-    return updatedUser;
+    return { userId: user._id, account: user.account, name: user.name };
   },
 
   updatePassword: async (
     parent,
-    { pastPassword, currPassword },
+    { oldPassword, newPassword },
     { UserModel, userId },
     info
   ) => {
+    console.log("updatePassword")
+
     if (!userId) {
       throw new AuthenticationError("You are logged out");
     }
 
     // Check if some input is empty
 
-    if (!pastPassword || !currPassword) {
+    if (!oldPassword || !newPassword) {
       throw new UserInputError("All fields must be provided.");
-    }
-
-    // Check if the passwords are different
-
-    if (pastPassword === currPassword) {
-      throw new UserInputError("New password is the same as the past one.");
     }
 
     // Check if the past password is correct
 
     const user = await UserModel.findOne({ _id: userId });
-    const valid = bcrypt.compareSync(pastPassword, user.password);
+    const valid = bcrypt.compareSync(oldPassword, user.password);
     if (!valid) {
       throw new UserInputError("Password is not correct!");
     }
 
+    // Check if the passwords are different
+
+    if (oldPassword === newPassword) {
+      throw new UserInputError("New password is the same as the past one.");
+    }
+
     // Update the password
 
-    const hashedPassword = await bcrypt.hash(currPassword, config.SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(newPassword, config.SALT_ROUNDS);
     const updatedUser = await UserModel.findOneAndUpdate(
       { _id: userId },
       { password: hashedPassword },
       { new: true }
     );
-
+    console.log("updatedUser:", updatedUser);
     if (!updatedUser) {
       throw new ServerError("Server error.");
     }
@@ -243,18 +250,18 @@ const UpdatingPost = {
     }
   },
 
-    // // Update the user's post collection
+  // // Update the user's post collection
 
-    // try {
-    //   await UserModel.findOneAndUpdate(mongoose.Types.ObjectId(userId), {
-    //     $push: { postCollection: newPost._id },
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    //   throw new ServerError(
-    //     "Database error: failed to update user's post collection."
-    //   );
-    // }
+  // try {
+  //   await UserModel.findOneAndUpdate(mongoose.Types.ObjectId(userId), {
+  //     $push: { postCollection: newPost._id },
+  //   });
+  // } catch (error) {
+  //   console.log(error);
+  //   throw new ServerError(
+  //     "Database error: failed to update user's post collection."
+  //   );
+  // }
 
   updatePost: async (
     parent,
