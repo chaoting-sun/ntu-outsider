@@ -27,7 +27,9 @@ const MyProfilePage = () => {
     if (!authenticated) navigate(PathContants.LOGIN);
   }, [authenticated, navigate]);
 
-  const handleOnSubmitAccount = async () => {
+  const handleSubmitAccount = async (formData) => {
+    const { name, account } = formData;
+
     // TODO: make updateUser work
     // const user = await updateUser({
     //   variables: {
@@ -43,7 +45,7 @@ const MyProfilePage = () => {
     // }
   };
 
-  const handleOnSubmitPassword = async (input) => {
+  const handleSubmitPassword = async (input) => {
     // TODO: make queryUser and updatePassword work
     // const { data: userData } = await queryUser({
     //   variables: {
@@ -85,8 +87,12 @@ const MyProfilePage = () => {
     <div className={styles.container}>
       <div className={styles.card}>
         <title className={styles.title}>個人資訊</title>
-        <AccountForm onSubmit={handleOnSubmitAccount} />
-        <PasswordForm onSubmit={handleOnSubmitPassword} />
+        <AccountForm
+          name={user.name}
+          account={user.account}
+          onSubmit={handleSubmitAccount}
+        />
+        <PasswordForm onSubmit={handleSubmitPassword} />
       </div>
     </div>
   ) : null;

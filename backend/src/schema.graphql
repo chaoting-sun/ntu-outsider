@@ -1,3 +1,5 @@
+# basic type: User, ChatBox, Message, Post
+
 type User {
   _id: ID!
   account: String!
@@ -32,55 +34,45 @@ type Post {
   tag: [String]
 }
 
+# result type
+
 type AuthPayload {
   userId: String!
   account: String!
   name: String!
 }
 
-type LogoutPayload {
+type CompletePayload {
   msg: String!
 }
 
-type ValidationError {
-  path: String!
-  report: String!
-}
-
-type ServerError {
-  report: String!
-}
-
-union AccountResult = User | ValidationError | ServerError
+# type UserPayload {
+#   userId: String!
+#   account: String!
+#   name: String!
+# }
 
 type Query {
   user(name: String!): [User!] # for backend checking not used in frontend
   post(postId: String!): Post! # for backend checking not used in frontend
   queryChatBox(name1: ID!, name2: ID!): ChatBox
   queryChatBoxes(userId: ID!): [ChatBox]
-  queryUser(account: String!, password: String!): AccountResult!
   queryPost(type: String!, queryString: String!): [Post]
   queryPostCollection(userId: String!, type: String!): [Post]
+  # queryUser(account: String!, password: String!): AccountResult!
 }
 
 type Mutation {
-  # old
-  createAccount(
-    account: String!
-    name: String!
-    password: String!
-  ): AccountResult!
   # new
   signUp(account: String!, name: String!, password: String!): AuthPayload
   login(account: String!, password: String!): AuthPayload
-  logout: LogoutPayload
+  logout: CompletePayload
 
-  updateUser(userId: ID!, name: String!, account: String!): User!
+  updateUser(name: String!, account: String!): CompletePayload!
   updatePassword(userId: ID!, oldPassword: String!, newPassword: String!): User
   deleteUser(userId: ID!): User!
 
   createPost(
-    userId: ID!
     title: String!
     classNo: String!
     className: String!
@@ -92,6 +84,7 @@ type Mutation {
   ): Post
   updatePost(
     postId: ID!
+    authorId: ID!
     title: String!
     classNo: String!
     className: String!

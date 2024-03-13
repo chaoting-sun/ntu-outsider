@@ -3,17 +3,18 @@ import { useContext, useState, useEffect, useCallback } from "react";
 import { POST_QUERY, POST_COLLECTION_QUERY } from "../graphql";
 import { useLazyQuery } from "@apollo/client";
 import OutsiderContext from "./outsiderContext";
-import {
-  USERID_KEY,
-  USERNAME_KEY,
-  ACCOUNT_KEY,
-  AUTHENTICATED_KEY,
-} from "../../constants/localStorages";
+import { USER_KEY, AUTHENTICATED_KEY } from "../../constants/localStorages";
 import { displayStatus, standardizeFetchedPost } from "../utils";
 
 // Define the provider component
 const OutsiderProvider = (props) => {
-  const [user, setUser] = useState({ userId: null, account: null, name: null });
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem(USER_KEY)) || {
+      userId: null,
+      account: null,
+      name: null,
+    }
+  );
   const [authenticated, setAuthenticated] = useState(
     JSON.parse(localStorage.getItem(AUTHENTICATED_KEY)) || false
   );

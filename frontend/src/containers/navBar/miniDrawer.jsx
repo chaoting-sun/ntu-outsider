@@ -36,7 +36,6 @@ import DrawerLink from "../../components/drawerLink/drawerLink";
 
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
-import { postItems, accountItems } from "./items";
 import styles from "./miniDrawer.module.css";
 import PropTypes from "prop-types";
 import { LOGOUT_MUTATION } from "../graphql";

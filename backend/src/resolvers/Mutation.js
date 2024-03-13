@@ -1,11 +1,18 @@
 import bcrypt from "bcryptjs";
-import { GraphQLError } from "graphql";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import config from "../config";
-import { UserInputError, ValidationError, AuthenticationError } from "../error";
+import {
+  UserInputError,
+  ValidationError,
+  AuthenticationError,
+  ServerError,
+} from "../error";
+import { UserModel } from "../models/user";
 
-const Mutation = {
-  // new
+// Authentication: signUp, login, logout
+
+const Authentication = {
   signUp: async (
     parent,
     { account, name, password: plaintextPassword },
@@ -13,10 +20,6 @@ const Mutation = {
     info
   ) => {
     console.log("signUp");
-
-
-
-
     // Check if some input is empty
 
     if (!account || !name || !plaintextPassword) {
@@ -32,8 +35,7 @@ const Mutation = {
 
     // Create a new account
 
-    const saltRounds = 10;
-    const password = await bcrypt.hash(plaintextPassword, saltRounds);
+    const password = await bcrypt.hash(plaintextPassword, config.SALT_ROUNDS);
     const user = await new UserModel({ account, name, password }).save();
     const token = jwt.sign({ userId: user._id }, config.JWT_SECRET);
 
@@ -51,6 +53,7 @@ const Mutation = {
     { res, UserModel },
     info
   ) => {
+    console.log("login");
     // Check if some input is empty
 
     if (!account || !plaintextPassword) {
@@ -92,7 +95,7 @@ const Mutation = {
 
   logout: async (parent, args, { res }, info) => {
     console.log("logout");
-    
+
     res.cookie("userId", "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -100,64 +103,99 @@ const Mutation = {
     });
     return { msg: "Logout successfully!" };
   },
+};
 
-
-  // old
-  // createAccount: async (
-  //   parent,
-  //   { account, name, password },
-  //   { UserModel },
-  //   info
-  // ) => {
-  //   console.log("createAccount:", account, name, password);
-
-  //   // Check if some input is empty
-
-  //   if (!account || !name || !password) {
-  //     return {
-  //       __typename: "ValidationError",
-  //       path: "input",
-  //       report: "All fields must be provided.",
-  //     };
-  //   }
-
-  //   // Check if the account is existing
-
-  //   const existingUser = await UserModel.findOne({ account });
-  //   if (existingUser) {
-  //     return {
-  //       __typename: "ValidationError",
-  //       path: "account",
-  //       report: "Account has been registered",
-  //     };
-  //   }
-
-  //   // Create a new account
-
-  //   const saltRounds = 10;
-  //   const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-  //   try {
-  //     const newUser = await new UserModel({
-  //       account,
-  //       name,
-  //       password: hashedPassword,
-  //     }).save();
-  //     console.log("Created user:", newUser);
-  //     return { __typename: "User", ...newUser.toObject() };
-  //   } catch (error) {
-  //     console.log(error);
-  //     return {
-  //       __typename: "ServerError",
-  //       report: "Server error.",
-  //     };
-  //   }
+const UpdatingUser = {
+  // deleteUser: async (parent, { userId }, { UserModel }, info) => {
+  //   let deletedUser = await UserModel.findOne({ _id: userId });
+  //   await UserModel.deleteOne({ _id: userId });
+  //   return deletedUser;
   // },
 
+  updateUser: async (
+    parent,
+    { name, account },
+    { UserModel, userId },
+    info
+  ) => {
+    if (!userId) {
+      throw new AuthenticationError("You are logged out");
+    }
+
+    // Check if some input is empty
+
+    if (!name || !account) {
+      throw new UserInputError("All fields must be provided.");
+    }
+
+    // Check if the account is used by other users
+
+    const existingUser = await UserModel.findOne({ account });
+    if (existingUser && existingUser._id.toString() !== userId) {
+      throw new UserInputError("Account has been used.");
+    }
+
+    // Update the user
+
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { _id: userId },
+      { name, account },
+      { new: true }
+    );
+    return updatedUser;
+  },
+
+  updatePassword: async (
+    parent,
+    { pastPassword, currPassword },
+    { UserModel, userId },
+    info
+  ) => {
+    if (!userId) {
+      throw new AuthenticationError("You are logged out");
+    }
+
+    // Check if some input is empty
+
+    if (!pastPassword || !currPassword) {
+      throw new UserInputError("All fields must be provided.");
+    }
+
+    // Check if the passwords are different
+
+    if (pastPassword === currPassword) {
+      throw new UserInputError("New password is the same as the past one.");
+    }
+
+    // Check if the past password is correct
+
+    const user = await UserModel.findOne({ _id: userId });
+    const valid = bcrypt.compareSync(pastPassword, user.password);
+    if (!valid) {
+      throw new UserInputError("Password is not correct!");
+    }
+
+    // Update the password
+
+    const hashedPassword = await bcrypt.hash(currPassword, config.SALT_ROUNDS);
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { _id: userId },
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      throw new ServerError("Server error.");
+    }
+
+    return { msg: "Password updated successfully!" };
+  },
+};
+
+const UpdatingPost = {
   createPost: async (
     parent,
     {
-      userId,
       title,
       classNo,
       className,
@@ -167,20 +205,14 @@ const Mutation = {
       deadline,
       tag,
     },
-    { PostModel, userId: contextUserId },
+    { PostModel, userId },
     info
   ) => {
     console.log("createPost:");
-    console.log(title, userId, contextUserId);
+    console.log(title, userId);
 
-    if (!contextUserId) {
-      throw new AuthenticationError("You are not authenticated.");
-    }
-
-    if (userId !== contextUserId) {
-      throw new AuthenticationError(
-        "You are not authorized to create a post for another user."
-      );
+    if (!userId) {
+      throw new AuthenticationError("You are logged out.");
     }
 
     // Check if some input is empty
@@ -191,70 +223,44 @@ const Mutation = {
 
     // Create a new post
 
-    const newPost = await new PostModel({
-      userId,
-      title,
-      classNo,
-      className,
-      teacherName,
-      content,
-      condition,
-      deadline,
-      tag,
-    }).save();
-    console.log("newPost:", newPost);
-    return { __typename: "Post", ...newPost.toObject() };
-  },
-
-  // deleteUser: async (parent, { userId }, { UserModel }, info) => {
-  //   let deletedUser = await UserModel.findOne({ _id: userId });
-  //   await UserModel.deleteOne({ _id: userId });
-  //   return deletedUser;
-  // },
-
-  deletePost: async (parent, { postId }, { PostModel }, info) => {
-    let deletedPost = await PostModel.findOne({ _id: postId });
-    await PostModel.deleteOne({ _id: postId });
-    return deletedPost;
-  },
-
-  updateUser: async (
-    parent,
-    { userId, name, account },
-    { UserModel },
-    info
-  ) => {
-    const updatedUser = await UserModel.findOneAndUpdate(
-      { _id: userId },
-      { name: name, account: account },
-      { new: true }
-    );
-    return updatedUser;
-  },
-
-  updatePassword: async (
-    parent,
-    { userId, oldPassword, newPassword },
-    { UserModel },
-    info
-  ) => {
-    let password = (await UserModel.findOne({ _id: userId })).password;
-    if (password === oldPassword) {
-      return await UserModel.findOneAndUpdate(
-        { _id: userId },
-        { password: newPassword },
-        { new: true }
-      );
-    } else {
-      // 輸入密碼錯誤的處理？
-      console.log("Password wrong!");
-      return null;
+    try {
+      const newPost = await new PostModel({
+        userId,
+        title,
+        classNo,
+        className,
+        teacherName,
+        content,
+        condition,
+        deadline,
+        tag,
+      }).save();
+      console.log("newPost:", newPost);
+      return newPost;
+    } catch (error) {
+      console.log(error);
+      throw new ServerError("Database error: failed to create a new post.");
     }
   },
+
+    // // Update the user's post collection
+
+    // try {
+    //   await UserModel.findOneAndUpdate(mongoose.Types.ObjectId(userId), {
+    //     $push: { postCollection: newPost._id },
+    //   });
+    // } catch (error) {
+    //   console.log(error);
+    //   throw new ServerError(
+    //     "Database error: failed to update user's post collection."
+    //   );
+    // }
+
   updatePost: async (
     parent,
     {
       postId,
+      authorId,
       title,
       content,
       classNo,
@@ -264,33 +270,49 @@ const Mutation = {
       deadline,
       tag,
     },
-    { PostModel },
+    { PostModel, userId },
     info
   ) => {
-    try {
-      const updatedPost = await PostModel.findOneAndUpdate(
-        { _id: postId },
-        {
-          title,
-          content,
-          classNo,
-          className,
-          teacherName,
-          condition,
-          deadline,
-          tag,
-        },
-        { new: true }
-      );
-      return { __typename: "Post", ...updatedPost.toObject() };
-    } catch (error) {
-      console.log(error);
-      return {
-        __typename: "ServerError",
-        report: "Server error.",
-      };
+    if (!userId) {
+      throw new AuthenticationError("You are logged out.");
     }
+
+    // Check if some input is empty
+
+    if (!title || !classNo || !className || !teacherName || !content) {
+      throw new UserInputError("All fields must be provided.");
+    }
+
+    // Check if the user is the author of the post
+
+    if (userId !== authorId) {
+      throw new AuthenticationError("You are not the author of the post.");
+    }
+
+    // Update the post
+
+    const updatedPost = await PostModel.findOneAndUpdate(
+      { _id: postId },
+      {
+        title,
+        content,
+        classNo,
+        className,
+        teacherName,
+        condition,
+        deadline,
+        tag,
+      },
+      { new: true }
+    );
+
+    if (!updatedPost) {
+      throw new ServerError("Server error.");
+    }
+
+    return updatedPost;
   },
+
   updatePostCollection: async (
     parent,
     { userId, postId },
@@ -319,6 +341,15 @@ const Mutation = {
     console.log("updated user:", user);
     return user;
   },
+
+  deletePost: async (parent, { postId }, { PostModel }, info) => {
+    let deletedPost = await PostModel.findOne({ _id: postId });
+    await PostModel.deleteOne({ _id: postId });
+    return deletedPost;
+  },
+};
+
+const UpdatingChatBox = {
   createChatBox: async (
     parent,
     { name, to },
@@ -350,6 +381,7 @@ const Mutation = {
     }
     return chatBox;
   },
+
   createMessage: async (
     parent,
     { name, to, message },
@@ -373,6 +405,13 @@ const Mutation = {
     });
     return { ...newMsg };
   },
+};
+
+const Mutation = {
+  ...Authentication,
+  ...UpdatingPost,
+  ...UpdatingUser,
+  ...UpdatingChatBox,
 };
 
 export default Mutation;

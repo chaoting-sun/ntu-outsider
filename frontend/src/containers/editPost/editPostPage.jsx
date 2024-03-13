@@ -70,16 +70,14 @@ const defaultPost = {
 };
 
 const EditPostPage = () => {
-  const {
-    user: { userId },
-    authenticated
-  } = UseOutsider();
+  const { authenticated } = UseOutsider();
 
   const location = useLocation();
   const navigate = useNavigate();
 
   const initPost = location.state?.post;
   const postId = initPost ? initPost.postId : null;
+  const authorId = initPost ? initPost.authorId : null;
   const action = location.state.action || "";
 
   const [updatedPost, setUpdatedPost] = useState(null);
@@ -111,10 +109,10 @@ const EditPostPage = () => {
       setFinishEdit(true);
       displayStatus({ type: "success", msg: "Post successfully created!" });
     },
-    onError:  (error) => {
+    onError: (error) => {
       const errorMessage = parseErrorMessage(error);
       displayStatus(errorMessage);
-    }
+    },
   });
 
   const [updatePost] = useMutation(UPDATE_POST_MUTATION, {
@@ -124,10 +122,10 @@ const EditPostPage = () => {
       setFinishEdit(true);
       displayStatus({ type: "success", msg: "Post successfully updated!" });
     },
-    onError:  (error) => {
+    onError: (error) => {
       const errorMessage = parseErrorMessage(error);
       displayStatus(errorMessage);
-    }
+    },
   });
 
   const onSubmit = async (formData) => {
@@ -143,7 +141,7 @@ const EditPostPage = () => {
     } = formData;
     const deadline = `${endDate} ${endTime}`;
 
-    const updatedPost = {
+    let updatedPost = {
       title,
       classNo,
       className,
@@ -157,7 +155,6 @@ const EditPostPage = () => {
     console.log("action:", action);
 
     if (action === actions.ADD_POST) {
-      updatedPost.userId = userId;
       console.log("addPost:", updatedPost);
       try {
         createPost({ variables: updatedPost });
@@ -165,7 +162,7 @@ const EditPostPage = () => {
         console.log(error);
       }
     } else if (action === actions.EDIT_POST) {
-      updatedPost.postId = postId;
+      updatedPost = { ...updatedPost, postId, authorId };
       try {
         updatePost({ variables: updatedPost });
       } catch (error) {

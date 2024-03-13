@@ -16,6 +16,7 @@ import { SIGNUP_MUTATION, LOGIN_MUTATION } from "../graphql/mutation";
 
 import styles from "./signInPage.module.css";
 import { Button } from "@mui/material";
+import { AUTHENTICATED_KEY, USER_KEY } from "../../constants/localStorages";
 
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -39,9 +40,13 @@ const SignInPage = () => {
   const [login] = useMutation(LOGIN_MUTATION, {
     onCompleted: ({ login }) => {
       const { userId, account, name } = login;
-      console.log("login:", userId, account, name);
-      setUser({ userId, account, name });
+      const loginUser = { userId, account, name };
+
+      localStorage.setItem(USER_KEY, JSON.stringify(loginUser));
+      localStorage.setItem(AUTHENTICATED_KEY, true);
+      setUser(loginUser);
       setAuthenticated(true);
+
       displayStatus({ type: "success", msg: "Log in successfully" });
       navigate(paths.MAIN);
     },

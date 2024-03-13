@@ -12,54 +12,54 @@ const Query = {
     return await UserModel.find({ name: { $regex: new RegExp(name, "i") } });
   },
 
-  queryUser: async (parent, { account, password }, { UserModel }, info) => {
-    console.log("execute queryUser:", account, password);
+  // queryUser: async (parent, { account, password }, { UserModel }, info) => {
+  //   console.log("execute queryUser:", account, password);
 
-    // Check if some input is empty
+  //   // Check if some input is empty
 
-    if (!account || !password) {
-      return {
-        __typename: "ValidationError",
-        path: "input",
-        report: "All fields must be provided!",
-      };
-    }
+  //   if (!account || !password) {
+  //     return {
+  //       __typename: "ValidationError",
+  //       path: "input",
+  //       report: "All fields must be provided!",
+  //     };
+  //   }
 
-    try {
-      // Check if the account is existing
+  //   try {
+  //     // Check if the account is existing
 
-      const existingUser = await UserModel.findOne({ account });
-      if (!existingUser) {
-        return {
-          __typename: "ValidationError",
-          path: "account",
-          report: "Account hasn't been registered!",
-        };
-      }
+  //     const existingUser = await UserModel.findOne({ account });
+  //     if (!existingUser) {
+  //       return {
+  //         __typename: "ValidationError",
+  //         path: "account",
+  //         report: "Account hasn't been registered!",
+  //       };
+  //     }
 
-      // Check if the password is correct
+  //     // Check if the password is correct
 
-      console.log(password, existingUser.password);
+  //     console.log(password, existingUser.password);
 
-      const validPassword = bcrypt.compareSync(password, existingUser.password);
-      if (validPassword) {
-        console.log({ __typename: "User", ...existingUser.toObject() });
-        return { __typename: "User", ...existingUser.toObject() };
-      } else {
-        return {
-          __typename: "ValidationError",
-          path: "password",
-          report: "Password is not correct!",
-        };
-      }
-    } catch (error) {
-      console.log(error);
-      return {
-        __typename: "ServerError",
-        report: "Server error.",
-      };
-    }
-  },
+  //     const validPassword = bcrypt.compareSync(password, existingUser.password);
+  //     if (validPassword) {
+  //       console.log({ __typename: "User", ...existingUser.toObject() });
+  //       return { __typename: "User", ...existingUser.toObject() };
+  //     } else {
+  //       return {
+  //         __typename: "ValidationError",
+  //         path: "password",
+  //         report: "Password is not correct!",
+  //       };
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     return {
+  //       __typename: "ServerError",
+  //       report: "Server error.",
+  //     };
+  //   }
+  // },
 
   post: async (parent, { postId }, { PostModel }, ingo) => {
     return await PostModel.findOne({ _id: postId });
