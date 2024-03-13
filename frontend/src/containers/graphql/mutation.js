@@ -39,14 +39,8 @@ export const UPDATE_USER_MUTATION = gql`
 `;
 
 export const UPDATE_PASSWORD_MUTATION = gql`
-  mutation updatePassword(
-    $oldPassword: String!
-    $newPassword: String!
-  ) {
-    updatePassword(
-      oldPassword: $oldPassword
-      newPassword: $newPassword
-    ) {
+  mutation updatePassword($oldPassword: String!, $newPassword: String!) {
+    updatePassword(oldPassword: $oldPassword, newPassword: $newPassword) {
       msg
     }
   }
@@ -136,37 +130,17 @@ export const UPDATE_POST_MUTATION = gql`
   }
 `;
 export const DELETE_POST_MUTATION = gql`
-  mutation deletePost($postId: ID!) {
-    deletePost(postId: $postId) {
-      _id
-      userId
-      author {
-        _id
-        account
-        name
-        password
-        postCollection
-      }
-      title
-      classNo
-      className
-      teacherName
-      content
-      condition
-      deadline
-      tag
+  mutation deletePost($postId: ID!, $authorId: ID!) {
+    deletePost(postId: $postId, authorId: $authorId) {
+      postId
     }
   }
 `;
 
 export const UPDATE_POST_COLLECTION_MUTATION = gql`
-  mutation updatePostCollection($userId: ID!, $postId: ID!) {
-    updatePostCollection(userId: $userId, postId: $postId) {
-      _id
-      account
-      name
-      password
-      postCollection
+  mutation updatePostCollection($postId: ID!) {
+    updatePostCollection(postId: $postId) {
+      msg
     }
   }
 `;

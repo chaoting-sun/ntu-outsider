@@ -41,7 +41,7 @@ const PostLayout = ({
       content: "",
       onOk() {
         console.log("OK");
-        handleDeletePost(post.postId);
+        handleDeletePost(post.postId, post.authorId);
       },
       onCancel() {
         console.log("Cancel");

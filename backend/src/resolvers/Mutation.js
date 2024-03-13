@@ -79,7 +79,7 @@ const Authentication = {
 
     // set cookie
 
-    console.log("set cookie")
+    console.log("set cookie");
 
     const token = jwt.sign({ userId: user._id }, config.JWT_SECRET, {
       expiresIn: "1d",
@@ -111,12 +111,6 @@ const Authentication = {
 };
 
 const UpdatingUser = {
-  // deleteUser: async (parent, { userId }, { UserModel }, info) => {
-  //   let deletedUser = await UserModel.findOne({ _id: userId });
-  //   await UserModel.deleteOne({ _id: userId });
-  //   return deletedUser;
-  // },
-
   updateUser: async (
     parent,
     { name, account },
@@ -156,7 +150,7 @@ const UpdatingUser = {
     { UserModel, userId },
     info
   ) => {
-    console.log("updatePassword")
+    console.log("updatePassword");
 
     if (!userId) {
       throw new AuthenticationError("You are logged out");
@@ -197,6 +191,25 @@ const UpdatingUser = {
 
     return { msg: "Password updated successfully!" };
   },
+
+  // deleteUser: async (parent, { userId }, { UserModel }, info) => {
+  //   let deletedUser = await UserModel.findOne({ _id: userId });
+  //   await UserModel.deleteOne({ _id: userId });
+  //   return deletedUser;
+  // },
+
+  // // Update the user's post collection
+
+  // try {
+  //   await UserModel.findOneAndUpdate(mongoose.Types.ObjectId(userId), {
+  //     $push: { postCollection: newPost._id },
+  //   });
+  // } catch (error) {
+  //   console.log(error);
+  //   throw new ServerError(
+  //     "Database error: failed to update user's post collection."
+  //   );
+  // }
 };
 
 const UpdatingPost = {
@@ -249,19 +262,6 @@ const UpdatingPost = {
       throw new ServerError("Database error: failed to create a new post.");
     }
   },
-
-  // // Update the user's post collection
-
-  // try {
-  //   await UserModel.findOneAndUpdate(mongoose.Types.ObjectId(userId), {
-  //     $push: { postCollection: newPost._id },
-  //   });
-  // } catch (error) {
-  //   console.log(error);
-  //   throw new ServerError(
-  //     "Database error: failed to update user's post collection."
-  //   );
-  // }
 
   updatePost: async (
     parent,
@@ -322,37 +322,59 @@ const UpdatingPost = {
 
   updatePostCollection: async (
     parent,
-    { userId, postId },
-    { UserModel },
+    { postId },
+    { userId, UserModel },
     info
   ) => {
-    let userExisting = await UserModel.findOne({
-      _id: userId,
-      postCollection: postId,
-    });
-    if (userExisting) {
-      console.log("unfollow the post!");
-      await UserModel.updateOne(
-        { _id: userId },
-        { $pull: { postCollection: postId } }
-      );
-    } else {
-      console.log("follow the post!");
-      userExisting = await UserModel.findOneAndUpdate(
-        { _id: userId },
-        { $push: { postCollection: postId } },
-        { new: true }
-      );
+    console.log("updatePostCollection");
+
+    if (!userId) {
+      throw new AuthenticationError("You are logged out.");
     }
-    const user = await UserModel.findOne({ _id: userId });
-    console.log("updated user:", user);
-    return user;
+
+    // Check if the user is following the post
+
+    const postObjId = mongoose.Types.ObjectId(postId);
+
+    const user = await UserModel.findById(userId);
+    const index = user.postCollection.indexOf(postObjId);
+
+    // Update the user's post collection
+
+    if (index > -1) {
+      user.postCollection.splice(index, 1);
+      await user.save();
+      return { msg: "unfollow the post!" };
+    } else {
+      user.postCollection.push(postObjId);
+      await user.save();
+      return { msg: "follow the post!" };
+    }
   },
 
-  deletePost: async (parent, { postId }, { PostModel }, info) => {
-    let deletedPost = await PostModel.findOne({ _id: postId });
+  deletePost: async (
+    parent,
+    { postId, authorId },
+    { userId, PostModel },
+    info
+  ) => {
+    console.log("deletePost");
+
+    if (!userId) {
+      throw new AuthenticationError("You are logged out.");
+    }
+
+    if (userId !== authorId) {
+      throw new AuthenticationError("You are not the author of the post.");
+    }
+
+    const deletedPost = await PostModel.findOne({ _id: postId });
+    if (!deletedPost) {
+      throw new UserInputError("Post not found.");
+    }
+
     await PostModel.deleteOne({ _id: postId });
-    return deletedPost;
+    return { postId: deletedPost._id };
   },
 };
 

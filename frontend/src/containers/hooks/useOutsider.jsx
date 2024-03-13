@@ -41,6 +41,7 @@ const OutsiderProvider = (props) => {
 
   const [queryPost] = useLazyQuery(POST_QUERY, {
     onCompleted: ({ queryPost: fetchedPosts }) => {
+      console.log("fetched posts:", fetchedPosts);
       setPosts(fetchedPosts.map(standardizeFetchedPost));
     },
     onError: (error) => {

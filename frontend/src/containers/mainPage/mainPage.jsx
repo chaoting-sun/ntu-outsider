@@ -7,7 +7,7 @@ import { UseOutsider } from "../hooks/useOutsider";
 import PostLayout from "../../components/postLayout/postLayout";
 import paths from "../../constants/paths";
 import actions from "../../constants/actions";
-import { displayStatus } from "../utils";
+import { displayStatus, standardizeFetchedPost } from "../utils";
 
 import styles from "./mainPage.module.css";
 
@@ -78,25 +78,22 @@ const MainPage = () => {
     setDoingQueryPost,
     doingQueryPostCollection,
     setDoingQueryPostCollection,
-    // handleQueryPost,
   } = UseOutsider();
 
   const navigate = useNavigate();
   const location = useLocation();
-
   const editedPost = location.state?.updatedPost || null;
 
-  console.log("mainPage")
+  const [action, setAction] = useState(location.state?.action || null);
+  const lastEditedPostIdRef = useRef(null);
+  // const [queryPost] = useLazyQuery(POST_QUERY, { fetchPolicy: "network-only" });
+
+  console.log("mainPage");
   console.log("userId:", userId);
 
-  // const [shouldUp]
-  const [action, setAction] = useState(location.state?.action || null);
-  const [updatePostCollection] = useMutation(UPDATE_POST_COLLECTION_MUTATION);
-  const [deletePost] = useMutation(DELETE_POST_MUTATION);
-  const [queryPost] = useLazyQuery(POST_QUERY, { fetchPolicy: "network-only" });
-  const lastEditedPostIdRef = useRef(null);
-
   useEffect(() => {
+    console.log("useEffect(MainPage)");
+
     console.log(
       `  useEffect(MainPage), action=${action} lastId=${lastEditedPostIdRef.current}`
     );
@@ -115,18 +112,30 @@ const MainPage = () => {
     }
   }, [action, editedPost, setPosts]);
 
-  // useEffect(() => {
-  //   if (doingQueryPost) {
-  //     // search on menu
-  //     setPosts(currentPost);
-  //     setDoingQueryPost(false);
-  //   }
-  //   if (doingQueryPostCollection) {
-  //     // search my post
-  //     setPosts(currentPost);
-  //     setDoingQueryPostCollection(false);
-  //   }
-  // }, [currentPost]);
+  // hook: delete post
+
+  const [deletePost] = useMutation(DELETE_POST_MUTATION, {
+    onCompleted: ({ deletePost }) => {
+      const { postId: deletedPostId } = deletePost;
+      setPosts(posts.filter(({ postId }) => postId !== deletedPostId));
+      displayStatus({ type: "success", msg: "delete the post!" });
+    },
+    onError: (error) => {
+      displayStatus(standardizeFetchedPost(error));
+    },
+  });
+
+  // hook: update post collection
+
+  const [updatePostCollection] = useMutation(UPDATE_POST_COLLECTION_MUTATION, {
+    onCompleted: ({ updatePostCollection }) => {
+      const { msg } = updatePostCollection;
+      displayStatus({ type: "success", msg });
+    },
+    onError: (error) => {
+      displayStatus(standardizeFetchedPost(error));
+    },
+  });
 
   const handleChat = (author) => {
     if (author._id === userId) {
@@ -139,54 +148,29 @@ const MainPage = () => {
     }
   };
 
-  const handleFollowPost = async (postId) => {
-    // const { data } = await updatePostCollection({
-    //   variables: { userId, postId },
-    // });
-    // const fetchedPost = data.updatePostCollection.postCollection;
-    // if (fetchedPost.find((id) => id === postId) !== undefined) {
-    //   displayStatus({ type: "success", msg: "follow the post!" });
-    // } else {
-    //   displayStatus({ type: "success", msg: "unfollow the post!" });
-    // }
-  };
-
-  const handleDeletePost = async (postId) => {
-    setPosts(posts.filter(({ _id }) => _id !== postId));
-
-    /* TODO: make deletePost work! */
-    // const fetchedPost = await deletePost({
-    //   variables: { postId: postId._id },
-    // });
-
-    const fetchedPost = true;
-    if (fetchedPost) {
-      displayStatus({ type: "success", msg: "delete the post!" });
-    }
-  };
-
-  const handleEditPost = (postToEdit) => {
-    // console.log("postToEdit:", postToEdit);
-    navigate(paths.EDIT_POST, {
-      state: {
-        action: actions.EDIT_POST,
-        post: postToEdit,
-      },
-    });
-  };
-
   console.log(`re-render MainPage`);
 
   return (
     <div className={styles.container}>
       {posts.map((post) => (
         <PostLayout
+          key={post.postId}
           post={post}
           handleChat={handleChat}
-          handleFollowPost={handleFollowPost}
-          handleEditPost={handleEditPost}
-          handleDeletePost={handleDeletePost}
-          key={post.postId}
+          handleFollowPost={async (postId) => {
+            await updatePostCollection({ variables: { postId } });
+          }}
+          handleDeletePost={async (postId, authorId) => {
+            await deletePost({ variables: { postId, authorId } });
+          }}
+          handleEditPost={(postToEdit) => {
+            navigate(paths.EDIT_POST, {
+              state: {
+                action: actions.EDIT_POST,
+                post: postToEdit,
+              },
+            });
+          }}
         />
       ))}
     </div>

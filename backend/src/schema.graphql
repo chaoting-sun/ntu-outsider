@@ -36,17 +36,17 @@ type Post {
 
 # result type
 
-type AuthPayload {
-  userId: String!
-  account: String!
-  name: String!
-}
-
 type UserPayload {
   userId: String!
   account: String!
   name: String!
 }
+
+type PostPayload {
+  postId: String!
+}
+
+# deletepost, followpost
 
 type SimpleCompletePayload {
   msg: String!
@@ -64,8 +64,8 @@ type Query {
 
 type Mutation {
   # new
-  signUp(account: String!, name: String!, password: String!): AuthPayload!
-  login(account: String!, password: String!): AuthPayload!
+  signUp(account: String!, name: String!, password: String!): UserPayload!
+  login(account: String!, password: String!): UserPayload!
   logout: SimpleCompletePayload!
 
   updateUser(name: String!, account: String!): UserPayload!
@@ -94,8 +94,8 @@ type Mutation {
     deadline: String!
     tag: [String]
   ): Post!
-  deletePost(postId: ID!): Post!
-  updatePostCollection(userId: ID!, postId: ID!): User!
+  deletePost(postId: ID!, authorId: ID!): PostPayload!
+  updatePostCollection(postId: ID!): SimpleCompletePayload!
 
   createChatBox(name: ID!, to: ID!): ChatBox!
   createMessage(name: ID!, to: ID!, message: String!): Message!
