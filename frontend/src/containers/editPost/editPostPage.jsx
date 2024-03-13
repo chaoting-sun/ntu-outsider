@@ -70,7 +70,7 @@ const defaultPost = {
 };
 
 const EditPostPage = () => {
-  const { authenticated } = UseOutsider();
+  const { authenticated, setPosts } = UseOutsider();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -104,9 +104,11 @@ const EditPostPage = () => {
 
   const [createPost] = useMutation(CREATE_POST_MUTATION, {
     onCompleted: ({ createPost }) => {
-      const newPost = standardizeFetchedPost(createPost);
+      const newPost = standardizeFetchedPost(createPost);  
       setUpdatedPost(newPost);
       setFinishEdit(true);
+      setPosts((prevPosts) => [newPost, ...prevPosts]);
+
       displayStatus({ type: "success", msg: "Post successfully created!" });
     },
     onError: (error) => {
@@ -120,6 +122,12 @@ const EditPostPage = () => {
       const updatedPost = standardizeFetchedPost(updatePost);
       setUpdatedPost(updatedPost);
       setFinishEdit(true);
+      setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.postId === updatedPost.postId ? updatedPost : post
+      )
+    );
+
       displayStatus({ type: "success", msg: "Post successfully updated!" });
     },
     onError: (error) => {
@@ -171,50 +179,12 @@ const EditPostPage = () => {
     }
   };
 
-  //   let res;
-  //   if (action === actions.ADD_POST) {
-  //     console.log("addPost");
-
-  //     updatedPost.userId = userId;
-  //     try {
-  //       const {
-  //         data: { createPost: response },
-  //       } = await createPost({ variables: updatedPost });
-  //       res = response;
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   } else if (action === actions.EDIT_POST) {
-  //     console.log("editPost");
-
-  //     updatedPost.postId = postId;
-  //     try {
-  //       const {
-  //         data: { updatePost: response },
-  //       } = await updatePost({ variables: updatedPost });
-  //       res = response;
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  //   // console.log(res);
-
-  //   if (res.__typename === "Post") {
-  //     const updatedPost = standardizeFetchedPost(res);
-  //     setUpdatedPost(updatedPost);
-  //     setFinishEdit(true);
-  //     displayStatus({ type: "success", msg: "Post successfully updated!" });
-  //   } else if (res.__typename === "ServerError") {
-  //     displayStatus({ type: "error", msg: res.report });
-  //   }
-  // };
-
   useEffect(() => {
     if (finishEdit) {
       setFinishEdit(false);
-      navigate(paths.MAIN, { state: { action, updatedPost } });
+      navigate(paths.MAIN);
     }
-  }, [finishEdit, updatedPost, navigate, action]);
+  }, [finishEdit, navigate]);
 
   const ClassInformation = () => (
     <>

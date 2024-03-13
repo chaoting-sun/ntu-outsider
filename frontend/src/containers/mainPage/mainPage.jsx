@@ -84,33 +84,8 @@ const MainPage = () => {
   const location = useLocation();
   const editedPost = location.state?.updatedPost || null;
 
-  const [action, setAction] = useState(location.state?.action || null);
-  const lastEditedPostIdRef = useRef(null);
-  // const [queryPost] = useLazyQuery(POST_QUERY, { fetchPolicy: "network-only" });
-
   console.log("mainPage");
   console.log("userId:", userId);
-
-  useEffect(() => {
-    console.log("useEffect(MainPage)");
-
-    console.log(
-      `  useEffect(MainPage), action=${action} lastId=${lastEditedPostIdRef.current}`
-    );
-
-    if (editedPost?.postId !== lastEditedPostIdRef.current) {
-      if (action === actions.ADD_POST) {
-        setPosts((prevPosts) => [editedPost, ...prevPosts]);
-      } else if (action === actions.EDIT_POST) {
-        setPosts((prevPosts) =>
-          prevPosts.map((post) =>
-            post.postId === editedPost.postId ? editedPost : post
-          )
-        );
-      }
-      lastEditedPostIdRef.current = editedPost?.postId;
-    }
-  }, [action, editedPost, setPosts]);
 
   // hook: delete post
 
