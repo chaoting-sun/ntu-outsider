@@ -113,19 +113,17 @@ const Drawer = styled(MuiDrawer, {
 
 const MiniDrawer = ({ authenticated, children }) => {
   const theme = useTheme();
-  const { setUser, setAuthenticated } = UseOutsider();
+  const { setPosts, setUser, setAuthenticated } = UseOutsider();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const [Logout] = useMutation(LOGOUT_MUTATION, {
+  // Define function to handle logout
+
+  const [logout] = useMutation(LOGOUT_MUTATION, {
     onCompleted: () => {
-      // clear local storage
-      
       const newUserState = { userId: null, account: null, name: null };
       localStorage.setItem(USER_KEY, JSON.stringify(newUserState));
       localStorage.setItem(AUTHENTICATED_KEY, false);
-
-      // clear state
 
       setUser(newUserState);
       setAuthenticated(false);
@@ -139,6 +137,25 @@ const MiniDrawer = ({ authenticated, children }) => {
     },
   });
 
+  // Define function to handle logout, edit profile, login and signup
+
+  const handleLogout = () => {
+    logout();
+    navigate(paths.LOGIN, { state: { login: actions.LOGIN } });
+  };
+
+  const handleEditProfile = () => {
+    navigate(paths.MY_PROFILE);
+  };
+
+  const handleLogin = () => {
+    navigate(paths.LOGIN, { state: { action: actions.LOGIN } });
+  };
+
+  const handleSignUp = () => {
+    navigate(paths.SIGNUP, { state: { action: actions.SIGNUP } });
+  };
+
   const HeaderLinks = () => {
     return (
       <>
@@ -147,19 +164,12 @@ const MiniDrawer = ({ authenticated, children }) => {
             <HeaderLink
               text="登出"
               icon={<LogoutIcon sx={{ fontSize: "2rem" }} />}
-              href={paths.LOGIN}
-              handleAction={(link) => {
-                Logout();
-                navigate(link, { state: { login: actions.LOGIN } });
-              }}
+              handleAction={handleLogout}
             />
             <HeaderLink
               text="編輯個人資料"
               icon={<AccountBoxIcon sx={{ fontSize: "2rem" }} />}
-              href={paths.MY_PROFILE}
-              handleAction={(link) => {
-                navigate(link);
-              }}
+              handleAction={handleEditProfile}
             />
           </>
         ) : (
@@ -167,23 +177,35 @@ const MiniDrawer = ({ authenticated, children }) => {
             <HeaderLink
               text="登入"
               icon={<LoginIcon sx={{ fontSize: "2rem" }} />}
-              href={paths.LOGIN}
-              handleAction={(link) => {
-                navigate(link, { state: { action: actions.LOGIN } });
-              }}
+              handleAction={handleLogin}
             />
             <HeaderLink
               text="註冊"
               icon={<AppRegistrationIcon sx={{ fontSize: "2rem" }} />}
-              href={paths.LOGIN}
-              handleAction={(link) => {
-                navigate(link, { state: { action: actions.SIGNUP } });
-              }}
+              handleAction={handleSignUp}
             />
           </>
         )}
       </>
     );
+  };
+
+  // Define function to handle all post, my post, follow post and add post
+
+  const handleAllPost = () => {
+    navigate(paths.MAIN);
+  };
+
+  const handleMyPost = () => {
+    navigate(paths.MAIN, { state: { action: actions.MY_POST } });
+  };
+
+  const handleFollowPost = () => {
+    navigate(paths.MAIN, { state: { action: actions.FOLLOW_POST } });
+  };
+
+  const handleAddPost = () => {
+    navigate(paths.EDIT_POST, { state: { action: actions.ADD_POST } });
   };
 
   const DrawerLinks = () => {
@@ -192,11 +214,8 @@ const MiniDrawer = ({ authenticated, children }) => {
         <DrawerLink
           text="所有貼文"
           icon={<DonutSmallIcon />}
-          href={paths.MAIN}
           open={open}
-          handleAction={(link) => {
-            navigate(link);
-          }}
+          handleAction={handleAllPost}
         />
         {authenticated && (
           <DrawerLink
@@ -204,9 +223,7 @@ const MiniDrawer = ({ authenticated, children }) => {
             icon={<AccessibilityNewIcon />}
             href={paths.MAIN}
             open={open}
-            handleAction={(link) => {
-              navigate(link, { state: { action: actions.MY_POST } });
-            }}
+            handleAction={handleMyPost}
           />
         )}
         {authenticated && (
@@ -215,9 +232,7 @@ const MiniDrawer = ({ authenticated, children }) => {
             icon={<StarHalfIcon />}
             href={paths.MAIN}
             open={open}
-            handleAction={(link) => {
-              navigate(link, { state: { action: actions.FOLLOW_POST } });
-            }}
+            handleAction={handleFollowPost}
           />
         )}
         {authenticated && (
@@ -226,9 +241,7 @@ const MiniDrawer = ({ authenticated, children }) => {
             icon={<PostAddIcon />}
             href={paths.EDIT_POST}
             open={open}
-            handleAction={(link) => {
-              navigate(link, { state: { action: actions.ADD_POST } });
-            }}
+            handleAction={handleAddPost}
           />
         )}
       </>

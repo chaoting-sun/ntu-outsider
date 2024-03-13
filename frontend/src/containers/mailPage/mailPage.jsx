@@ -9,7 +9,7 @@ import {
   CREATE_MESSAGE_MUTATION,
   MESSAGE_SUBSCRIPTION,
   CREATE_CHATBOX_MUTATION,
-} from "./graphql/index";
+} from "../graphql/index";
 import { useQuery, useMutation } from "@apollo/client";
     
 import { Divider, IconButton } from "@mui/material";
@@ -19,9 +19,9 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { ListItemButton } from "@mui/material";
 
-import { UseOutsider } from "./hooks/useOutsider";
-import Message from "../components/Message";
-import "../css/mailPage.css";
+import { UseOutsider } from "../hooks/useOutsider";
+// import Message from "../components/Message";
+import "./mailPage.css";
 
 const ChatBoxWrapper = styled.div`
   min-height: 80%;

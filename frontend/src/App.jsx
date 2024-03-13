@@ -11,11 +11,10 @@ import { OutsiderProvider } from "./containers/hooks/useOutsider";
 import MainPage from "./containers/mainPage/mainPage";
 import SignInPage from "./containers/signIn/signInPage";
 import EditPostPage from "./containers/editPost/editPostPage";
-import MailPage from "./containers/mailPage";
+import MailPage from "./containers/mailPage/mailPage";
 import MyProfilePage from "./containers/myProfile/myProfilePage";
 import NavBar from "./containers/navBar/navBar";
 import paths from "./constants/paths";
-import "./css/App.css";
 
 let theme = createTheme();
 theme = responsiveFontSizes(theme);

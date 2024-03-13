@@ -8,6 +8,7 @@ import PostLayout from "../../components/postLayout/postLayout";
 import paths from "../../constants/paths";
 import actions from "../../constants/actions";
 import { displayStatus, standardizeFetchedPost } from "../utils";
+import UseQueryPosts from "../hooks/useQueryPosts";
 
 import styles from "./mainPage.module.css";
 
@@ -71,46 +72,35 @@ const initialPosts = [
 const MainPage = () => {
   const {
     posts,
-    user: { userId },
     setPosts,
-    currentPost,
-    doingQueryPost,
-    setDoingQueryPost,
-    doingQueryPostCollection,
-    setDoingQueryPostCollection,
+    queryPost,
+    deletePost,
+    updatePostCollection,
+    user: { userId },
   } = UseOutsider();
-
   const navigate = useNavigate();
-  const location = useLocation();
-  const editedPost = location.state?.updatedPost || null;
 
-  console.log("mainPage");
-  console.log("userId:", userId);
+  // const [queryPostType, setQueryPostType] = useState("all");
+  // const [queryPostString, setQueryPostString] = useState("");
 
-  // hook: delete post
+  console.log("mainPage", posts.length);
 
-  const [deletePost] = useMutation(DELETE_POST_MUTATION, {
-    onCompleted: ({ deletePost }) => {
-      const { postId: deletedPostId } = deletePost;
-      setPosts(posts.filter(({ postId }) => postId !== deletedPostId));
-      displayStatus({ type: "success", msg: "delete the post!" });
-    },
-    onError: (error) => {
-      displayStatus(standardizeFetchedPost(error));
-    },
-  });
+  const handleFollowPost = async (postId) => {
+    updatePostCollection({ variables: { postId } });
+  };
 
-  // hook: update post collection
+  const handleDeletePost = async (postId, authorId) => {
+    deletePost({ variables: { postId, authorId } });
+  };
 
-  const [updatePostCollection] = useMutation(UPDATE_POST_COLLECTION_MUTATION, {
-    onCompleted: ({ updatePostCollection }) => {
-      const { msg } = updatePostCollection;
-      displayStatus({ type: "success", msg });
-    },
-    onError: (error) => {
-      displayStatus(standardizeFetchedPost(error));
-    },
-  });
+  const handleEditPost = (postToEdit) => {
+    navigate(paths.EDIT_POST, {
+      state: {
+        action: actions.EDIT_POST,
+        post: postToEdit,
+      },
+    });
+  }
 
   const handleChat = (author) => {
     if (author._id === userId) {
@@ -123,8 +113,6 @@ const MainPage = () => {
     }
   };
 
-  console.log(`re-render MainPage`);
-
   return (
     <div className={styles.container}>
       {posts.map((post) => (
@@ -132,20 +120,9 @@ const MainPage = () => {
           key={post.postId}
           post={post}
           handleChat={handleChat}
-          handleFollowPost={async (postId) => {
-            await updatePostCollection({ variables: { postId } });
-          }}
-          handleDeletePost={async (postId, authorId) => {
-            await deletePost({ variables: { postId, authorId } });
-          }}
-          handleEditPost={(postToEdit) => {
-            navigate(paths.EDIT_POST, {
-              state: {
-                action: actions.EDIT_POST,
-                post: postToEdit,
-              },
-            });
-          }}
+          handleFollowPost={handleFollowPost}
+          handleDeletePost={handleDeletePost}
+          handleEditPost={handleEditPost}
         />
       ))}
     </div>

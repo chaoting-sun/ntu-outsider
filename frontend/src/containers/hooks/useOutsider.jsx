@@ -1,15 +1,13 @@
 import { message } from "antd";
 import { useContext, useState, useEffect, useCallback } from "react";
-import { POST_QUERY, POST_COLLECTION_QUERY } from "../graphql";
-import { useLazyQuery } from "@apollo/client";
+import { POST_QUERY, POST_COLLECTION_QUERY, DELETE_POST_MUTATION, UPDATE_POST_COLLECTION_MUTATION, LOGOUT_MUTATION } from "../graphql";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import OutsiderContext from "./outsiderContext";
 import { USER_KEY, AUTHENTICATED_KEY } from "../../constants/localStorages";
 import { displayStatus, standardizeFetchedPost } from "../utils";
 
 // Define the provider component
 const OutsiderProvider = (props) => {
-  console.log("outsider user:", JSON.parse(localStorage.getItem(USER_KEY)));
-  
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem(USER_KEY)) || {
       userId: null,
@@ -20,28 +18,12 @@ const OutsiderProvider = (props) => {
   const [authenticated, setAuthenticated] = useState(
     JSON.parse(localStorage.getItem(AUTHENTICATED_KEY)) || false
   );
-
   const [posts, setPosts] = useState([]);
-  const [preferTags, setPreferTags] = useState([]);
-  const [currentPost, setCurrentPost] = useState([]);
-  const [doingQueryPost, setDoingQueryPost] = useState(false);
-  const [doingQueryPostCollection, setDoingQueryPostCollection] =
-    useState(false);
-
-  // Save data to local storage
-
-  // useEffect(() => {
-  //   localStorage.setItem(USERID_KEY, userId);
-  //   localStorage.setItem(ACCOUNT_KEY, account);
-  //   localStorage.setItem(USERNAME_KEY, username);
-  //   localStorage.setItem(AUTHENTICATED_KEY, authenticated);
-  // }, [authenticated, userId, account, username]);
 
   // Define function to handle post queries
 
   const [queryPost] = useLazyQuery(POST_QUERY, {
     onCompleted: ({ queryPost: fetchedPosts }) => {
-      console.log("fetched posts:", fetchedPosts);
       setPosts(fetchedPosts.map(standardizeFetchedPost));
     },
     onError: (error) => {
@@ -50,55 +32,56 @@ const OutsiderProvider = (props) => {
     },
   });
 
-  // const handleFetchAllPosts = useCallback(
-  //   async (type, queryString) => {
-  //     try {
-  //       const {
-  //         data: { queryPost: fetchedPosts },
-  //       } = await queryPost({ variables: { type, queryString } });
-  //       console.log("fetchedPosts:", fetchedPosts);
-  //       setPosts(fetchedPosts);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   },
-  //   [queryPost, setPosts]
-  // );
+  // Define function to delete a post
 
-  // useEffect(() => {
-  //   console.log("useEffect");
-  //   handleFetchAllPosts("all", "");
-  // }, [handleFetchAllPosts]);
+  const [deletePost] = useMutation(DELETE_POST_MUTATION, {
+    onCompleted: ({ deletePost }) => {
+      const { postId: deletedPostId } = deletePost;
+      setPosts(posts.filter(({ postId }) => postId !== deletedPostId));
+      displayStatus({ type: "success", msg: "delete the post!" });
+    },
+    onError: (error) => {
+      displayStatus(standardizeFetchedPost(error));
+    },
+  });
+
+  // Define function to update post collection
+
+  const [updatePostCollection] = useMutation(UPDATE_POST_COLLECTION_MUTATION, {
+    onCompleted: ({ updatePostCollection }) => {
+      const { msg } = updatePostCollection;
+      displayStatus({ type: "success", msg });
+    },
+    onError: (error) => {
+      displayStatus(standardizeFetchedPost(error));
+    },
+  });
 
   useEffect(() => {
     queryPost({ variables: { type: "all", queryString: "" } });
   }, [queryPost]);
 
-  // const handleQueryPost = async (type, queryString) => {
-  //   setDoingQueryPost(true);
-  //   const { data } = await queryPost({
-  //     variables: {
-  //       type: type,
-  //       queryString: queryString,
-  //     },
-  //   });
-  //   console.log("handle query post:", data);
-  //   setCurrentPost(data.queryPost);
-  //   return data.queryPost;
-  // };
+  // Define function to handle post queries
+
+  // const [queryPost] = useLazyQuery(POST_QUERY, {
+  //   onCompleted: ({ queryPost: fetchedPosts }) => {
+  //     console.log("fetched posts:", fetchedPosts);
+  //     setPosts(fetchedPosts.map(standardizeFetchedPost));
+  //   },
+  //   onError: (error) => {
+  //     console.log(error);
+  //     displayStatus({ type: "fail", msg: "Failed to fetch posts" });
+  //   },
+  // });
+
+  // useEffect(() => {
+  //   queryPost({ variables: { type: "all", queryString: "" } });
+  // }, [queryPost]);
 
   // Define function to handle post collection queries
   const [queryPostCollection] = useLazyQuery(POST_COLLECTION_QUERY, {
     fetchPolicy: "network-only",
   });
-  const handleQueryPostCollection = async (type) => {
-    // setDoingQueryPostCollection(true);
-    // const { data } = await queryPostCollection({
-    //   variables: { userId: userId, type: type },
-    // });
-    // setCurrentPost(data.queryPostCollection);
-    // return data.queryPostCollection;
-  };
 
   console.log(`re-render useOutsider`);
 
@@ -107,19 +90,14 @@ const OutsiderProvider = (props) => {
     <OutsiderContext.Provider
       value={{
         user,
-        setUser,
         posts,
-        preferTags,
-        setPosts,
-        setPreferTags,
-        currentPost,
         authenticated,
+        setUser,
+        setPosts,
         setAuthenticated,
-        handleQueryPostCollection,
-        doingQueryPost,
-        setDoingQueryPost,
-        doingQueryPostCollection,
-        setDoingQueryPostCollection,
+        queryPost,
+        deletePost,
+        updatePostCollection,
       }}
       {...props}
     />

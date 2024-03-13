@@ -2,10 +2,16 @@ import { createContext } from "react";
 
 const OutsiderContext = createContext({
   user: {},
+  posts: [],
   authenticated: false,
+  
   setUser: () => {},
-  handleAuthenticated: () => {},
-  displayStatus: () => {},
+  setPosts: () => {},
+  setAuthenticated: () => {},
+
+  queryPost: () => {},
+  deletePost: () => {},
+  updatePostCollection: () => {},
 });
 
 export default OutsiderContext;

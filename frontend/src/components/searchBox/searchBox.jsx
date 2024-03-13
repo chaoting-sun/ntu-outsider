@@ -1,5 +1,5 @@
 import { Select, Input, Space } from 'antd';
-import { displayStatus } from '../containers/utils';
+import { displayStatus } from '../../containers/utils';
 import { useEffect, useState } from 'react';
 import '../css/searchBox.css'
 

@@ -10,6 +10,7 @@ import {
 import paths from "../../constants/paths";
 import Tags from "../../components/tags/tags";
 import { UseOutsider } from "../hooks/useOutsider";
+import UseQueryPosts from "../hooks/useQueryPosts";
 import PathContants from "../../constants/paths";
 import actions from "../../constants/actions";
 import { displayStatus } from "../utils";
@@ -30,7 +31,8 @@ const defaultPost = {
 };
 
 const EditPostPage = () => {
-  const { authenticated, setPosts } = UseOutsider();
+  const { authenticated, posts, setPosts } = UseOutsider();
+  // const {  } = UseQueryPosts();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -64,9 +66,8 @@ const EditPostPage = () => {
   const [createPost] = useMutation(CREATE_POST_MUTATION, {
     onCompleted: ({ createPost }) => {
       const newPost = standardizeFetchedPost(createPost);
-      setFinishEdit(true);
       setPosts((prevPosts) => [newPost, ...prevPosts]);
-
+      setFinishEdit(true);
       displayStatus({ type: "success", msg: "Post successfully created!" });
     },
     onError: (error) => {
@@ -78,12 +79,12 @@ const EditPostPage = () => {
   const [updatePost] = useMutation(UPDATE_POST_MUTATION, {
     onCompleted: ({ updatePost }) => {
       const updatedPost = standardizeFetchedPost(updatePost);
-      setFinishEdit(true);
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post.postId === updatedPost.postId ? updatedPost : post
         )
       );
+      setFinishEdit(true);
       displayStatus({ type: "success", msg: "Post successfully updated!" });
     },
     onError: (error) => {
@@ -126,11 +127,15 @@ const EditPostPage = () => {
   };
 
   useEffect(() => {
+    if (!authenticated) navigate(PathContants.LOGIN);
+  }, [authenticated, navigate]);
+
+  useEffect(() => {
     if (finishEdit) {
       setFinishEdit(false);
       navigate(paths.MAIN);
     }
-  }, [finishEdit, navigate]);
+  }, [finishEdit, navigate, posts]);
 
   const ClassInformation = () => (
     <>
@@ -221,9 +226,7 @@ const EditPostPage = () => {
 
   // navigate to LOGIN page if not authencated
 
-  if (!authenticated) navigate(PathContants.LOGIN);
-
-  return (
+  return authenticated ? (
     <div className={styles.container}>
       <div className={styles.card}>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
@@ -245,7 +248,7 @@ const EditPostPage = () => {
         </form>
       </div>
     </div>
-  );
+  ): null;
 };
 
 export default EditPostPage;
