@@ -1,61 +1,21 @@
-import { Input } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import paths from "../../constants/paths";
-import Tags from "../../components/tags/tags";
-import { UseOutsider } from "../hooks/useOutsider";
+import { useMutation } from "@apollo/client";
+
 import {
   CREATE_POST_MUTATION,
   UPDATE_POST_MUTATION,
 } from "../graphql/mutation";
-import { useMutation } from "@apollo/client";
+import paths from "../../constants/paths";
+import Tags from "../../components/tags/tags";
+import { UseOutsider } from "../hooks/useOutsider";
 import PathContants from "../../constants/paths";
 import actions from "../../constants/actions";
 import { displayStatus } from "../utils";
-import styles from "./editPostPage.module.css";
-import { standardizeFetchedPost } from "../utils";
-import { parseErrorMessage } from "../utils";
+import { parseErrorMessage, standardizeFetchedPost } from "../utils";
 
-// const classDetail = (post) => {
-//   return [
-//     {
-//       name: "課名",
-//       placeholder: "ex: 化工實驗",
-//       defaultValue: post ? post.className : "",
-//       type: "text",
-//       constraint: {},
-//     },
-//     {
-//       name: "授課老師",
-//       placeholder: "ex: 鄭進一",
-//       defaultValue: post ? post.className : "",
-//       type: "text",
-//       constraint: {},
-//     },
-//     {
-//       name: "課程流水號",
-//       placeholder: "ex: PE24336",
-//       defaultValue: post ? post.classNo : "",
-//       type: "text",
-//       constraint: {},
-//     },
-//     {
-//       name: "尚須徵求人數",
-//       placeholder: "ex: PE24336",
-//       defaultValue: post ? post.condition : "",
-//       type: "number",
-//       constraint: { min: "0" },
-//     },
-//     {
-//       name: "課程流水號",
-//       placeholder: "ex: PE24336",
-//       defaultValue: post ? post.classNo : "",
-//       type: "text",
-//       constraint: {},
-//     },
-//   ];
-// };
+import styles from "./editPostPage.module.css";
 
 const defaultPost = {
   title: "化工實驗找人",
@@ -80,7 +40,6 @@ const EditPostPage = () => {
   const authorId = initPost ? initPost.authorId : null;
   const action = location.state.action || "";
 
-  const [updatedPost, setUpdatedPost] = useState(null);
   const [finishEdit, setFinishEdit] = useState(false);
   const [editedTag, setEditedTag] = useState(initPost?.tag || defaultPost.tags);
 
@@ -104,8 +63,7 @@ const EditPostPage = () => {
 
   const [createPost] = useMutation(CREATE_POST_MUTATION, {
     onCompleted: ({ createPost }) => {
-      const newPost = standardizeFetchedPost(createPost);  
-      setUpdatedPost(newPost);
+      const newPost = standardizeFetchedPost(createPost);
       setFinishEdit(true);
       setPosts((prevPosts) => [newPost, ...prevPosts]);
 
@@ -120,14 +78,12 @@ const EditPostPage = () => {
   const [updatePost] = useMutation(UPDATE_POST_MUTATION, {
     onCompleted: ({ updatePost }) => {
       const updatedPost = standardizeFetchedPost(updatePost);
-      setUpdatedPost(updatedPost);
       setFinishEdit(true);
       setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.postId === updatedPost.postId ? updatedPost : post
-      )
-    );
-
+        prevPosts.map((post) =>
+          post.postId === updatedPost.postId ? updatedPost : post
+        )
+      );
       displayStatus({ type: "success", msg: "Post successfully updated!" });
     },
     onError: (error) => {
@@ -163,19 +119,9 @@ const EditPostPage = () => {
     console.log("action:", action);
 
     if (action === actions.ADD_POST) {
-      console.log("addPost:", updatedPost);
-      try {
-        createPost({ variables: updatedPost });
-      } catch (error) {
-        console.log(error);
-      }
+      createPost({ variables: updatedPost });
     } else if (action === actions.EDIT_POST) {
-      updatedPost = { ...updatedPost, postId, authorId };
-      try {
-        updatePost({ variables: updatedPost });
-      } catch (error) {
-        console.log(error);
-      }
+      updatePost({ variables: { ...updatedPost, postId, authorId } });
     }
   };
 
