@@ -57,31 +57,15 @@ const OutsiderProvider = (props) => {
     },
   });
 
-  useEffect(() => {
-    queryPost({ variables: { type: "all", queryString: "" } });
-  }, [queryPost]);
-
-  // Define function to handle post queries
-
-  // const [queryPost] = useLazyQuery(POST_QUERY, {
-  //   onCompleted: ({ queryPost: fetchedPosts }) => {
-  //     console.log("fetched posts:", fetchedPosts);
-  //     setPosts(fetchedPosts.map(standardizeFetchedPost));
-  //   },
-  //   onError: (error) => {
-  //     console.log(error);
-  //     displayStatus({ type: "fail", msg: "Failed to fetch posts" });
-  //   },
-  // });
-
-  // useEffect(() => {
-  //   queryPost({ variables: { type: "all", queryString: "" } });
-  // }, [queryPost]);
-
   // Define function to handle post collection queries
+  
   const [queryPostCollection] = useLazyQuery(POST_COLLECTION_QUERY, {
     fetchPolicy: "network-only",
   });
+
+  useEffect(() => {
+    queryPost({ variables: { type: "all", queryString: "" } });
+  }, [queryPost]);
 
   console.log(`re-render useOutsider`);
 
